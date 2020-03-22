@@ -51,15 +51,17 @@ class Player(Character):
                 else:
                     self.collisionY(self.PositionY + self.CharacterImage.get_height())
                 self.PositionY_change = 0
-
         # Checking whethere Character steps on the wrong object
         self.setPosition(self.PositionX, self.PositionY)
 
     def isBombAddedToList(self):
         pressed = pygame.key.get_pressed()
+        gridX = (self.PositionX + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
+        gridY = (self.PositionY + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
+        print("GRID X = ", gridX, " GRID Y = ", gridY, " POS X = ", self.PositionX, " POS Y = ", self.PositionY)
         if pressed[pygame.K_SPACE]:
             if self.BombsAmount > 0:
-                self.BombList.append(Bomb(self.PositionX, self.PositionY, self.BombRange))
+                self.BombList.append(Bomb(gridX, gridY, self.BombRange))
                 self.BombsAmount -= 1
                 print("ADDED BOMB")
                 return True
@@ -71,5 +73,5 @@ class Player(Character):
         if not self.BombList:
             return
         for item in self.BombList:
-            pass
+            item.setPosition(item.PositionX, item.PositionY)
 
