@@ -1,6 +1,6 @@
 from src.Characters.Character import *
 from src.GameInitialisation import *
-
+import time
 X_SPEED_CHANGE = {
     pygame.K_LEFT: -1,
     pygame.K_RIGHT: +1,
@@ -11,7 +11,7 @@ Y_SPEED_CHANGE = {
     pygame.K_DOWN: +1,
 }
 
-BLOCK_SIZE = 50
+
 
 class Player(Character):
 
@@ -51,19 +51,16 @@ class Player(Character):
                 else:
                     self.collisionY(self.PositionY + self.CharacterImage.get_height())
                 self.PositionY_change = 0
-        # Checking whethere Character steps on the wrong object
         self.setPosition(self.PositionX, self.PositionY)
 
     def isBombAddedToList(self):
         pressed = pygame.key.get_pressed()
         gridX = (self.PositionX + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
         gridY = (self.PositionY + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
-        print("GRID X = ", gridX, " GRID Y = ", gridY, " POS X = ", self.PositionX, " POS Y = ", self.PositionY)
         if pressed[pygame.K_SPACE]:
             if self.BombsAmount > 0:
-                self.BombList.append(Bomb(gridX, gridY, self.BombRange))
+                self.BombList.append(Bomb(gridX, gridY, self.BombRange, time.time()))
                 self.BombsAmount -= 1
-                print("ADDED BOMB")
                 return True
         return False
                 
@@ -73,5 +70,11 @@ class Player(Character):
         if not self.BombList:
             return
         for item in self.BombList:
-            item.setPosition(item.PositionX, item.PositionY)
+            if item.ShowBomb == True:
+                item.setPosition(item.PositionX, item.PositionY)
 
+
+    def checkExplosion(self, step):
+        for item in self.BombList:
+            if item.explosion(step) == True:
+                self.BombList.remove(item)
