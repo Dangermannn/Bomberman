@@ -15,22 +15,6 @@ Y_SPEED_CHANGE = {
 
 class Player(Character):
 
-    def collisionX(self, corner):
-        corner += self.PositionX_change + BLOCK_SIZE
-        lower_corner = self.PositionY + self.CharacterImage.get_height() + BLOCK_SIZE
-        upper_corner = self.PositionY + BLOCK_SIZE
-        if (game_map[corner//BLOCK_SIZE - 1][upper_corner//BLOCK_SIZE - 1] == ' ' and
-            game_map[corner//BLOCK_SIZE - 1][lower_corner//BLOCK_SIZE - 1] == ' '):
-            self.PositionX += self.PositionX_change
-
-    def collisionY(self, corner):
-        corner += self.PositionY_change + BLOCK_SIZE
-        left_corner = self.PositionX + BLOCK_SIZE
-        right_corner = self.PositionX + self.CharacterImage.get_width() + BLOCK_SIZE
-        if (game_map[left_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] == ' ' and
-            game_map[right_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] == ' '):
-            self.PositionY += self.PositionY_change
-
     def handleMovement(self):
 
         pressed = pygame.key.get_pressed()
@@ -74,7 +58,12 @@ class Player(Character):
                 item.setPosition(item.PositionX, item.PositionY)
 
 
-    def checkExplosion(self, step):
+    def checkExplosion(self):
+        array = []
         for item in self.BombList:
-            if item.explosion(step) == True:
+            if item.explosion(array) == True:
                 self.BombList.remove(item)
+                self.BombsAmount += 1
+                for x, y in array:
+                    game_map[x][y] = ' '
+                    self.Score += 10

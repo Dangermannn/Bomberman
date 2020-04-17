@@ -24,7 +24,21 @@ class Character:
     def getInfo(self):
         print(self.PositionX, "\t", self.PositionY, "\t", self.PositionX_change, self.PositionY_change)
 
+    def collisionX(self, corner):
+        corner += self.PositionX_change + BLOCK_SIZE
+        lower_corner = self.PositionY + self.CharacterImage.get_height() + BLOCK_SIZE
+        upper_corner = self.PositionY + BLOCK_SIZE
+        if (game_map[corner//BLOCK_SIZE - 1][upper_corner//BLOCK_SIZE - 1] == ' ' and
+            game_map[corner//BLOCK_SIZE - 1][lower_corner//BLOCK_SIZE - 1] == ' '):
+            self.PositionX += self.PositionX_change
+
+    def collisionY(self, corner):
+        corner += self.PositionY_change + BLOCK_SIZE
+        left_corner = self.PositionX + BLOCK_SIZE
+        right_corner = self.PositionX + self.CharacterImage.get_width() + BLOCK_SIZE
+        if (game_map[left_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] == ' ' and
+            game_map[right_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] == ' '):
+            self.PositionY += self.PositionY_change
+
     def setPosition(self, PositionX, PositionY):
         screen.blit(self.CharacterImage, (PositionX, PositionY))
-
-    
