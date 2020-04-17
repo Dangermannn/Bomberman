@@ -6,7 +6,8 @@ from pygame.locals import *
 import tracemalloc
 from src.Tools.SpriteTool import SpriteTool
 from threading import Thread
-ch1 = Player(50, 80, 3, 3, 55, 2, 'Images/gosc124.png')
+# posX, posY, health, speed, bombsAmount, bombRange, imgName
+ch1 = Player(50, 80, 3, 3, 2, 1, 'Images/gosc124.png')
 last_time = time.time()
 
 last_time_explosion = time.time()
@@ -23,11 +24,14 @@ def endfunc():
             running = False
 
 explosion_step = 0
+generateMap(game_map)
 
 while running:
     start_time = time.time()
-    screen.fill((0, 0, 0))
+    #screen.fill((0, 0, 0))
+    screen.fill(pygame.Color("black"))
     screen.blit(background, (0, 0))
+    #getStones()
     placeStones()
     s.draw(screen, (explosion_step % 7) + 7 , 50, 50)
 
@@ -43,13 +47,19 @@ while running:
                 #ch1.BombList.explosion(now)
                 last_time = now
             #Thread(target = ch1.checkExplosion(last_time_explosion, d)).start()
-            ch1.checkExplosion(explosion_step)
+            ch1.checkExplosion()
             if now - last_time_explosion > 0.1:
                 last_time_explosion = now
                 explosion_step += 1
+
+
     ch1.setBombsOnMap()
     end_time = (start_time - time.time()) * 1000;
-
+    #print("PLAY POS [X, Y] = [",ch1.PositionX, ", ", ch1.PositionY, "]")
+    #drawMap()
+    #print("-#-#-#______________________________________#-3-3-")
+    #if explosion_step == 40:
+     #   game_map[2][4] = ' '
     endfunc()
     pygame.display.update()
     pygame.time.wait(int(end_time))
