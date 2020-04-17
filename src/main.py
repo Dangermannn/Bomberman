@@ -1,5 +1,6 @@
 from src.GameInitialisation import *
 from src.Characters.Player import *
+from src.Characters.Ghost import *
 import pygame
 import time
 from pygame.locals import *
@@ -8,6 +9,7 @@ from src.Tools.SpriteTool import SpriteTool
 from threading import Thread
 # posX, posY, health, speed, bombsAmount, bombRange, imgName
 ch1 = Player(50, 80, 3, 3, 2, 1, 'Images/gosc124.png')
+g1 = Ghost(651, 51, 3, 4, 2, 1, 'Images/whiteGhost.png')
 last_time = time.time()
 
 last_time_explosion = time.time()
@@ -36,6 +38,7 @@ while running:
     s.draw(screen, (explosion_step % 7) + 7 , 50, 50)
 
     ch1.handleMovement()
+    g1.MoveRandom()
     #print(isIntersection(ch1.PositionX + 10, ch1.PositionY + 10))
     if last_time != None:
         now = time.time()
