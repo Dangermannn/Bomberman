@@ -20,6 +20,7 @@ class Bomb:
         self.BombImage = pygame.transform.scale((pygame.image.load('Images/bombv1.png').convert_alpha()), (45, 45))
         self.BombSprite = SpriteTool("Images/BombSprit.png", 7, 3, 48)
         self.FireBlocks = []
+        self.DestroyedBlocks = []
         self.SetTime = time.time()
         self.AnimationStep = 0
         self.LastAnimationTime = time.time()
@@ -184,7 +185,7 @@ class Bomb:
 
     def explosion(self, destroyedBlocks, ghosts, playerCords, health, isAlive):
         if self.AnimationStep == 0:
-            self.explosionBlocks(destroyedBlocks)
+            self.explosionBlocks(self.DestroyedBlocks)
         explosionTimer = time.time()
         if explosionTimer - self.SetTime > 2:
             self.ShowBomb = False
@@ -200,6 +201,11 @@ class Bomb:
                     self.isCollisionWithPlayer(playerCords, health, isAlive)
                     self.isCollisionWithGhost(ghosts)
                     self.FireBlocks.clear()
+                    print("DESTROYED IN THE EXPLOSION: ", destroyedBlocks)
+                    for x, y in self.DestroyedBlocks:
+                        game_map[x][y] = ' '
+                        print("REMOVED X")
+                    self.DestroyedBlocks.clear()
                     return True
         return False
 
@@ -227,14 +233,14 @@ class Bomb:
     def isCollisionWithPlayer(self, coords, health, isAlive):
         blocks = self.getFireBlocksPosition()
         for b in blocks:
-            print("B == ", b, " CORDS = ", coords)
+            #print("B == ", b, " CORDS = ", coords)
             if b == coords:
-                print("COLLISION RETURNS TRUE")
+                #print("COLLISION RETURNS TRUE")
                 health -= 1
-                print("HEALTH IN FUNC", health)
-                print("PLAYER ---------- HEALTH")
+                #print("HEALTH IN FUNC", health)
+                #print("PLAYER ---------- HEALTH")
                 if health == 0:
-                    print("PLAYER IS DEAD")
+                    #print("PLAYER IS DEAD")
                     self.IsAlive = False
                 return True
         return False

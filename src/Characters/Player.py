@@ -65,7 +65,9 @@ class Player(Character):
                 self.BombList.remove(item)
                 self.BombsAmount += 1
                 health -= 1
+                print("ARRAY: ", array)
                 for x, y in array:
+                    print("REMOVING BLOCK FROM: (", x, ", ", y, ")")
                     game_map[x][y] = ' '
                     self.Score += 10
         self.Health = health
