@@ -183,7 +183,8 @@ class Bomb:
             print(x)
 
     def explosion(self, destroyedBlocks, ghosts, playerCords, health, isAlive):
-        self.explosionBlocks(destroyedBlocks)
+        if self.AnimationStep == 0:
+            self.explosionBlocks(destroyedBlocks)
         explosionTimer = time.time()
         if explosionTimer - self.SetTime > 2:
             self.ShowBomb = False
