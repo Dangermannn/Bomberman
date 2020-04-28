@@ -8,17 +8,26 @@ import tracemalloc
 from src.Tools.SpriteTool import SpriteTool
 from threading import Thread
 # posX, posY, health, speed, bombsAmount, bombRange, imgName
-ch1 = Player(50, 80, 3, 3, 2, 1, 'Images/gosc124.png')
-g1 = Ghost(651, 51, 3, 4, 2, 1, 'Images/whiteGhost.png')
-last_time = time.time()
+EASY = 1
+MEDIUM = 2
 
+ch1 = Player(50, 80, 3, 3, 10, 5, 'Images/Hero.png')
+g1 = Ghost(650, 50, 1, 4, 2, 1, 'Images/whiteGhost.png', EASY)
+g2 = Ghost(50, 50, 1, 3, 2, 1, 'Images/whiteGhost.png', MEDIUM)
+
+
+ghosts_list = []
+ghosts_list.append(g1)
+ghosts_list.append(g2)
+
+
+last_time = time.time()
 last_time_explosion = time.time()
 pygame.init()
 
 running = True
 
 clock = pygame.time.Clock()
-s = SpriteTool("Images/BombSprit.png", 7, 3, 48)
 
 def endfunc():
     for event in pygame.event.get():
@@ -35,10 +44,12 @@ while running:
     screen.blit(background, (0, 0))
     #getStones()
     placeStones()
-    s.draw(screen, (explosion_step % 7) + 7 , 50, 50)
 
     ch1.handleMovement()
-    g1.MoveRandom()
+
+
+    for g in ghosts_list:
+        g.handleMovement()
     #print(isIntersection(ch1.PositionX + 10, ch1.PositionY + 10))
     if last_time != None:
         now = time.time()
@@ -50,11 +61,11 @@ while running:
                 #ch1.BombList.explosion(now)
                 last_time = now
             #Thread(target = ch1.checkExplosion(last_time_explosion, d)).start()
-            ch1.checkExplosion()
+            ch1.checkExplosion(ghosts_list, ch1.getPlayerPositionOnMap(), )
             if now - last_time_explosion > 0.1:
                 last_time_explosion = now
                 explosion_step += 1
-
+    print("HEALTH: ", ch1.Health)
 
     ch1.setBombsOnMap()
     end_time = (start_time - time.time()) * 1000;

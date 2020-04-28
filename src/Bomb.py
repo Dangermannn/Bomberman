@@ -34,6 +34,7 @@ class Bomb:
         if game_map[direction // BLOCK_SIZE - 1][indexY // BLOCK_SIZE - 1] == 'B':
             game_map[direction // BLOCK_SIZE - 1][indexY // BLOCK_SIZE - 1] == ' '
 
+
     def isIntersection(self, x, y):
         left = x
         right = x + 2 * BLOCK_SIZE
@@ -181,7 +182,7 @@ class Bomb:
         for x in self.FireBlocks:
             print(x)
 
-    def explosion(self, destroyedBlocks):
+    def explosion(self, destroyedBlocks, ghosts, playerCords, health, isAlive):
         self.explosionBlocks(destroyedBlocks)
         explosionTimer = time.time()
         if explosionTimer - self.SetTime > 2:
@@ -195,8 +196,46 @@ class Bomb:
                 else:
                     self.BombSprite.draw(screen, (self.AnimationStep % 7) + x[2], x[0], x[1])
                 if self.AnimationStep % 7 == 6:
+                    self.isCollisionWithPlayer(playerCords, health, isAlive)
+                    self.isCollisionWithGhost(ghosts)
                     self.FireBlocks.clear()
                     return True
+        return False
+
+    def getBombPositionOnMap(self):
+        x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        return (x, y)
+
+    def getFireBlocksPosition(self):
+        ret = []
+        for x in self.FireBlocks:
+            ret.append((x[0] // BLOCK_SIZE, x[1] // BLOCK_SIZE))
+        return ret
+
+    def isCollisionWithGhost(self, ghosts):
+        blocks = self.getFireBlocksPosition()
+        for b in blocks:
+            for g in ghosts:
+                if g.getPositionOnMap() == b:
+                    g.Health -= 1
+                    if g.Health == 0:
+                        g.isAlive = False
+                        ghosts.remove(g)
+
+    def isCollisionWithPlayer(self, coords, health, isAlive):
+        blocks = self.getFireBlocksPosition()
+        for b in blocks:
+            print("B == ", b, " CORDS = ", coords)
+            if b == coords:
+                print("COLLISION RETURNS TRUE")
+                health -= 1
+                print("HEALTH IN FUNC", health)
+                print("PLAYER ---------- HEALTH")
+                if health == 0:
+                    print("PLAYER IS DEAD")
+                    self.IsAlive = False
+                return True
         return False
 
     def setPosition(self, PositionX, PositionY):

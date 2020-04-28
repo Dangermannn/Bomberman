@@ -5,7 +5,7 @@ screen = pygame.display.set_mode((750, 750))
 background = pygame.image.load('Images/Mapv2.png')
 stone = pygame.image.load('Images/stone.png')
 pygame.display.set_caption('Bomberman')
-icon = pygame.image.load('Images/gosc124.png')
+icon = pygame.image.load('Images/whiteGhost.png')
 pygame.display.set_icon(icon)
 
 game_map = []

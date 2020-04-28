@@ -1,14 +1,13 @@
 from src.Characters.Character import *
 from src.Characters.Player import *
+from src.GameInitialisation import *
 import random
 class Ghost(Character):
-    EASY = 11
-    MEDIUM = 22
-    DIFFICULT = 33
-
+    EASY = 1
+    MEDIUM = 2
     MAX_MOVEMENT = 50
     POSSIBLE_MOVEMENTS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
-    def __init__(self, PositionX, PositionY, Health, Speed, BombsAmount, BombRange, ImageName):
+    def __init__(self, PositionX, PositionY, Health, Speed, BombsAmount, BombRange, ImageName, Mode):
         super(Ghost, self).__init__(PositionX, PositionY, Health,
                                     Speed, BombsAmount, BombRange, ImageName)
         self.CharacterImage = pygame.transform.scale((pygame.image.load(ImageName).convert_alpha()), (44, 44))
@@ -18,6 +17,8 @@ class Ghost(Character):
         self.lastPositions = []
         self.lastPositions.append((((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1),
                                       ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)))
+        self.isAlive = True
+        self.Mode = Mode
 
     def collisionX(self, corner):
         corner += self.PositionX_change + BLOCK_SIZE
@@ -55,7 +56,7 @@ class Ghost(Character):
         #if distanceToBoundary <= self.Speed:
           #  self.PositionX += distanceToBoundary
 
-    def MoveRandom(self):
+    def moveRandom(self):
 
         direction = random.choice(self.POSSIBLE_MOVEMENTS)
         if self.distanceTraveled == 0:
@@ -85,7 +86,7 @@ class Ghost(Character):
             self.distanceTraveled = 0
         self.setPosition(self.PositionX, self.PositionY)
 
-    def MoveRandomWithoutBack(self):
+    def moveRandomWithoutBack(self):
         """
         Ghost picks random path, but cannot choose last block he was on
         """
@@ -191,3 +192,17 @@ class Ghost(Character):
         self.setPosition(self.PositionX, self.PositionY)
 
         self.possibleMovements.clear()
+
+    def getPositionOnMap(self):
+        x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        return (x, y)
+
+    def handleMovement(self):
+        if self.Mode == self.EASY and self.isAlive == True:
+            self.moveRandom()
+        elif self.Mode == self.MEDIUM and self.isAlive == True:
+            self.moveRandomWithoutBack()
+
+    def removeGhost(self):
+        del self
