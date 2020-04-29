@@ -55,34 +55,24 @@ class Player(Character):
                 item.setPosition(item.PositionX, item.PositionY)
 
 
-    def checkExplosion(self, ghosts, playerCords, health = None, isAlive = None):
-        array = []
-        health = self.Health
+    def checkExplosion(self, ghosts, playerCords):
+        blocksToRemove = []
+        hp = [self.Health]
         isAlive = self.IsAlive
         for item in self.BombList:
-            if item.explosion(array, ghosts, playerCords, health, isAlive) == True:
-                self.decreaseHP(item.isCollisionWithPlayer)
+            if item.explosion(blocksToRemove, ghosts, playerCords, hp, isAlive) == True:
                 self.BombList.remove(item)
                 self.BombsAmount += 1
-                health -= 1
-                print("ARRAY: ", array)
-                for x, y in array:
-                    print("REMOVING BLOCK FROM: (", x, ", ", y, ")")
-                    game_map[x][y] = ' '
-                    self.Score += 10
-        self.Health = health
-        self.isAlive = isAlive
+                # for x, y in blocksToRemove:
+                #     game_map[x][y] = ' '
+                #     self.Score += 10
+        self.Health = hp[0]
+        if self.Health == 0:
+            self.IsAlive == False
+
 
     def getPlayerPositionOnMap(self):
         x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
-
-    def decreaseHP(self, bool):
-        if bool == True:
-            self.Health -= 1
-            print("PLAYER ---------- HEALTH")
-            if self.Health == 0:
-                print("PLAYER IS DEAD")
-                self.IsAlive = False
 

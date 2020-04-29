@@ -76,10 +76,9 @@ def menu():
                     endButton.color = (150, 0, 0)
 
 def controlEndGame(player):
-    if player.Health == 0:
-        print("ZERO ZYCIA LEAVE_-----------------------")
-        return True
-    return False
+    if player.IsAlive:
+        return False
+    return True
 
 def controlEndLevel():
     if not ghosts_list:
@@ -119,7 +118,6 @@ def mainGame():
                     last_time_explosion = now
                     explosion_step += 1
         #print("HEALTH: ", ch1.Health)
-
         ch1.setBombsOnMap()
         end_time = (start_time - time.time()) * 1000;
         #print("PLAY POS [X, Y] = [",ch1.PositionX, ", ", ch1.PositionY, "]")
@@ -131,7 +129,6 @@ def mainGame():
         pygame.display.update()
         pygame.time.wait(int(end_time))
         #clock.tick(60)
-        print(ch1.Health)
         if controlEndGame(ch1):
             break
 
@@ -142,7 +139,7 @@ transparent_surface.set_alpha(128)
 transparent_surface.fill((0, 0, 0))
 screen.blit(background, (0, 0))
 
-
+level_iterator = 1
 ch1.setPosition(ch1.PositionX, ch1.PositionY)
 placeStones()
 for g in ghosts_list:
@@ -150,7 +147,7 @@ for g in ghosts_list:
 
 
 screen.blit(transparent_surface, (0, 0))
-printLabel("LEVEL 1", (0,255,0), 300, 300, 40)
+printLabel("LEVEL " + str(level_iterator), (0,255,0), 300, 300, 40)
 pygame.display.update()
 
 pygame.time.wait(1000)
