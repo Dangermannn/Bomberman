@@ -1,6 +1,7 @@
 from src.GameInitialisation import *
 from src.Characters.Player import *
 from src.Characters.Ghost import *
+from src.Tools.Button import *
 import pygame
 import time
 from pygame.locals import *
@@ -28,16 +29,71 @@ pygame.init()
 running = True
 
 clock = pygame.time.Clock()
+explosion_step = 0
+generateMap(game_map)
+
 
 def endfunc():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            pygame.quit()
+            quit()
 
-explosion_step = 0
-generateMap(game_map)
+
+def menu():
+    startButton = Button((51, 51, 255), 70, 70, 100, 50, 21, "Start game")
+    endButton = Button((255, 0, 0), 300, 70, 100, 50, 21, "Quit")
+
+    while True:
+        screen.fill(pygame.Color("black"))
+        startButton.draw(screen, (0, 0,0))
+        endButton.draw(screen, (255, 255, 255))
+        pygame.display.update()
+        #startButton.blitBut()
+        for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
+
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if startButton.mouseHover(pos):
+                    return
+                if endButton.mouseHover(pos):
+                    running = False
+                    pygame.quit()
+                    quit()
+
+            if event.type == pygame.MOUSEMOTION:
+                if startButton.mouseHover(pos):
+                    print("HOVERRRRR")
+                    startButton.color = (10, 10, 150)
+                else:
+                    startButton.color = (51, 51, 255)
+
+                if endButton.mouseHover(pos):
+                    print("HOVERRRRR")
+                    endButton.color = (255, 0, 0)
+                else:
+                    endButton.color = (150, 0, 0)
+
+menu()
+screen.fill(pygame.Color("black"))
+screen.blit(background, (0, 0))
+# getStones()
+ch1.handleMovement()
+placeStones()
+for g in ghosts_list:
+    g.handleMovement()
+pygame.display.update()
+
+pygame.time.wait(1000)
 
 while running:
+
     start_time = time.time()
     #screen.fill((0, 0, 0))
     screen.fill(pygame.Color("black"))
@@ -65,7 +121,7 @@ while running:
             if now - last_time_explosion > 0.1:
                 last_time_explosion = now
                 explosion_step += 1
-    print("HEALTH: ", ch1.Health)
+    #print("HEALTH: ", ch1.Health)
 
     ch1.setBombsOnMap()
     end_time = (start_time - time.time()) * 1000;
