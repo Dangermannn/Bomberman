@@ -29,6 +29,11 @@ game_map_str =  """\
 ###############
 """
 
+def printLabel(text, textColour, x, y, fontSize):
+	font = pygame.font.SysFont('comicsans', fontSize)
+	text = font.render(text, 1, (textColour[0], textColour[1], textColour[2]))
+	screen.blit(text,
+				(x + (text.get_width() / 2), y + (text.get_height() / 2)))
 
 def generateMap(game_map):
 	for line_str in game_map_str.splitlines():
