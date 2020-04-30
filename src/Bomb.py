@@ -179,7 +179,7 @@ class Bomb:
             i += 1
             iteration += 1
 
-    def explosion(self, destroyedBlocks, ghosts, playerCords, health, isAlive):
+    def explosion(self, ghosts, playerCords, health, isAlive):
         if self.AnimationStep == 0:
             self.explosionBlocks(self.DestroyedBlocks)
         explosionTimer = time.time()

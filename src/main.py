@@ -75,20 +75,27 @@ def controlEndLevel():
         return True
     return False
 
-def mainGame(player, ghost_list):
+def mainGame(player, ghost_list, level):
     last_time = time.time()
     last_time_explosion = time.time()
+    transparent_surface = pygame.Surface((750, 50))
+    transparent_surface.set_alpha(128)
     explosion_step = 0
     while True:
         start_time = time.time()
         #screen.fill((0, 0, 0))
         screen.fill(pygame.Color("black"))
         screen.blit(background, (0, 0))
-        #getStones()
         placeStones()
+
+        # upper info bar
+        screen.blit(transparent_surface, (0, 0))
         printLabel("Player's lifes:", 0, 0, 20)
         for x in range(0, player.Health):
             screen.blit(heart, (x * 40, 20))
+        printLabel("Bombs amount: " + str(player.BombsAmount), 200, 15, 30)
+        printLabel("Bombs' range: " + str(player.BombRange), 450, 15, 30)
+        printLabel("Level: " + str(level), 650, 15, 30)
         player.handleMovement()
 
         for g in ghosts_list:
@@ -167,7 +174,7 @@ while True:
     pygame.time.wait(1000)
 
     while running:
-        if mainGame(ch1, ghosts_list) == False:
+        if mainGame(ch1, ghosts_list, level_iterator) == False:
             level_iterator += 1
 
             ghosts_list.clear()
@@ -180,7 +187,7 @@ while True:
 
             if level_iterator > 5:
                 if ch1.BombsAmount > 1:
-                    ch1.BombsAmount -= 1s
+                    ch1.BombsAmount -= 1
                     ch1.BombRange -=1
 
             if level_iterator > 10:

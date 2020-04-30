@@ -60,7 +60,7 @@ class Player(Character):
         hp = [self.Health]
         isAlive = self.IsAlive
         for item in self.BombList:
-            if item.explosion(blocksToRemove, ghosts, self.getPlayerPositionOnMap(), hp, isAlive) == True:
+            if item.explosion(ghosts, self.getPlayerPositionOnMap(), hp, isAlive) == True:
                 self.BombList.remove(item)
                 self.BombsAmount += 1
                 # for x, y in blocksToRemove:
