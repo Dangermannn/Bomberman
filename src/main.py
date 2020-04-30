@@ -86,7 +86,9 @@ def mainGame(player, ghost_list):
         screen.blit(background, (0, 0))
         #getStones()
         placeStones()
-
+        printLabel("Player's lifes:", 0, 0, 20)
+        for x in range(0, player.Health):
+            screen.blit(heart, (x * 40, 20))
         player.handleMovement()
 
         for g in ghosts_list:
@@ -114,7 +116,6 @@ def mainGame(player, ghost_list):
         #print("-#-#-#______________________________________#-3-3-")
         #if explosion_step == 40:
          #   game_map[2][4] = ' '
-        print(player.Health)
         endfunc()
         pygame.display.update()
         pygame.time.wait(int(end_time))
@@ -133,7 +134,9 @@ while True:
 
     ch1 = Player(50, 50, 5, 6, 13, 13, 'Images/Hero.png')
     g1 = Ghost(650, 50, 1, 4, 2, 1, 'Images/whiteGhost.png', EASY)
-    g2 = Ghost(50, 50, 1, 3, 2, 1, 'Images/blueGhost.png', MEDIUM)
+    g2 = Ghost(50, 650, 1, 3, 2, 1, 'Images/blueGhost.png', MEDIUM)
+
+
 
     generateMap(game_map)
     ghosts_list = []
@@ -157,7 +160,8 @@ while True:
         g.setPosition(g.DefaultPosition[0], g.DefaultPosition[1])
 
     screen.blit(transparent_surface, (0, 0))
-    printLabel("LEVEL " + str(level_iterator), (0,255,0), 300, 300, 40)
+    printLabel("LEVEL " + str(level_iterator), 300, 300, 40)
+
     pygame.display.update()
 
     pygame.time.wait(1000)
@@ -176,7 +180,7 @@ while True:
 
             if level_iterator > 5:
                 if ch1.BombsAmount > 1:
-                    ch1.BombsAmount -= 1
+                    ch1.BombsAmount -= 1s
                     ch1.BombRange -=1
 
             if level_iterator > 10:
@@ -192,7 +196,7 @@ while True:
             placeStones()
 
             screen.blit(transparent_surface, (0, 0))
-            printLabel("LEVEL " + str(level_iterator), (0, 255, 0), 300, 300, 40)
+            printLabel("LEVEL " + str(level_iterator), 300, 300, 40)
 
             pygame.display.update()
             pygame.time.wait(1000)
@@ -200,7 +204,7 @@ while True:
         else:
             print(ch1.isBombAddedToList())
             screen.blit(transparent_surface, (0, 0))
-            printLabel("YOU'VE LOST", (0, 255, 0), 150, 150, 60)
+            printLabel("YOU'VE LOST", 260, 320, 60)
             pygame.display.update()
             pygame.time.wait(2000)
             break

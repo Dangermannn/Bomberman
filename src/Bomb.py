@@ -179,10 +179,6 @@ class Bomb:
             i += 1
             iteration += 1
 
-    def fire(self):
-        for x in self.FireBlocks:
-            print(x)
-
     def explosion(self, destroyedBlocks, ghosts, playerCords, health, isAlive):
         if self.AnimationStep == 0:
             self.explosionBlocks(self.DestroyedBlocks)

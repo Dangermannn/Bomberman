@@ -19,7 +19,6 @@ class Character:
         self.PositionY_change = 0
         self.BombList = []
         self.CharacterImage = pygame.transform.scale((pygame.image.load(ImageName).convert_alpha()), (40, 40))
-        self.Score = 0
         self.IsAlive = True
         self.DefaultPosition = (PositionX, PositionX)
 
