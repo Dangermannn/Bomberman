@@ -60,7 +60,7 @@ class Player(Character):
         hp = [self.Health]
         isAlive = self.IsAlive
         for item in self.BombList:
-            if item.explosion(blocksToRemove, ghosts, playerCords, hp, isAlive) == True:
+            if item.explosion(blocksToRemove, ghosts, self.getPlayerPositionOnMap(), hp, isAlive) == True:
                 self.BombList.remove(item)
                 self.BombsAmount += 1
                 # for x, y in blocksToRemove:
@@ -68,8 +68,7 @@ class Player(Character):
                 #     self.Score += 10
         self.Health = hp[0]
         if self.Health == 0:
-            self.IsAlive == False
-
+            self.IsAlive = False
 
     def getPlayerPositionOnMap(self):
         x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)

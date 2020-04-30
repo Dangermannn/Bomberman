@@ -19,6 +19,13 @@ class Ghost(Character):
                                       ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)))
         self.isAlive = True
         self.Mode = Mode
+        self.DefaultPosition = (PositionX, PositionY)
+
+    def setToDefault(self):
+        self.PositionX = self.DefaultPosition[0]
+        self.PositionY = self.DefaultPosition[1]
+        self.Health = 1
+        self.isAlive = True
 
     def collisionX(self, corner):
         corner += self.PositionX_change + BLOCK_SIZE
@@ -203,6 +210,7 @@ class Ghost(Character):
             self.moveRandom()
         elif self.Mode == self.MEDIUM and self.isAlive == True:
             self.moveRandomWithoutBack()
+
 
     def removeGhost(self):
         del self

@@ -37,16 +37,15 @@ def printLabel(text, textColour, x, y, fontSize):
 
 def generateMap(game_map):
 	for line_str in game_map_str.splitlines():
+		print(line_str)
 		game_map.append(list(line_str))
 
 stoneBlocks = []
-#generateMap(game_map)
 
 def placeStones():
 	for i in range(len(game_map)):
 		for j in range(len(game_map[i])):
 			if game_map[i][j] == 'S':
-				#stoneBlocks.append((i, j))
 				screen.blit(stone, (BLOCK_SIZE * i, BLOCK_SIZE * j))
 
 def drawMap():

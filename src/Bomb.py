@@ -198,15 +198,12 @@ class Bomb:
                 else:
                     self.BombSprite.draw(screen, (self.AnimationStep % 7) + x[2], x[0], x[1])
                 if self.AnimationStep % 7 == 6:
-                    self.isCollisionWithPlayer(playerCords, health[0])
+                    if self.isCollisionWithPlayer(playerCords):
+                        health[0] -= 1
                     self.isCollisionWithGhost(ghosts)
                     self.FireBlocks.clear()
-                    health[0] -= 1
-                    print("HEALTH IN EXPLOSION FUN: ", health[0])
-                    print("DESTROYED IN THE EXPLOSION: ", destroyedBlocks)
                     for x, y in self.DestroyedBlocks:
                         game_map[x][y] = ' '
-                        print("REMOVED X")
                     self.DestroyedBlocks.clear()
                     return True
         return False
@@ -232,11 +229,10 @@ class Bomb:
                         g.isAlive = False
                         ghosts.remove(g)
 
-    def isCollisionWithPlayer(self, coords, health):
+    def isCollisionWithPlayer(self, coords):
         blocks = self.getFireBlocksPosition()
         for b in blocks:
             if b == coords:
-                health -= 1
                 return True
         return False
 

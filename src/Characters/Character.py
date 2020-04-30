@@ -7,7 +7,8 @@ from pygame import Surface
 
 class Character:  
 
-    def __init__(self, PositionX, PositionY, Health, Speed, BombsAmount, BombRange, ImageName):
+    def __init__(self, PositionX = 50, PositionY = 50, Health = 5, Speed = 6,
+                 BombsAmount = 13, BombRange = 13, ImageName = "Images/Hero.png"):
         self.PositionX = PositionX
         self.PositionY = PositionY
         self.Health = Health
@@ -20,6 +21,17 @@ class Character:
         self.CharacterImage = pygame.transform.scale((pygame.image.load(ImageName).convert_alpha()), (40, 40))
         self.Score = 0
         self.IsAlive = True
+        self.DefaultPosition = (PositionX, PositionX)
+
+    def setToDefault(self):
+        self.PositionX = 50
+        self.PositionY = 50
+        self.PositionX_change = 0
+        self.PositionY_change = 0
+        self.BombList = []
+        self.Score = 0
+        self.IsAlive = True
+
 
     def getInfo(self):
         print(self.PositionX, "\t", self.PositionY, "\t", self.PositionX_change, self.PositionY_change)

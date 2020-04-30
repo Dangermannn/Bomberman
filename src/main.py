@@ -11,16 +11,7 @@ from threading import Thread
 # posX, posY, health, speed, bombsAmount, bombRange, imgName
 EASY = 1
 MEDIUM = 2
-
-ch1 = Player(50, 80, 3, 3, 10, 5, 'Images/Hero.png')
-g1 = Ghost(650, 50, 1, 4, 2, 1, 'Images/whiteGhost.png', EASY)
-g2 = Ghost(50, 50, 1, 3, 2, 1, 'Images/whiteGhost.png', MEDIUM)
-
-
-ghosts_list = []
-ghosts_list.append(g1)
-ghosts_list.append(g2)
-
+# player speed - 3 MIN
 
 
 pygame.init()
@@ -28,7 +19,6 @@ pygame.init()
 running = True
 
 clock = pygame.time.Clock()
-generateMap(game_map)
 
 
 def endfunc():
@@ -85,7 +75,7 @@ def controlEndLevel():
         return True
     return False
 
-def mainGame():
+def mainGame(player, ghost_list):
     last_time = time.time()
     last_time_explosion = time.time()
     explosion_step = 0
@@ -97,8 +87,7 @@ def mainGame():
         #getStones()
         placeStones()
 
-        ch1.handleMovement()
-
+        player.handleMovement()
 
         for g in ghosts_list:
             g.handleMovement()
@@ -107,51 +96,111 @@ def mainGame():
             now = time.time()
             if now - last_time > 0.5:
                 #print("Last time: ", last_time, " Current time: ", now)
-                if ch1.isBombAddedToList():
+                if player.isBombAddedToList():
                     # ch1.BombList[0].setPosition(ch1.PositionX, ch1.PositionY)
                     #ch1.setBombsOnMap()
                     #ch1.BombList.explosion(now)
                     last_time = now
                 #Thread(target = ch1.checkExplosion(last_time_explosion, d)).start()
-                ch1.checkExplosion(ghosts_list, ch1.getPlayerPositionOnMap(), )
+                player.checkExplosion(ghosts_list, player.getPlayerPositionOnMap())
                 if now - last_time_explosion > 0.1:
                     last_time_explosion = now
                     explosion_step += 1
         #print("HEALTH: ", ch1.Health)
-        ch1.setBombsOnMap()
+        player.setBombsOnMap()
         end_time = (start_time - time.time()) * 1000;
         #print("PLAY POS [X, Y] = [",ch1.PositionX, ", ", ch1.PositionY, "]")
         #drawMap()
         #print("-#-#-#______________________________________#-3-3-")
         #if explosion_step == 40:
          #   game_map[2][4] = ' '
+        print(player.Health)
         endfunc()
         pygame.display.update()
         pygame.time.wait(int(end_time))
         #clock.tick(60)
         if controlEndGame(ch1):
+            return True
+        if controlEndLevel():
+            return False
+
+
+
+
+# ---------------------- MAIN LOOP ---------------------------
+while True:
+    menu()
+
+    ch1 = Player(50, 50, 5, 6, 13, 13, 'Images/Hero.png')
+    g1 = Ghost(650, 50, 1, 4, 2, 1, 'Images/whiteGhost.png', EASY)
+    g2 = Ghost(50, 50, 1, 3, 2, 1, 'Images/blueGhost.png', MEDIUM)
+
+    generateMap(game_map)
+    ghosts_list = []
+
+    #ch1.setToDefault()
+    placeStones()
+    ghosts_list.clear()
+    ghosts_list.append(g1)
+    ghosts_list.append(g2)
+    print("INIT LIST: ", ghosts_list)
+    transparent_surface = pygame.Surface((750, 750))
+    transparent_surface.set_alpha(128)
+    transparent_surface.fill((0, 0, 0))
+    screen.blit(background, (0, 0))
+
+    level_iterator = 1
+    ch1.setPosition(ch1.DefaultPosition[0], ch1.DefaultPosition[1])
+    placeStones()
+
+    for g in ghosts_list:
+        g.setPosition(g.DefaultPosition[0], g.DefaultPosition[1])
+
+    screen.blit(transparent_surface, (0, 0))
+    printLabel("LEVEL " + str(level_iterator), (0,255,0), 300, 300, 40)
+    pygame.display.update()
+
+    pygame.time.wait(1000)
+
+    while running:
+        if mainGame(ch1, ghosts_list) == False:
+            level_iterator += 1
+
+            ghosts_list.clear()
+            ghosts_list.append(g1)
+            ghosts_list.append(g2)
+
+            for g in ghosts_list:
+                g.setToDefault()
+            ch1.setToDefault()
+
+            if level_iterator > 5:
+                if ch1.BombsAmount > 1:
+                    ch1.BombsAmount -= 1
+                    ch1.BombRange -=1
+
+            if level_iterator > 10:
+                if ch1.Speed >= 3:
+                    ch1.Speed -= 1
+
+            if level_iterator > 15:
+                if ch1.Health > 1:
+                    ch1.Health -= 1
+
+            game_map.clear()
+            generateMap(game_map)
+            placeStones()
+
+            screen.blit(transparent_surface, (0, 0))
+            printLabel("LEVEL " + str(level_iterator), (0, 255, 0), 300, 300, 40)
+
+            pygame.display.update()
+            pygame.time.wait(1000)
+
+        else:
+            print(ch1.isBombAddedToList())
+            screen.blit(transparent_surface, (0, 0))
+            printLabel("YOU'VE LOST", (0, 255, 0), 150, 150, 60)
+            pygame.display.update()
+            pygame.time.wait(2000)
             break
-
-menu()
-
-transparent_surface = pygame.Surface((750, 750))
-transparent_surface.set_alpha(128)
-transparent_surface.fill((0, 0, 0))
-screen.blit(background, (0, 0))
-
-level_iterator = 1
-ch1.setPosition(ch1.PositionX, ch1.PositionY)
-placeStones()
-for g in ghosts_list:
-    g.setPosition(g.PositionX, g.PositionY)
-
-
-screen.blit(transparent_surface, (0, 0))
-printLabel("LEVEL " + str(level_iterator), (0,255,0), 300, 300, 40)
-pygame.display.update()
-
-pygame.time.wait(1000)
-
-while running:
-    mainGame()
-    break
