@@ -6,6 +6,9 @@ class Ghost(Character):
     EASY = 1
     MEDIUM = 2
     MAX_MOVEMENT = 50
+
+    PIXEL_TOLERANCE = 3
+
     POSSIBLE_MOVEMENTS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
     def __init__(self, PositionX, PositionY, Health, Speed, BombsAmount, BombRange, ImageName, Mode):
         super(Ghost, self).__init__(PositionX, PositionY, Health,
@@ -204,6 +207,17 @@ class Ghost(Character):
         x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
+
+    def getBorderPositionsOnMap(self):
+        pos = []
+        x = ((self.PositionX + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.PositionY + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        pos.append((x, y))
+
+        x = ((self.PositionX + self.CharacterImage.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.PositionY + self.CharacterImage.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        pos.append((x, y))
+        return pos
 
     def handleMovement(self):
         if self.Mode == self.EASY and self.isAlive == True:

@@ -87,8 +87,6 @@ class Player(Character):
         x = ((self.PositionX + self.CharacterImage.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.PositionY + self.CharacterImage.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         pos.append((x, y))
-        for x in pos:
-            print("POSITIONLS: ", pos)
         return pos
 
 

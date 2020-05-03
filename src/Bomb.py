@@ -219,11 +219,14 @@ class Bomb:
         blocks = self.getFireBlocksPosition()
         for b in blocks:
             for g in ghosts:
-                if g.getPositionOnMap() == b:
-                    g.Health -= 1
-                    if g.Health == 0:
-                        g.isAlive = False
-                        ghosts.remove(g)
+                pos = []
+                pos = g.getBorderPositionsOnMap()
+                for p in pos:
+                    if p == b:
+                        g.Health -= 1
+                        if g.Health == 0:
+                            g.isAlive = False
+                            ghosts.remove(g)
 
     def isCollisionWithPlayer(self, coords):
         blocks = self.getFireBlocksPosition()
