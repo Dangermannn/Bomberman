@@ -10,9 +10,12 @@ Y_SPEED_CHANGE = {
     pygame.K_UP: -1,
     pygame.K_DOWN: +1,
 }
+# variable for tolerace setting player's possitions.
+# Used in getting fireblocks collision
+
 
 class Player(Character):
-
+    PIXEL_TOLERANCE = 5
     def handleMovement(self):
 
         pressed = pygame.key.get_pressed()
@@ -60,7 +63,7 @@ class Player(Character):
         hp = [self.Health]
         isAlive = self.IsAlive
         for item in self.BombList:
-            if item.explosion(ghosts, self.getPlayerPositionOnMap(), hp, isAlive) == True:
+            if item.explosion(ghosts, self.getBorderPositionsOnMap(), hp, isAlive) == True:
                 self.BombList.remove(item)
                 self.BombsAmount += 1
                 # for x, y in blocksToRemove:
@@ -74,4 +77,19 @@ class Player(Character):
         x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
+
+    def getBorderPositionsOnMap(self):
+        pos = []
+        x = ((self.PositionX + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.PositionY + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        pos.append((x, y))
+
+        x = ((self.PositionX + self.CharacterImage.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.PositionY + self.CharacterImage.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        pos.append((x, y))
+        for x in pos:
+            print("POSITIONLS: ", pos)
+        return pos
+
+
 

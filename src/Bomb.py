@@ -228,8 +228,9 @@ class Bomb:
     def isCollisionWithPlayer(self, coords):
         blocks = self.getFireBlocksPosition()
         for b in blocks:
-            if b == coords:
-                return True
+            for c in coords:
+                if c == b:
+                    return True
         return False
 
     def setPosition(self, PositionX, PositionY):
