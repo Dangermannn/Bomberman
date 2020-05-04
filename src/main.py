@@ -32,10 +32,16 @@ def endfunc():
 def menu():
     startButton = Button((51, 51, 255), 70, 70, 100, 50, 21, "Start game")
     endButton = Button((255, 0, 0), 300, 70, 100, 50, 21, "Quit")
+    aboutButton = Button((51, 255, 51), 500, 70, 100, 50, 21, "About game")
+    show_about = False
     while True:
         screen.fill(pygame.Color("black"))
-        startButton.draw(screen, (0, 0,0))
+        screen.blit(menuBackground, (0, 0))
+        startButton.draw(screen, (0, 0, 0))
         endButton.draw(screen, (255, 255, 255))
+        aboutButton.draw(screen, (255, 255, 255))
+
+        printAboutGame(show_about)
         pygame.display.update()
         #startButton.blitBut()
         for event in pygame.event.get():
@@ -53,6 +59,8 @@ def menu():
                     running = False
                     pygame.quit()
                     quit()
+                if aboutButton.mouseHover(pos):
+                    show_about = True
 
             if event.type == pygame.MOUSEMOTION:
                 if startButton.mouseHover(pos):
@@ -64,6 +72,11 @@ def menu():
                     endButton.color = (255, 0, 0)
                 else:
                     endButton.color = (150, 0, 0)
+
+                if aboutButton.mouseHover(pos):
+                    aboutButton.color = (51, 170, 51)
+                else:
+                    aboutButton.color = (51, 255, 51)
 
 def controlEndGame(player):
     if player.IsAlive:

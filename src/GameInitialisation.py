@@ -7,7 +7,39 @@ stone = pygame.image.load('Images/stone.png')
 pygame.display.set_caption('Bomberman')
 icon = pygame.image.load('Images/whiteGhost.png')
 heart = pygame.transform.scale((pygame.image.load('Images/heart.png').convert_alpha()), (25, 25))
+menuBackground = pygame.image.load('Images/menuBackground.png')
 pygame.display.set_icon(icon)
+
+about_message = []
+show_about = False
+about_message_str = """\
+Your main goal is to kill all the ghosts walking around the map.
+        The thing is you cannot allow them catch you!
+
+        By going to next levels your statistics will get worse.
+                
+                            LEVEL > 5
+         Bombs amount and bomb range as well are decreasing
+                    
+                             LEVEL > 10
+                     Speed is being decreased
+                             
+                            LEVEL > 15
+          Your health is decreasing (cannot die because of it)
+                             
+KEY UP - move up
+KEY DOWN - move down
+KEY LEFT - move left
+KEY RIGHT - move right
+SPACEBAR - place a bomb
+
+
+                        GOOD LUCK!
+"""
+for line_str in about_message_str.splitlines():
+    about_message.append(line_str)
+
+
 
 game_map = []
 BLOCK_SIZE = 50
@@ -51,7 +83,7 @@ def _circlepoints(r):
     points.sort()
     return points
 
-def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(255, 255, 255), opx=2):
+def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(0, 0, 0), opx=2):
     textsurface = font.render(text, True, gfcolor).convert_alpha()
     w = textsurface.get_width() + 2 * opx
     h = font.get_height()
@@ -89,3 +121,10 @@ def placeStones():
 def drawMap():
 	for x in game_map:
 		print(x)
+
+def printAboutGame(boolean):
+    if boolean == True:
+        add = 0
+        for x in about_message:
+            printLabel(x, 130, 150 + add, 21)
+            add += 20
