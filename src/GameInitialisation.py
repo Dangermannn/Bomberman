@@ -101,30 +101,27 @@ def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(0, 0, 0), opx
     surf.blit(textsurface, (opx, opx))
     return surf
 
-def printLabel(text, x, y, fontSize):
+def print_label(text, x, y, fontSize):
 	font = pygame.font.SysFont('comicsans', fontSize)
 	screen.blit(render(text, font), (x, y))
 	
-def generateMap(game_map):
+def generate_map(game_map):
 	for line_str in game_map_str.splitlines():
 		print(line_str)
 		game_map.append(list(line_str))
 
 stoneBlocks = []
 
-def placeStones():
+def place_stones():
 	for i in range(len(game_map)):
 		for j in range(len(game_map[i])):
 			if game_map[i][j] == 'S':
 				screen.blit(stone, (BLOCK_SIZE * i, BLOCK_SIZE * j))
 
-def drawMap():
-	for x in game_map:
-		print(x)
 
-def printAboutGame(boolean):
+def print_about_game(boolean):
     if boolean == True:
         add = 0
         for x in about_message:
-            printLabel(x, 130, 150 + add, 21)
+            print_label(x, 130, 150 + add, 21)
             add += 20

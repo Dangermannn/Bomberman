@@ -14,63 +14,56 @@ class Bomb:
     END_STRIGHT = 14
     VERTICAL = 1
     HORIZONTAL = 2
-    def __init__(self, PositionX, PositionY, RangeField, SetTime):
-        self.PositionX = PositionX
-        self.PositionY = PositionY
-        self.RangeField = RangeField
-        self.BombImage = pygame.transform.scale((pygame.image.load('Images/bombv1.png').convert_alpha()), (45, 45))
-        self.BombSprite = SpriteTool("Images/BombSprit.png", 7, 3, 48)
-        self.FireBlocks = []
-        self.DestroyedBlocks = []
-        self.SetTime = time.time()
-        self.AnimationStep = 0
-        self.LastAnimationTime = time.time()
-        self.ShowBomb = True
-        self.ExplosionSound = mixer.Sound('Sounds/bombExplosion.wav')
+    def __init__(self, position_x, position_y, range_field, set_time):
+        self.position_x = position_x
+        self.position_y = position_y
+        self.range_field = range_field
+        self.bomb_image = pygame.transform.scale((pygame.image.load('Images/bombv1.png').convert_alpha()), (45, 45))
+        self.bomb_sprite = SpriteTool("Images/BombSprit.png", 7, 3, 48)
+        self.fire_blocks = []
+        self.destroyed_blocks = []
+        self.set_time = time.time()
+        self.animation_step = 0
+        self.last_animation_time = time.time()
+        self.show_bomb = True
+        self.explosion_sound = mixer.Sound('Sounds/bombExplosion.wav')
 
     def __del__(self):
         pass
 
-    def collisionX(self, direction):
-        direction += BLOCK_SIZE
-        indexY = self.PositionY + BLOCK_SIZE
-        if game_map[direction // BLOCK_SIZE - 1][indexY // BLOCK_SIZE - 1] == 'B':
-            game_map[direction // BLOCK_SIZE - 1][indexY // BLOCK_SIZE - 1] == ' '
-
-
-    def isIntersection(self, x, y):
+    def is_intersection(self, x, y):
         left = x
         right = x + 2 * BLOCK_SIZE
         down = y + BLOCK_SIZE
         up = y - BLOCK_SIZE
-        freeSides = 0
-        leftSide = False
-        rightSide = False
-        upperSide = False
-        downSide = False
+        free_sized = 0
+        left_size = False
+        right_side = False
+        upper_size = False
+        down_side = False
         if (game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] != '#'):
-            leftSide = True
-            freeSides += 1
+            left_size = True
+            free_sized += 1
         # print("LEWO", end=" ")
         if (game_map[right // BLOCK_SIZE - 1][y // BLOCK_SIZE] != '#'):
-            rightSide = True
-            freeSides += 1
+            right_side = True
+            free_sized += 1
         # print("PRAWO")
         if (game_map[x // BLOCK_SIZE][up // BLOCK_SIZE] != '#'):
-            upperSide = True
-            freeSides += 1
+            upper_size = True
+            free_sized += 1
         # print("GORA")
         if (game_map[x // BLOCK_SIZE][down // BLOCK_SIZE] != '#'):
-            downSide = True
-            freeSides += 1
+            down_side = True
+            free_sized += 1
 
-        if freeSides >= 3:
+        if free_sized >= 3:
             return True
-        elif (leftSide and  (upperSide or downSide))  or (rightSide and (upperSide or downSide)):
+        elif (left_size and  (upper_size or down_side))  or (right_side and (upper_size or down_side)):
             return True
         return False
 
-    def isVertical(self, x, y):
+    def is_vertical(self, x, y):
         down = y + BLOCK_SIZE
         up = y - BLOCK_SIZE
         if (game_map[x // BLOCK_SIZE][up // BLOCK_SIZE] != '#') or (
@@ -78,7 +71,7 @@ class Bomb:
             return True
         return False
 
-    def isHorizontal(self, x, y):
+    def is_horizontal(self, x, y):
         left = x
         right = x + 2 * BLOCK_SIZE
 
@@ -87,10 +80,10 @@ class Bomb:
             return True
         return False
 
-    def explosionBlocks(self, sHit):
+    def get_explosion_blocks(self, sHit):
         iteration = 0
-        currentX = (self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1
-        i = (self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1
+        currentX = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
+        i = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
 
         # downward
         while True:
@@ -100,21 +93,20 @@ class Bomb:
                 break
             if game_map[currentX][i] == '#':
                 break;
-            if iteration > self.RangeField:
+            if iteration > self.range_field:
                 break
             if game_map[currentX][i] == ' ':
-                if self.isIntersection(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
-                    print(self.isIntersection(currentX * BLOCK_SIZE, i * BLOCK_SIZE))
-                    self.FireBlocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.isVertical(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
-                    self.FireBlocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.isHorizontal(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
-                    self.FireBlocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                if self.is_intersection(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
+                    self.fire_blocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.INTERSECTION, None))
+                elif self.is_vertical(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
+                    self.fire_blocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                elif self.is_horizontal(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
+                    self.fire_blocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i += 1
             iteration += 1
 
         iteration = 0
-        i = (self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1
+        i = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
         # upward
         while True:
             if game_map[currentX][i] == 'S':
@@ -123,21 +115,21 @@ class Bomb:
                 break
             if game_map[currentX][i] == '#':
                 break
-            if iteration > self.RangeField:
+            if iteration > self.range_field:
                 break
             if game_map[currentX][i] == ' ':
-                if self.isIntersection(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
-                    self.FireBlocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.isVertical(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
-                    self.FireBlocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.isHorizontal(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
-                    self.FireBlocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                if self.is_intersection(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
+                    self.fire_blocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.INTERSECTION, None))
+                elif self.is_vertical(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
+                    self.fire_blocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                elif self.is_horizontal(currentX * BLOCK_SIZE, i * BLOCK_SIZE):
+                    self.fire_blocks.append((currentX * BLOCK_SIZE, i * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i -= 1
             iteration += 1
 
         iteration = 0
-        currentY = (self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1
-        i = (self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1
+        currentY = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
+        i = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
         # print(" -------------- LEFT ----------------------")
         while True:
             if game_map[i][currentY] == 'S':
@@ -146,21 +138,21 @@ class Bomb:
                 break
             if game_map[i][currentY] == '#':
                 break
-            if iteration > self.RangeField:
+            if iteration > self.range_field:
                 break
             if game_map[i][currentY] == ' ':
-                if self.isIntersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE) == True:
-                    self.FireBlocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.isVertical(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
-                    self.FireBlocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.isHorizontal(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
-                    self.FireBlocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                if self.is_intersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE) == True:
+                    self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.INTERSECTION, None))
+                elif self.is_vertical(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
+                    self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                elif self.is_horizontal(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
+                    self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i -= 1
             iteration += 1
 
         iteration = 0
-        i = (self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1
-
+        i = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
+        # -------------- DOWNWARD -------------
         while True:
 
             if game_map[i][currentY] == 'S':
@@ -169,79 +161,79 @@ class Bomb:
                 break
             if game_map[i][currentY] == '#':
                 break
-            if iteration > self.RangeField:
+            if iteration > self.range_field:
                 break
             if game_map[i][currentY] == ' ':
-                if self.isIntersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE) == True:
-                    self.FireBlocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.isVertical(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
-                    self.FireBlocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.isHorizontal(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
-                    self.FireBlocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                if self.is_intersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE) == True:
+                    self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.INTERSECTION, None))
+                elif self.is_vertical(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
+                    self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                elif self.is_horizontal(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
+                    self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i += 1
             iteration += 1
 
-    def explosion(self, ghosts, playerCords, health, isAlive):
-        if self.AnimationStep == 0:
-            self.explosionBlocks(self.DestroyedBlocks)
-        explosionTimer = time.time()
-        if explosionTimer - self.SetTime > 2:
-            if self.AnimationStep == 0:
-                self.ExplosionSound.play()
-            self.ShowBomb = False
-            if time.time() - self.LastAnimationTime > 0.05:
-                self.AnimationStep += 1
-                self.LastAnimationTime = time.time()
-            for x in self.FireBlocks:
+    def explosion(self, ghosts, playerCords, health, is_alive):
+        if self.animation_step == 0:
+            self.get_explosion_blocks(self.destroyed_blocks)
+        explosion_timer = time.time()
+        if explosion_timer - self.set_time > 2:
+            if self.animation_step == 0:
+                self.explosion_sound.play()
+            self.show_bomb = False
+            if time.time() - self.last_animation_time > 0.05:
+                self.animation_step += 1
+                self.last_animation_time = time.time()
+            for x in self.fire_blocks:
                 if x[3] == self.VERTICAL:
-                    self.BombSprite.drawVertical(screen, (self.AnimationStep % 7) + x[2], x[0], x[1])
+                    self.bomb_sprite.drawVertical(screen, (self.animation_step % 7) + x[2], x[0], x[1])
                 else:
-                    self.BombSprite.draw(screen, (self.AnimationStep % 7) + x[2], x[0], x[1])
-                if self.AnimationStep % 7 == 6:
-                    if self.isCollisionWithPlayer(playerCords):
+                    self.bomb_sprite.draw(screen, (self.animation_step % 7) + x[2], x[0], x[1])
+                if self.animation_step % 7 == 6:
+                    if self.is_collision_with_player(playerCords):
                         health[0] -= 1
-                    self.isCollisionWithGhost(ghosts)
-                    self.FireBlocks.clear()
-                    for x, y in self.DestroyedBlocks:
+                    self.is_collision_with_ghost(ghosts)
+                    self.fire_blocks.clear()
+                    for x, y in self.destroyed_blocks:
                         game_map[x][y] = ' '
-                    self.DestroyedBlocks.clear()
+                    self.destroyed_blocks.clear()
                     return True
         return False
 
-    def getBombPositionOnMap(self):
-        x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
+    def get_bomb_position_on_map(self):
+        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
 
-    def getFireBlocksPosition(self):
+    def get_fireblocks_position(self):
         ret = []
-        for x in self.FireBlocks:
+        for x in self.fire_blocks:
             ret.append((x[0] // BLOCK_SIZE, x[1] // BLOCK_SIZE))
         return ret
 
-    def isCollisionWithGhost(self, ghosts):
-        blocks = self.getFireBlocksPosition()
+    def is_collision_with_ghost(self, ghosts):
+        blocks = self.get_fireblocks_position()
         for b in blocks:
             for g in ghosts:
                 pos = []
-                pos = g.getBorderPositionsOnMap()
+                pos = g.get_border_positions_on_map()
                 for p in pos:
                     if p == b:
-                        g.Health -= 1
-                        if g.Health == 0:
-                            g.isAlive = False
+                        g.health -= 1
+                        if g.health == 0:
+                            g.is_alive = False
                             ghosts.remove(g)
 
-    def isCollisionWithPlayer(self, coords):
-        blocks = self.getFireBlocksPosition()
+    def is_collision_with_player(self, coords):
+        blocks = self.get_fireblocks_position()
         for b in blocks:
             for c in coords:
                 if c == b:
                     return True
         return False
 
-    def setPosition(self, PositionX, PositionY):
-        screen.blit(self.BombImage, (PositionX, PositionY))
+    def set_position(self, position_x, position_y):
+        screen.blit(self.bomb_image, (position_x, position_y))
 
-    def removeBomb(self):
+    def remove_bomb(self):
         del self

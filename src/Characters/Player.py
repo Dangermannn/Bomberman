@@ -17,89 +17,89 @@ Y_SPEED_CHANGE = {
 
 class Player(Character):
     PIXEL_TOLERANCE = 5
-    def handleMovement(self):
+    def handle_movement(self):
 
         pressed = pygame.key.get_pressed()
         for key, direction in X_SPEED_CHANGE.items():
             if pressed[key]:
-                self.PositionX_change = direction * self.Speed
-                if self.PositionX_change < 0:
-                    self.collisionX(self.PositionX)
+                self.position_x_change = direction * self.speed
+                if self.position_x_change < 0:
+                    self.collision_x(self.position_x)
                 else:
-                    self.collisionX(self.PositionX + self.CharacterImage.get_width())
-                self.PositionY_change = 0
+                    self.collision_x(self.position_x + self.character_image.get_width())
+                self.position_y_change = 0
 
         for key, direction in Y_SPEED_CHANGE.items():
             if pressed[key]:
-                self.PositionY_change = direction * self.Speed
-                if self.PositionY_change < 0:
-                    self.collisionY(self.PositionY)
+                self.position_y_change = direction * self.speed
+                if self.position_y_change < 0:
+                    self.collision_y(self.position_y)
                 else:
-                    self.collisionY(self.PositionY + self.CharacterImage.get_height())
-                self.PositionY_change = 0
-        self.setPosition(self.PositionX, self.PositionY)
+                    self.collision_y(self.position_y + self.character_image.get_height())
+                self.position_y_change = 0
+        self.set_position(self.position_x, self.position_y)
 
-    def isBombAddedToList(self):
+    def is_bomb_added_to_list(self):
         pressed = pygame.key.get_pressed()
-        gridX = (self.PositionX + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
-        gridY = (self.PositionY + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
+        gridX = (self.position_x + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
+        gridY = (self.position_y + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
         if pressed[pygame.K_SPACE]:
-            if self.BombsAmount > 0:
+            if self.bomb_amount > 0:
                 popSound = mixer.Sound("Sounds/Pop-Sound Effect.wav")
                 popSound.play()
-                self.BombList.append(Bomb(gridX, gridY, self.BombRange, time.time()))
-                self.BombsAmount -= 1
+                self.bomb_list.append(Bomb(gridX, gridY, self.bomb_range, time.time()))
+                self.bomb_amount -= 1
                 return True
         return False
                 
 
-    def setBombsOnMap(self):
-        if not self.BombList:
+    def set_bombs_on_map(self):
+        if not self.bomb_list:
             return
-        for item in self.BombList:
-            if item.ShowBomb == True:
-                item.setPosition(item.PositionX, item.PositionY)
+        for item in self.bomb_list:
+            if item.show_bomb == True:
+                item.set_position(item.position_x, item.position_y)
 
 
-    def checkExplosion(self, ghosts, playerCords):
+    def check_explosion(self, ghosts, playerCords):
         blocksToRemove = []
-        hp = [self.Health]
-        isAlive = self.IsAlive
-        for item in self.BombList:
-            if item.explosion(ghosts, self.getBorderPositionsOnMap(), hp, isAlive) == True:
-                self.BombList.remove(item)
-                self.BombsAmount += 1
+        hp = [self.health]
+        isAlive = self.is_alive
+        for item in self.bomb_list:
+            if item.explosion(ghosts, self.get_border_positions_on_map(), hp, isAlive) == True:
+                self.bomb_list.remove(item)
+                self.bomb_amount += 1
                 # for x, y in blocksToRemove:
                 #     game_map[x][y] = ' '
                 #     self.Score += 10
-        self.Health = hp[0]
-        if self.Health == 0:
-            self.IsAlive = False
+        self.health = hp[0]
+        if self.health == 0:
+            self.is_alive = False
 
-    def getPlayerPositionOnMap(self):
-        x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
+    def get_player_position_on_map(self):
+        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
 
-    def getBorderPositionsOnMap(self):
+    def get_border_positions_on_map(self):
         pos = []
-        x = ((self.PositionX + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.PositionX + self.CharacterImage.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + self.CharacterImage.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 
-    def collisionWithGhosts(self, ghosts):
+    def collision_with_ghosts(self, ghosts):
         playerPos = []
         ghostPos = []
-        playerPos = self.getBorderPositionsOnMap()
+        playerPos = self.get_border_positions_on_map()
         for x in ghosts:
-            ghostPos = x.getBorderPositionsOnMap()
+            ghostPos = x.get_border_positions_on_map()
             for p in playerPos:
                 if p in ghostPos:
-                    self.Health -= 1
-                    if self.Health == 0:
-                        self.IsAlive = False
+                    self.health -= 1
+                    if self.health == 0:
+                        self.is_alive = False

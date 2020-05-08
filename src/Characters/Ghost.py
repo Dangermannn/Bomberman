@@ -10,37 +10,37 @@ class Ghost(Character):
     PIXEL_TOLERANCE = 3
 
     POSSIBLE_MOVEMENTS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
-    def __init__(self, PositionX, PositionY, Health, Speed, BombsAmount, BombRange, ImageName, Mode):
-        super(Ghost, self).__init__(PositionX, PositionY, Health,
-                                    Speed, BombsAmount, BombRange, ImageName)
-        self.CharacterImage = pygame.transform.scale((pygame.image.load(ImageName).convert_alpha()), (44, 44))
-        self.distanceTraveled = 0
-        self.currentDirection = None
-        self.possibleMovements = []
-        self.lastPositions = []
-        self.lastPositions.append((((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1),
-                                      ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)))
-        self.isAlive = True
-        self.Mode = Mode
-        self.DefaultPosition = (PositionX, PositionY)
+    def __init__(self, position_x, position_y, health, speed, bomb_amount, bomb_range, image_name, mode):
+        super(Ghost, self).__init__(position_x, position_y, health,
+                                    speed, bomb_amount, bomb_range, image_name)
+        self.character_image = pygame.transform.scale((pygame.image.load(image_name).convert_alpha()), (44, 44))
+        self.distance_traveled = 0
+        self.current_direction = None
+        self.possible_movements = []
+        self.last_positions = []
+        self.last_positions.append((((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1),
+                                      ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)))
+        self.is_alive = True
+        self.mode = mode
+        self.default_position = (position_x, position_y)
 
-    def setToDefault(self):
-        self.PositionX = self.DefaultPosition[0]
-        self.PositionY = self.DefaultPosition[1]
-        self.Health = 1
-        self.isAlive = True
+    def set_to_default(self):
+        self.position_x = self.default_position[0]
+        self.position_y = self.default_position[1]
+        self.health = 1
+        self.is_alive = True
 
-    def collisionX(self, corner):
-        corner += self.PositionX_change + BLOCK_SIZE
-        lower_corner = self.PositionY + self.CharacterImage.get_height() + BLOCK_SIZE
-        upper_corner = self.PositionY + BLOCK_SIZE
+    def collision_x(self, corner):
+        corner += self.position_x_change + BLOCK_SIZE
+        lower_corner = self.position_y + self.character_image.get_height() + BLOCK_SIZE
+        upper_corner = self.position_y + BLOCK_SIZE
         if (game_map[corner//BLOCK_SIZE - 1][upper_corner//BLOCK_SIZE - 1] != '#' and
             game_map[corner//BLOCK_SIZE - 1][lower_corner//BLOCK_SIZE - 1] != '#'):
-            if self.distanceTraveled < self.MAX_MOVEMENT:
-                self.PositionX += self.PositionX_change
+            if self.distance_traveled < self.MAX_MOVEMENT:
+                self.position_x += self.position_x_change
             else:
-                self.PositionX += (self.MAX_MOVEMENT - self.distanceTraveled)
-                self.distanceTraveled = 0
+                self.position_x += (self.MAX_MOVEMENT - self.distance_traveled)
+                self.distance_traveled = 0
                 #print("======================", self.PositionX, " ", self.PositionY, "======================")
 
         #distanceToBoundary = (self.PositionX // BLOCK_SIZE + 1) * BLOCK_SIZE - self.PositionX
@@ -48,17 +48,17 @@ class Ghost(Character):
         #if distanceToBoundary <= self.Speed:
            # self.PositionX += distanceToBoundary
 
-    def collisionY(self, corner):
-        corner += self.PositionY_change + BLOCK_SIZE
-        left_corner = self.PositionX + BLOCK_SIZE
-        right_corner = self.PositionX + self.CharacterImage.get_width() + BLOCK_SIZE
+    def collision_y(self, corner):
+        corner += self.position_y_change + BLOCK_SIZE
+        left_corner = self.position_x + BLOCK_SIZE
+        right_corner = self.position_x + self.character_image.get_width() + BLOCK_SIZE
         if (game_map[left_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] != '#' and
             game_map[right_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] != '#'):
-            if self.distanceTraveled < self.MAX_MOVEMENT:
-                self.PositionY += self.PositionY_change
+            if self.distance_traveled < self.MAX_MOVEMENT:
+                self.position_y += self.position_y_change
             else:
-                self.PositionY += (self.MAX_MOVEMENT - self.distanceTraveled)
-                self.distanceTraveled = 0
+                self.position_y += (self.MAX_MOVEMENT - self.distance_traveled)
+                self.distance_traveled = 0
                 #print("======================", self.PositionX, " ", self.PositionY, "======================")
 
         #distanceToBoundary = (self.PositionX // BLOCK_SIZE + 1) * BLOCK_SIZE - self.PositionX
@@ -69,42 +69,42 @@ class Ghost(Character):
     def moveRandom(self):
 
         direction = random.choice(self.POSSIBLE_MOVEMENTS)
-        if self.distanceTraveled == 0:
-            self.currentDirection = direction
-        pressed = self.currentDirection
+        if self.distance_traveled == 0:
+            self.current_direction = direction
+        pressed = self.current_direction
         #print("PRESSED ", pressed)
 
         for key, direction in X_SPEED_CHANGE.items():
             if pressed == key:
-                self.PositionX_change = direction * self.Speed
-                if self.PositionX_change < 0:
-                    self.collisionX(self.PositionX)
+                self.position_x_change = direction * self.speed
+                if self.position_x_change < 0:
+                    self.collision_x(self.position_x)
                 else:
-                    self.collisionX(self.PositionX + self.CharacterImage.get_width())
-                self.PositionY_change = 0
+                    self.collision_x(self.position_x + self.character_image.get_width())
+                self.position_y_change = 0
 
         for key, direction in Y_SPEED_CHANGE.items():
             if pressed == key:
-                self.PositionY_change = direction * self.Speed
-                if self.PositionY_change < 0:
-                    self.collisionY(self.PositionY)
+                self.position_y_change = direction * self.speed
+                if self.position_y_change < 0:
+                    self.collision_y(self.position_y)
                 else:
-                    self.collisionY(self.PositionY + self.CharacterImage.get_height())
-                self.PositionY_change = 0
-        self.distanceTraveled += self.Speed
-        if self.distanceTraveled >= self.MAX_MOVEMENT:
-            self.distanceTraveled = 0
-        self.setPosition(self.PositionX, self.PositionY)
+                    self.collision_y(self.position_y + self.character_image.get_height())
+                self.position_y_change = 0
+        self.distance_traveled += self.speed
+        if self.distance_traveled >= self.MAX_MOVEMENT:
+            self.distance_traveled = 0
+        self.set_position(self.position_x, self.position_y)
 
     def moveRandomWithoutBack(self):
         """
         Ghost picks random path, but cannot choose last block he was on
         """
-        x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
-        y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
-        if self.distanceTraveled == 0:
-            x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
-            y = ((self.PositionY  + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
+        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
+        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
+        if self.distance_traveled == 0:
+            x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
+            y = ((self.position_y  + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
             # available paths
             left = x
             right = x + 2 * BLOCK_SIZE
@@ -115,7 +115,7 @@ class Ghost(Character):
             upperSide = False
             downSide = False
             print("-------------------------------------------------------------------")
-            print("DISTANCE TRAVELED", self.distanceTraveled)
+            print("DISTANCE TRAVELED", self.distance_traveled)
             print("WARUNKI")
             print("POSITION: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
             #print("LEFT: [", left // BLOCK_SIZE - 1, ", ", y // BLOCK_SIZE, "]", "GAME MAP: ", game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] )
@@ -129,102 +129,102 @@ class Ghost(Character):
                 downSide = True
 
 
-            print("LAST POSITIONS: ", self.lastPositions)
+            print("LAST POSITIONS: ", self.last_positions)
            # print("LEWO: ", leftSide, " PRAWO: ", rightSide, " GORA", upperSide, " DOL", downSide)
             print("UPPER: ", (x // BLOCK_SIZE, y // BLOCK_SIZE - 1))
             print("LEFT: ", (x // BLOCK_SIZE - 1, y // BLOCK_SIZE))
             print("RIGHT: ", (x // BLOCK_SIZE + 1, y // BLOCK_SIZE))
             print("DOWN: ", (x // BLOCK_SIZE, y // BLOCK_SIZE + 1))
-            if (upperSide and (x//BLOCK_SIZE, y // BLOCK_SIZE - 1) not in self.lastPositions) or (y // BLOCK_SIZE - 1 == 12):
-                self.possibleMovements.append(self.POSSIBLE_MOVEMENTS[2])
+            if (upperSide and (x//BLOCK_SIZE, y // BLOCK_SIZE - 1) not in self.last_positions) or (y // BLOCK_SIZE - 1 == 12):
+                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
                # print("APPENDED x, y : [",x // BLOCK_SIZE, ", ", y // BLOCK_SIZE - 1, "]")
                 print("DODAJTE GORA")
-            if (leftSide and (x // BLOCK_SIZE - 1, y // BLOCK_SIZE) not in self.lastPositions) or (x // BLOCK_SIZE - 1 == 12):
-                self.possibleMovements.append(self.POSSIBLE_MOVEMENTS[0])
+            if (leftSide and (x // BLOCK_SIZE - 1, y // BLOCK_SIZE) not in self.last_positions) or (x // BLOCK_SIZE - 1 == 12):
+                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
                # print("APPENDED x, y : [",x // BLOCK_SIZE - 1, ", ", y // BLOCK_SIZE, "]")
                 print("DODAJE LEWO")
-            if (rightSide and (x // BLOCK_SIZE + 1, y // BLOCK_SIZE) not in self.lastPositions) or (x // BLOCK_SIZE + 1 == 2):
-                self.possibleMovements.append(self.POSSIBLE_MOVEMENTS[1])
+            if (rightSide and (x // BLOCK_SIZE + 1, y // BLOCK_SIZE) not in self.last_positions) or (x // BLOCK_SIZE + 1 == 2):
+                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
                 print("DODAJE PRAWO")
-            if (downSide and (x // BLOCK_SIZE, y // BLOCK_SIZE + 1) not in self.lastPositions) or (y // BLOCK_SIZE + 1 == 2):
-                self.possibleMovements.append(self.POSSIBLE_MOVEMENTS[3])
+            if (downSide and (x // BLOCK_SIZE, y // BLOCK_SIZE + 1) not in self.last_positions) or (y // BLOCK_SIZE + 1 == 2):
+                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
                 print("DODAJE DOL")
-        print("DISTANCE: ", self.distanceTraveled)
+        print("DISTANCE: ", self.distance_traveled)
         #self.setPosition(self.PositionX, self.PositionY)
 
-        if not self.possibleMovements:
-            self.possibleMovements.append(None)
+        if not self.possible_movements:
+            self.possible_movements.append(None)
 
-        if len(self.lastPositions) == 6:
-            self.lastPositions.pop(0)
+        if len(self.last_positions) == 6:
+            self.last_positions.pop(0)
 
-        if self.distanceTraveled == 0:
-            direction = random.choice(self.possibleMovements)
+        if self.distance_traveled == 0:
+            direction = random.choice(self.possible_movements)
 
-        if self.distanceTraveled == 0:
-            self.currentDirection = direction
-        pressed = self.currentDirection
+        if self.distance_traveled == 0:
+            self.current_direction = direction
+        pressed = self.current_direction
         # print("PRESSED ", pressed)
 
         for key, direction in X_SPEED_CHANGE.items():
             if pressed == key:
-                self.PositionX_change = direction * self.Speed
-                if self.PositionX_change < 0:
-                    self.collisionX(self.PositionX)
-                    if self.distanceTraveled == 0:
-                        self.lastPositions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
+                self.position_x_change = direction * self.speed
+                if self.position_x_change < 0:
+                    self.collision_x(self.position_x)
+                    if self.distance_traveled == 0:
+                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
                         print("LEFT ADDED: [", x//BLOCK_SIZE, ", ", y//BLOCK_SIZE, "]")
                 else:
-                    self.collisionX(self.PositionX + self.CharacterImage.get_width())
-                    if self.distanceTraveled == 0:
-                        self.lastPositions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
+                    self.collision_x(self.position_x + self.character_image.get_width())
+                    if self.distance_traveled == 0:
+                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
                         print("RIGHT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
-                self.PositionY_change = 0
+                self.position_y_change = 0
 
         for key, direction in Y_SPEED_CHANGE.items():
             if pressed == key:
-                self.PositionY_change = direction * self.Speed
-                if self.PositionY_change < 0:
-                    self.collisionY(self.PositionY)
-                    if self.distanceTraveled == 0:
-                        self.lastPositions.append((x // BLOCK_SIZE, y // BLOCK_SIZE ))
+                self.position_y_change = direction * self.speed
+                if self.position_y_change < 0:
+                    self.collision_y(self.position_y)
+                    if self.distance_traveled == 0:
+                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE ))
                         print("UP ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
                 else:
-                    self.collisionY(self.PositionY + self.CharacterImage.get_height())
-                    if self.distanceTraveled == 0:
-                        self.lastPositions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
+                    self.collision_y(self.position_y + self.character_image.get_height())
+                    if self.distance_traveled == 0:
+                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
                         print("LEFT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
-                self.PositionY_change = 0
-        self.distanceTraveled += self.Speed
+                self.position_y_change = 0
+        self.distance_traveled += self.speed
         #print("DISTANCE AFTER ADDING", self.distanceTraveled)
-        if self.distanceTraveled >= self.MAX_MOVEMENT:
-            self.distanceTraveled = 0
-        self.setPosition(self.PositionX, self.PositionY)
+        if self.distance_traveled >= self.MAX_MOVEMENT:
+            self.distance_traveled = 0
+        self.set_position(self.position_x, self.position_y)
 
-        self.possibleMovements.clear()
+        self.possible_movements.clear()
 
-    def getPositionOnMap(self):
-        x = ((self.PositionX + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + BLOCK_SIZE) // BLOCK_SIZE - 1)
+    def get_position_on_map(self):
+        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
 
-    def getBorderPositionsOnMap(self):
+    def get_border_positions_on_map(self):
         pos = []
-        x = ((self.PositionX + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.PositionX + self.CharacterImage.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.PositionY + self.CharacterImage.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 
-    def handleMovement(self):
-        if self.Mode == self.EASY and self.isAlive == True:
+    def handle_movement(self):
+        if self.mode == self.EASY and self.is_alive == True:
             self.moveRandom()
-        elif self.Mode == self.MEDIUM and self.isAlive == True:
+        elif self.mode == self.MEDIUM and self.is_alive == True:
             self.moveRandomWithoutBack()
 
 
-    def removeGhost(self):
+    def remove_ghost(self):
         del self
