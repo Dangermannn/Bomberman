@@ -94,11 +94,26 @@ def mainGame(player, ghost_list, level):
     transparent_surface = pygame.Surface((750, 50))
     transparent_surface.set_alpha(128)
     explosion_step = 0
+    leaveButton = Button((51, 51, 255), 700, 15, 50, 30, 21, "Leave")
     while True:
         start_time = time.time()
         #screen.fill((0, 0, 0))
         screen.fill(pygame.Color("black"))
         screen.blit(background, (0, 0))
+
+        leaveButton.draw(screen, (255, 255, 255))
+        for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if leaveButton.mouseHover(pos):
+                    return True
+            if event.type == pygame.MOUSEMOTION:
+                if leaveButton.mouseHover(pos):
+                    leaveButton.color = (10, 10, 150)
+                else:
+                    leaveButton.color = (51, 51, 255)
+
         placeStones()
 
         # upper info bar
@@ -107,8 +122,8 @@ def mainGame(player, ghost_list, level):
         for x in range(0, player.Health):
             screen.blit(heart, (x * 40, 20))
         printLabel("Bombs amount: " + str(player.BombsAmount), 200, 15, 30)
-        printLabel("Bombs' range: " + str(player.BombRange), 450, 15, 30)
-        printLabel("Level: " + str(level), 650, 15, 30)
+        printLabel("Bombs' range: " + str(player.BombRange), 400, 15, 30)
+        printLabel("Level: " + str(level), 600, 15, 30)
         player.handleMovement()
 
         for g in ghosts_list:
