@@ -5,6 +5,7 @@ from src.Tools.Button import *
 import pygame
 import time
 from pygame.locals import *
+from pygame import mixer
 import tracemalloc
 from src.Tools.SpriteTool import SpriteTool
 from threading import Thread
@@ -13,13 +14,14 @@ EASY = 1
 MEDIUM = 2
 # player speed - 3 MIN
 
-
+pygame.mixer.init()
+mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
+mixer.music.set_volume(0.2)
 pygame.init()
 
 running = True
 
 clock = pygame.time.Clock()
-
 
 def endfunc():
     for event in pygame.event.get():
@@ -28,12 +30,12 @@ def endfunc():
             pygame.quit()
             quit()
 
-
 def menu():
     startButton = Button((51, 51, 255), 70, 70, 100, 50, 21, "Start game")
     endButton = Button((255, 0, 0), 300, 70, 100, 50, 21, "Quit")
     aboutButton = Button((51, 255, 51), 500, 70, 100, 50, 21, "About game")
     show_about = False
+    mixer.music.play(loops=-1)
     while True:
         screen.fill(pygame.Color("black"))
         screen.blit(menuBackground, (0, 0))
@@ -54,6 +56,8 @@ def menu():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if startButton.mouseHover(pos):
+                    mixer.music.stop()
+                    mixer.music.rewind()
                     return
                 if endButton.mouseHover(pos):
                     running = False
@@ -81,10 +85,14 @@ def menu():
 def controlEndGame(player):
     if player.IsAlive:
         return False
+    loseSound = mixer.Sound("Sounds/SadTrombone-GamingSoundEffect.wav")
+    loseSound.play()
     return True
 
 def controlEndLevel():
     if not ghosts_list:
+        winSound = mixer.Sound("Sounds/Victory-Sound Effect.wav")
+        winSound.play()
         return True
     return False
 
@@ -223,7 +231,7 @@ while True:
             printLabel("LEVEL " + str(level_iterator), 300, 300, 40)
 
             pygame.display.update()
-            pygame.time.wait(1000)
+            pygame.time.wait(3000)
 
         else:
             print(ch1.isBombAddedToList())

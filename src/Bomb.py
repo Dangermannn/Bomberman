@@ -2,6 +2,7 @@ from src.Characters import Character
 from src.Characters import Player
 from src.GameInitialisation import *
 from src.Tools.SpriteTool import SpriteTool
+from pygame import mixer
 import tracemalloc
 import pygame
 import time
@@ -25,6 +26,7 @@ class Bomb:
         self.AnimationStep = 0
         self.LastAnimationTime = time.time()
         self.ShowBomb = True
+        self.ExplosionSound = mixer.Sound('Sounds/bombExplosion.wav')
 
     def __del__(self):
         pass
@@ -184,6 +186,8 @@ class Bomb:
             self.explosionBlocks(self.DestroyedBlocks)
         explosionTimer = time.time()
         if explosionTimer - self.SetTime > 2:
+            if self.AnimationStep == 0:
+                self.ExplosionSound.play()
             self.ShowBomb = False
             if time.time() - self.LastAnimationTime > 0.05:
                 self.AnimationStep += 1

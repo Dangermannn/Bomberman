@@ -1,5 +1,6 @@
 from src.Characters.Character import *
 from src.GameInitialisation import *
+from pygame import mixer
 import time
 X_SPEED_CHANGE = {
     pygame.K_LEFT: -1,
@@ -44,6 +45,8 @@ class Player(Character):
         gridY = (self.PositionY + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
         if pressed[pygame.K_SPACE]:
             if self.BombsAmount > 0:
+                popSound = mixer.Sound("Sounds/Pop-Sound Effect.wav")
+                popSound.play()
                 self.BombList.append(Bomb(gridX, gridY, self.BombRange, time.time()))
                 self.BombsAmount -= 1
                 return True
