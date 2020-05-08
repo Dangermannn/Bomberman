@@ -113,29 +113,17 @@ def mainGame(player, ghost_list, level):
 
         for g in ghosts_list:
             g.handleMovement()
-        #print(isIntersection(ch1.PositionX + 10, ch1.PositionY + 10))
         if last_time != None:
             now = time.time()
-            if now - last_time > 0.5:
-                #print("Last time: ", last_time, " Current time: ", now)
+            if now - last_time > 0.5: # 0.5
                 if player.isBombAddedToList():
-                    # ch1.BombList[0].setPosition(ch1.PositionX, ch1.PositionY)
-                    #ch1.setBombsOnMap()
-                    #ch1.BombList.explosion(now)
                     last_time = now
-                #Thread(target = ch1.checkExplosion(last_time_explosion, d)).start()
-                player.checkExplosion(ghosts_list, player.getPlayerPositionOnMap())
+
                 if now - last_time_explosion > 0.1:
                     last_time_explosion = now
-                    explosion_step += 1
-        #print("HEALTH: ", ch1.Health)
+        player.checkExplosion(ghosts_list, player.getPlayerPositionOnMap())
         player.setBombsOnMap()
         end_time = (start_time - time.time()) * 1000;
-        #print("PLAY POS [X, Y] = [",ch1.PositionX, ", ", ch1.PositionY, "]")
-        #drawMap()
-        #print("-#-#-#______________________________________#-3-3-")
-        #if explosion_step == 40:
-         #   game_map[2][4] = ' '
         endfunc()
         pygame.display.update()
         pygame.time.wait(int(end_time))

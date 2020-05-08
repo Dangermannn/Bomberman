@@ -149,7 +149,7 @@ class Ghost(Character):
             if (downSide and (x // BLOCK_SIZE, y // BLOCK_SIZE + 1) not in self.lastPositions) or (y // BLOCK_SIZE + 1 == 2):
                 self.possibleMovements.append(self.POSSIBLE_MOVEMENTS[3])
                 print("DODAJE DOL")
-
+        print("DISTANCE: ", self.distanceTraveled)
         #self.setPosition(self.PositionX, self.PositionY)
 
         if not self.possibleMovements:

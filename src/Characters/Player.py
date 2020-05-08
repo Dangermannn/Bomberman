@@ -89,5 +89,3 @@ class Player(Character):
         pos.append((x, y))
         return pos
 
-
-
