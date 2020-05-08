@@ -89,3 +89,14 @@ class Player(Character):
         pos.append((x, y))
         return pos
 
+    def collisionWithGhosts(self, ghosts):
+        playerPos = []
+        ghostPos = []
+        playerPos = self.getBorderPositionsOnMap()
+        for x in ghosts:
+            ghostPos = x.getBorderPositionsOnMap()
+            for p in playerPos:
+                if p in ghostPos:
+                    self.Health -= 1
+                    if self.Health == 0:
+                        self.IsAlive = False

@@ -90,7 +90,7 @@ def controlEndLevel():
 
 def mainGame(player, ghost_list, level):
     last_time = time.time()
-    last_time_explosion = time.time()
+    last_time_collision_with_ghost = time.time()
     transparent_surface = pygame.Surface((750, 50))
     transparent_surface.set_alpha(128)
     explosion_step = 0
@@ -116,11 +116,12 @@ def mainGame(player, ghost_list, level):
         if last_time != None:
             now = time.time()
             if now - last_time > 0.5: # 0.5
+                #player.collisionWithGhosts(ghosts_list)
                 if player.isBombAddedToList():
                     last_time = now
-
-                if now - last_time_explosion > 0.1:
-                    last_time_explosion = now
+        if time.time() - last_time_collision_with_ghost > 1.0:
+            player.collisionWithGhosts(ghosts_list)
+            last_time_collision_with_ghost = time.time()
         player.checkExplosion(ghosts_list, player.getPlayerPositionOnMap())
         player.setBombsOnMap()
         end_time = (start_time - time.time()) * 1000;
