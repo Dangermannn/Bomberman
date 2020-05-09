@@ -1,6 +1,8 @@
 # Bomberman
 Well known bomberman game written in python.
 
+![Main menu](menuSS.png)
+
 # About the game
 
 Bomberman (ボンバーマン, Bonbāman, also briefly known as Dyna Blaster in Europe) is a strategic, maze-based video game franchise
