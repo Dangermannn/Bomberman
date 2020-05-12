@@ -1,10 +1,12 @@
 from src.Characters.Character import *
 from src.Characters.Player import *
 from src.GameInitialisation import *
+import collections
 import random
 class Ghost(Character):
     EASY = 1
     MEDIUM = 2
+    HARD = 3
     MAX_MOVEMENT = 50
 
     PIXEL_TOLERANCE = 3
@@ -31,6 +33,12 @@ class Ghost(Character):
         self.is_alive = True
 
     def collision_x(self, corner):
+        """
+        Function to check ghost's collision and move him if there's not collision.
+        Function is set just for bots: one move - 50 PX
+        :param corner:
+        :return: True if there's collision
+        """
         corner += self.position_x_change + BLOCK_SIZE
         lower_corner = self.position_y + self.character_image.get_height() + BLOCK_SIZE
         upper_corner = self.position_y + BLOCK_SIZE
@@ -41,6 +49,8 @@ class Ghost(Character):
             else:
                 self.position_x += (self.MAX_MOVEMENT - self.distance_traveled)
                 self.distance_traveled = 0
+            return False
+        return True
                 #print("======================", self.PositionX, " ", self.PositionY, "======================")
 
         #distanceToBoundary = (self.PositionX // BLOCK_SIZE + 1) * BLOCK_SIZE - self.PositionX
@@ -49,6 +59,12 @@ class Ghost(Character):
            # self.PositionX += distanceToBoundary
 
     def collision_y(self, corner):
+        """
+        Function to check ghost's collision and move him if there's not collision.
+        Function is set just for bots: one move - 50 PX
+        :param corner:
+        :return: True if there's collision
+        """
         corner += self.position_y_change + BLOCK_SIZE
         left_corner = self.position_x + BLOCK_SIZE
         right_corner = self.position_x + self.character_image.get_width() + BLOCK_SIZE
@@ -59,20 +75,22 @@ class Ghost(Character):
             else:
                 self.position_y += (self.MAX_MOVEMENT - self.distance_traveled)
                 self.distance_traveled = 0
+            return False
                 #print("======================", self.PositionX, " ", self.PositionY, "======================")
-
+        return True
         #distanceToBoundary = (self.PositionX // BLOCK_SIZE + 1) * BLOCK_SIZE - self.PositionX
         #print("DISTANCE TO Y: ", distanceToBoundary)
         #if distanceToBoundary <= self.Speed:
           #  self.PositionX += distanceToBoundary
 
-    def moveRandom(self):
-
+    def move_random(self):
+        """
+        Handling ghosts moving random
+        """
         direction = random.choice(self.POSSIBLE_MOVEMENTS)
         if self.distance_traveled == 0:
             self.current_direction = direction
         pressed = self.current_direction
-        #print("PRESSED ", pressed)
 
         for key, direction in X_SPEED_CHANGE.items():
             if pressed == key:
@@ -96,9 +114,78 @@ class Ghost(Character):
             self.distance_traveled = 0
         self.set_position(self.position_x, self.position_y)
 
-    def moveRandomWithoutBack(self):
+    def following_player(self):
         """
-        Ghost picks random path, but cannot choose last block he was on
+        Ghost trying to follow the player
+        """
+        #path_queue = collections.deque()
+        try:
+            if not self.possible_movements:
+                path_queue = find_shortest_path(game_map, self.get_position_on_map())
+                path_queue.reverse()
+                print("PATH_QUEUE: ", path_queue)
+                next_cords = path_queue.pop()
+                print("POP 1: ", next_cords, " POS: ", self.get_position_on_map())
+                next_cords = path_queue.pop()
+                print("POP 2: ", next_cords)
+                ghost_cords = self.get_position_on_map()
+                if next_cords[0] < ghost_cords[0]:
+                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
+                else:
+                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
+
+                if next_cords[1] < ghost_cords[1]:
+                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
+                else:
+                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
+
+
+            pressed = self.possible_movements[0]
+            #if path_queue:
+                #print("Q: ", path_queue)
+            for key, direction in X_SPEED_CHANGE.items():
+                if pressed == key:
+                    #print("X CHANGE")
+                    self.position_x_change = direction * self.speed
+                    if self.position_x_change < 0:
+                        self.collision_x(self.position_x)
+                    else:
+                        self.collision_x(self.position_x + self.character_image.get_width())
+                    self.position_y_change = 0
+
+            for key, direction in Y_SPEED_CHANGE.items():
+                if pressed == key:
+                    #print("Y CHANGE")
+                    self.position_y_change = direction * self.speed
+                    if self.position_y_change < 0:
+                        self.collision_y(self.position_y)
+                    else:
+                        self.collision_y(self.position_y + self.character_image.get_height())
+                    self.position_y_change = 0
+            self.distance_traveled += self.speed
+
+
+            if self.distance_traveled >= self.MAX_MOVEMENT:
+                self.distance_traveled = 0
+                del self.possible_movements[0]
+                #path_queue.clear()
+                #print("POSSIBLE: ", self.possible_movements)
+            #print("POSSIBLE: ", self.possible_movements)
+            #if self.distance_traveled == 0:
+                #self.possible_movements.clear()
+            self.set_position(self.position_x, self.position_y)
+            #print("GHOST: ", self.position_x, " ", self.position_y)
+
+            #print("QUEUE: ", path_queue)
+            #print("POS MOVE:", self.POSSIBLE_MOVEMENTS)
+        except IndexError:
+            print("out of index")
+        except:
+            print("Unknown error in the following bot")
+#Ghost picks random path, but cannot choose last block he was on
+    def move_random_without_back(self):
+        """
+        Handling random moving bot. Little clever than move_random
         """
         x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
         y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
@@ -114,10 +201,10 @@ class Ghost(Character):
             rightSide = False
             upperSide = False
             downSide = False
-            print("-------------------------------------------------------------------")
-            print("DISTANCE TRAVELED", self.distance_traveled)
-            print("WARUNKI")
-            print("POSITION: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+            #print("-------------------------------------------------------------------")
+            #print("DISTANCE TRAVELED", self.distance_traveled)
+            #print("WARUNKI")
+            #print("POSITION: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
             #print("LEFT: [", left // BLOCK_SIZE - 1, ", ", y // BLOCK_SIZE, "]", "GAME MAP: ", game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] )
             if (game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] != '#'):
                 leftSide = True
@@ -129,27 +216,27 @@ class Ghost(Character):
                 downSide = True
 
 
-            print("LAST POSITIONS: ", self.last_positions)
+            #print("LAST POSITIONS: ", self.last_positions)
            # print("LEWO: ", leftSide, " PRAWO: ", rightSide, " GORA", upperSide, " DOL", downSide)
-            print("UPPER: ", (x // BLOCK_SIZE, y // BLOCK_SIZE - 1))
-            print("LEFT: ", (x // BLOCK_SIZE - 1, y // BLOCK_SIZE))
-            print("RIGHT: ", (x // BLOCK_SIZE + 1, y // BLOCK_SIZE))
-            print("DOWN: ", (x // BLOCK_SIZE, y // BLOCK_SIZE + 1))
+            #print("UPPER: ", (x // BLOCK_SIZE, y // BLOCK_SIZE - 1))
+            #print("LEFT: ", (x // BLOCK_SIZE - 1, y // BLOCK_SIZE))
+            #print("RIGHT: ", (x // BLOCK_SIZE + 1, y // BLOCK_SIZE))
+            #print("DOWN: ", (x // BLOCK_SIZE, y // BLOCK_SIZE + 1))
             if (upperSide and (x//BLOCK_SIZE, y // BLOCK_SIZE - 1) not in self.last_positions) or (y // BLOCK_SIZE - 1 == 12):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
                # print("APPENDED x, y : [",x // BLOCK_SIZE, ", ", y // BLOCK_SIZE - 1, "]")
-                print("DODAJTE GORA")
+                #print("DODAJTE GORA")
             if (leftSide and (x // BLOCK_SIZE - 1, y // BLOCK_SIZE) not in self.last_positions) or (x // BLOCK_SIZE - 1 == 12):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
                # print("APPENDED x, y : [",x // BLOCK_SIZE - 1, ", ", y // BLOCK_SIZE, "]")
-                print("DODAJE LEWO")
+                #print("DODAJE LEWO")
             if (rightSide and (x // BLOCK_SIZE + 1, y // BLOCK_SIZE) not in self.last_positions) or (x // BLOCK_SIZE + 1 == 2):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
-                print("DODAJE PRAWO")
+                #print("DODAJE PRAWO")
             if (downSide and (x // BLOCK_SIZE, y // BLOCK_SIZE + 1) not in self.last_positions) or (y // BLOCK_SIZE + 1 == 2):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
-                print("DODAJE DOL")
-        print("DISTANCE: ", self.distance_traveled)
+               # print("DODAJE DOL")
+       # print("DISTANCE: ", self.distance_traveled)
         #self.setPosition(self.PositionX, self.PositionY)
 
         if not self.possible_movements:
@@ -173,12 +260,12 @@ class Ghost(Character):
                     self.collision_x(self.position_x)
                     if self.distance_traveled == 0:
                         self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
-                        print("LEFT ADDED: [", x//BLOCK_SIZE, ", ", y//BLOCK_SIZE, "]")
+                        #print("LEFT ADDED: [", x//BLOCK_SIZE, ", ", y//BLOCK_SIZE, "]")
                 else:
                     self.collision_x(self.position_x + self.character_image.get_width())
                     if self.distance_traveled == 0:
                         self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
-                        print("RIGHT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+                        #print("RIGHT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
                 self.position_y_change = 0
 
         for key, direction in Y_SPEED_CHANGE.items():
@@ -188,12 +275,12 @@ class Ghost(Character):
                     self.collision_y(self.position_y)
                     if self.distance_traveled == 0:
                         self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE ))
-                        print("UP ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+                        #print("UP ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
                 else:
                     self.collision_y(self.position_y + self.character_image.get_height())
                     if self.distance_traveled == 0:
                         self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
-                        print("LEFT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+                        #print("LEFT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
                 self.position_y_change = 0
         self.distance_traveled += self.speed
         #print("DISTANCE AFTER ADDING", self.distanceTraveled)
@@ -204,11 +291,20 @@ class Ghost(Character):
         self.possible_movements.clear()
 
     def get_position_on_map(self):
+        """
+        Gets ghost's position on the map
+        :return: ghost's coordinates on map
+        """
         x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
 
+
     def get_border_positions_on_map(self):
+        """
+        Gets ghost's borders position on the map
+        :return: ghost's coordinates of borders on the amp
+        """
         pos = []
         x = ((self.position_x + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.position_y + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
@@ -220,10 +316,16 @@ class Ghost(Character):
         return pos
 
     def handle_movement(self):
+        """
+        Handling movement of ghost. It's for using one function for every created bot not depending on difficulty
+        """
         if self.mode == self.EASY and self.is_alive == True:
-            self.moveRandom()
+            self.move_random()
         elif self.mode == self.MEDIUM and self.is_alive == True:
-            self.moveRandomWithoutBack()
+            self.move_random_without_back()
+        elif self.mode == self.HARD and self.is_alive == True:
+            self.following_player()
+            print("POSSIBLE MOVEMENETS: ", self.possible_movements)
 
 
     def remove_ghost(self):

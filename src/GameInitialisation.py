@@ -1,6 +1,7 @@
 import pygame
-
-
+import queue
+import collections
+from pygame import mixer
 screen = pygame.display.set_mode((750, 750))
 background = pygame.image.load('Images/Mapv2.png')
 stone = pygame.image.load('Images/stone.png')
@@ -9,6 +10,10 @@ icon = pygame.image.load('Images/whiteGhost.png')
 heart = pygame.transform.scale((pygame.image.load('Images/heart.png').convert_alpha()), (25, 25))
 menuBackground = pygame.image.load('Images/menuBackground.png')
 pygame.display.set_icon(icon)
+
+pygame.mixer.init()
+mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
+mixer.music.set_volume(0.2)
 
 about_message = []
 show_about = False
@@ -27,11 +32,11 @@ Your main goal is to kill all the ghosts walking around the map.
                             LEVEL > 15
           Your health is decreasing (cannot die because of it)
                              
-KEY UP - move up
-KEY DOWN - move down
-KEY LEFT - move left
-KEY RIGHT - move right
-SPACEBAR - place a bomb
+                         KEY UP - move up
+                        KEY DOWN - move down
+                        KEY LEFT - move left
+                        KEY RIGHT - move right
+                        SPACEBAR - place a bomb
 
 
                         GOOD LUCK!
@@ -39,11 +44,13 @@ SPACEBAR - place a bomb
 for line_str in about_message_str.splitlines():
     about_message.append(line_str)
 
-
+EASY = 1
+MEDIUM = 2
+HARD = 3
 
 game_map = []
 BLOCK_SIZE = 50
-
+stoneBlocks = []
 game_map_str =  """\
 ###############
 #   # # # #   #
@@ -107,10 +114,8 @@ def print_label(text, x, y, fontSize):
 	
 def generate_map(game_map):
 	for line_str in game_map_str.splitlines():
-		print(line_str)
 		game_map.append(list(line_str))
 
-stoneBlocks = []
 
 def place_stones():
 	for i in range(len(game_map)):
@@ -123,5 +128,62 @@ def print_about_game(boolean):
     if boolean == True:
         add = 0
         for x in about_message:
-            print_label(x, 130, 150 + add, 21)
+            print_label(x, 150, 230 + add, 21)
             add += 20
+
+def mark_player_on_map(player):
+    if player.last_position != player.get_player_position_on_map():
+        game_map[player.last_position[0]][player.last_position[1]] = ' '
+        player.last_position = player.get_player_position_on_map()
+        game_map[player.last_position[0]][player.last_position[1]] = 'P'
+        #print("GAME: ", game_map[player.last_position[0]][player.last_position[1]])
+
+def mapP(game_map):
+    for x in game_map:
+        print(x)
+        if x == 'P':
+            print("FOUND P")
+# PATH FINDING ALGORITHM
+
+def queue_length(queue):
+    length = 0
+    auxillary = Queue()
+
+    while not queue.isEmpty():
+        length += 1
+        auxillary.enqueue(queue.dequeue())
+
+    while not auxillary.isEmpty():
+        queue.enqueue(auxillary.dequeue())
+
+    return length
+
+wall, clear, goal = '#', ' ', 'P'
+width, height = 14, 14
+def find_shortest_path(grid, start):
+    print("START: ", start)
+    queue = collections.deque([[start]])
+    seen = set([start])
+    while queue:
+        path = queue.popleft()
+        x, y = path[-1]
+        if grid[y][x] == goal:
+            return path
+        for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
+            if 0 <= x2 < width and 0 <= y2 < height and grid[y2][x2] != wall and (x2, y2) not in seen:
+                queue.append(path + [(x2, y2)])
+                #temp.append(path + [(x2, y2)])
+                #print("PATH: ", path, " 2: ", [(x2, y2)])
+                seen.add((x2, y2))
+
+    #for i in range(len(temp) - 1, 0, -1):
+        #queue.append(temp[i])
+    #queue.reverse()
+    #print("Q: ", queue)
+
+    right = queue_length
+
+    #print("IN FUNC: ", queue )
+    return queue
+
+#print(bfs(game_map, (13, 13)))

@@ -20,7 +20,23 @@ class SpriteTool:
         #self.handle = list([0, 0])
 
     def draw(self, surface, cellIndex, x, y):
+        """
+        Drawing cellIndex frame on position (x, y) on surface (horizontal)
+        :param surface: screen
+        :param cellIndex: frame index
+        :param x: position x
+        :param y: position y
+        :return:
+        """
         surface.blit(self.sheet, (x, y), self.cells[cellIndex])
         
     def drawVertical(self, surface, cellIndex, x, y):
+        """
+        Drawing cellIndex frame on position (x, y) on surface (vertical)
+        :param surface: screen
+        :param cellIndex: frame index
+        :param x: position x
+        :param y: position y
+        :return:
+        """
         surface.blit(self.sheetVertical, (x, y), self.cellsRotated[cellIndex])

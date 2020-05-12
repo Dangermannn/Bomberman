@@ -32,6 +32,14 @@ class Bomb:
         pass
 
     def is_intersection(self, x, y):
+        """
+        Checking if  on coordinates (x, y) is an intersection. It is if it has:
+        - 4 ways
+        - 3 ways(left and (upper or down) or right and (upper or down))
+        :param x: coordinate x
+        :param y: coordinate y
+        :return: True if it's intersection
+        """
         left = x
         right = x + 2 * BLOCK_SIZE
         down = y + BLOCK_SIZE
@@ -44,15 +52,12 @@ class Bomb:
         if (game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] != '#'):
             left_size = True
             free_sized += 1
-        # print("LEWO", end=" ")
         if (game_map[right // BLOCK_SIZE - 1][y // BLOCK_SIZE] != '#'):
             right_side = True
             free_sized += 1
-        # print("PRAWO")
         if (game_map[x // BLOCK_SIZE][up // BLOCK_SIZE] != '#'):
             upper_size = True
             free_sized += 1
-        # print("GORA")
         if (game_map[x // BLOCK_SIZE][down // BLOCK_SIZE] != '#'):
             down_side = True
             free_sized += 1
@@ -64,6 +69,12 @@ class Bomb:
         return False
 
     def is_vertical(self, x, y):
+        """
+        Checking if  on coordinates (x, y) is an vertical path.
+        :param x: coordinate x
+        :param y: coordinate y
+        :return: True if it's vertical path
+        """
         down = y + BLOCK_SIZE
         up = y - BLOCK_SIZE
         if (game_map[x // BLOCK_SIZE][up // BLOCK_SIZE] != '#') or (
@@ -72,6 +83,12 @@ class Bomb:
         return False
 
     def is_horizontal(self, x, y):
+        """
+        Checking if  on coordinates (x, y) is an horizontal path.
+        :param x: coordinate x
+        :param y: coordinate y
+        :return: True if it's horizontal path
+        """
         left = x
         right = x + 2 * BLOCK_SIZE
 
@@ -81,6 +98,11 @@ class Bomb:
         return False
 
     def get_explosion_blocks(self, sHit):
+        """
+        Function scanning vertically and horizontally blocks, where it should place fire animation of the bomb
+        CAUTION: IT RETURNS BLOCKS AS A LIST IN THROUGH THE PARAMETER
+        :param sHit: Output list
+        """
         iteration = 0
         currentX = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
         i = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
@@ -174,6 +196,14 @@ class Bomb:
             iteration += 1
 
     def explosion(self, ghosts, playerCords, health, is_alive):
+        """
+        Handling explosion
+        :param ghosts: list of ghosts
+        :param playerCords: player coordinates
+        :param health: player's health
+        :param is_alive: player is_alive stat
+        :return: True if it exploded
+        """
         if self.animation_step == 0:
             self.get_explosion_blocks(self.destroyed_blocks)
         explosion_timer = time.time()
@@ -201,17 +231,27 @@ class Bomb:
         return False
 
     def get_bomb_position_on_map(self):
+        """
+        :return: Position coordinates on map (NOT PIXELS)
+        """
         x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
         y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
         return (x, y)
 
     def get_fireblocks_position(self):
+        """
+        :return: List of fireblocks positions
+        """
         ret = []
         for x in self.fire_blocks:
             ret.append((x[0] // BLOCK_SIZE, x[1] // BLOCK_SIZE))
         return ret
 
     def is_collision_with_ghost(self, ghosts):
+        """
+        Handling collision with ghosts, if it is reduces it's hp. If it's hp is 0 -> removes it from the list
+        :param ghosts: list of ghosts
+        """
         blocks = self.get_fireblocks_position()
         for b in blocks:
             for g in ghosts:
@@ -225,6 +265,11 @@ class Bomb:
                             ghosts.remove(g)
 
     def is_collision_with_player(self, coords):
+        """
+        Handling collision with a player
+        :param coords: player coordinates
+        :return: True if it's collision
+        """
         blocks = self.get_fireblocks_position()
         for b in blocks:
             for c in coords:
