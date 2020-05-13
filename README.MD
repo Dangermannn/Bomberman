@@ -14,7 +14,7 @@ Today, Bomberman has featured in over 70 different games on numerous platforms.
 
 # Main rules of the game
   * Player's goal is to kill all ghost wandering around
-  * Player has 5 HP at the beggining (it changes with futher level), if he gets hit buy a bomb's fire or steps on any ghosts - his HP
+  * Player has 5 HP at the beggining (it changes with further level), if he gets hit buy a bomb's fire or steps on any ghosts - his HP
 is being reduced
   * Game ends when player's HP is 0
   * Player can destroy blocks and kill ghost by placing bombs at any place on the map
@@ -50,3 +50,12 @@ It creates a button at any place with a particular size. Additionaly handles mou
 
 ##### SpriteTool
 Loading sprite to memory, picking right frame.
+
+#### Menu
+Simple menu class
+
+### MainGame
+Class for handling main game
+
+### Tests
+Class for simple unit tests
