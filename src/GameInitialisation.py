@@ -16,6 +16,7 @@ mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
 mixer.music.set_volume(0.2)
 
 about_message = []
+
 show_about = False
 about_message_str = """\
 Your main goal is to kill all the ghosts walking around the map.
@@ -68,6 +69,7 @@ game_map_str =  """\
 #   # # # #   #
 ###############
 """
+
 # functions to add outline to the text
 _circle_cache = {}
 def _circlepoints(r):
@@ -116,7 +118,6 @@ def generate_map(game_map):
 	for line_str in game_map_str.splitlines():
 		game_map.append(list(line_str))
 
-
 def place_stones():
 	for i in range(len(game_map)):
 		for j in range(len(game_map[i])):
@@ -136,7 +137,7 @@ def mark_player_on_map(player):
         game_map[player.last_position[0]][player.last_position[1]] = ' '
         player.last_position = player.get_player_position_on_map()
         game_map[player.last_position[0]][player.last_position[1]] = 'P'
-        #print("GAME: ", game_map[player.last_position[0]][player.last_position[1]])
+
 
 def mapP(game_map):
     for x in game_map:
@@ -145,45 +146,19 @@ def mapP(game_map):
             print("FOUND P")
 # PATH FINDING ALGORITHM
 
-def queue_length(queue):
-    length = 0
-    auxillary = Queue()
+wall, goal = '#', 'P'
+width, height = 15, 15
 
-    while not queue.isEmpty():
-        length += 1
-        auxillary.enqueue(queue.dequeue())
-
-    while not auxillary.isEmpty():
-        queue.enqueue(auxillary.dequeue())
-
-    return length
-
-wall, clear, goal = '#', ' ', 'P'
-width, height = 14, 14
 def find_shortest_path(grid, start):
-    print("START: ", start)
     queue = collections.deque([[start]])
     seen = set([start])
     while queue:
         path = queue.popleft()
         x, y = path[-1]
-        if grid[y][x] == goal:
+        if grid[x][y] == goal:
+            print("PLAYER POS: ", x, " ", y, " = ", grid[y][x])
             return path
         for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
-            if 0 <= x2 < width and 0 <= y2 < height and grid[y2][x2] != wall and (x2, y2) not in seen:
+            if 0 <= x2 < width and 0 <= y2 < height and grid[x2][y2] != wall and (x2, y2) not in seen:
                 queue.append(path + [(x2, y2)])
-                #temp.append(path + [(x2, y2)])
-                #print("PATH: ", path, " 2: ", [(x2, y2)])
                 seen.add((x2, y2))
-
-    #for i in range(len(temp) - 1, 0, -1):
-        #queue.append(temp[i])
-    #queue.reverse()
-    #print("Q: ", queue)
-
-    right = queue_length
-
-    #print("IN FUNC: ", queue )
-    return queue
-
-#print(bfs(game_map, (13, 13)))

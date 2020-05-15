@@ -48,15 +48,9 @@ class Ghost(Character):
                 self.position_x += self.position_x_change
             else:
                 self.position_x += (self.MAX_MOVEMENT - self.distance_traveled)
-                self.distance_traveled = 0
+                #self.distance_traveled = 0
             return False
         return True
-                #print("======================", self.PositionX, " ", self.PositionY, "======================")
-
-        #distanceToBoundary = (self.PositionX // BLOCK_SIZE + 1) * BLOCK_SIZE - self.PositionX
-        #print("DISTANCE TO X: ", distanceToBoundary)
-        #if distanceToBoundary <= self.Speed:
-           # self.PositionX += distanceToBoundary
 
     def collision_y(self, corner):
         """
@@ -74,14 +68,10 @@ class Ghost(Character):
                 self.position_y += self.position_y_change
             else:
                 self.position_y += (self.MAX_MOVEMENT - self.distance_traveled)
-                self.distance_traveled = 0
+                #self.distance_traveled = 0
             return False
-                #print("======================", self.PositionX, " ", self.PositionY, "======================")
         return True
-        #distanceToBoundary = (self.PositionX // BLOCK_SIZE + 1) * BLOCK_SIZE - self.PositionX
-        #print("DISTANCE TO Y: ", distanceToBoundary)
-        #if distanceToBoundary <= self.Speed:
-          #  self.PositionX += distanceToBoundary
+
 
     def move_random(self):
         """
@@ -122,30 +112,26 @@ class Ghost(Character):
         try:
             if not self.possible_movements:
                 path_queue = find_shortest_path(game_map, self.get_position_on_map())
-                path_queue.reverse()
-                print("PATH_QUEUE: ", path_queue)
-                next_cords = path_queue.pop()
-                print("POP 1: ", next_cords, " POS: ", self.get_position_on_map())
-                next_cords = path_queue.pop()
-                print("POP 2: ", next_cords)
-                ghost_cords = self.get_position_on_map()
-                if next_cords[0] < ghost_cords[0]:
-                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
-                else:
-                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
+                #print("Q: ", path_queue)
+                if path_queue != None:
+                    path_queue.reverse()
+                    next_cords = path_queue.pop()
+                    if next_cords == self.get_position_on_map():
+                        next_cords = path_queue.pop()
+                    ghost_cords = self.get_position_on_map()
+                    if next_cords[0] < ghost_cords[0]:
+                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
+                    elif next_cords[0] > ghost_cords[0]:
+                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
 
-                if next_cords[1] < ghost_cords[1]:
-                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
-                else:
-                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
-
+                    if next_cords[1] < ghost_cords[1]:
+                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
+                    elif next_cords[1] > ghost_cords[1]:
+                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
 
             pressed = self.possible_movements[0]
-            #if path_queue:
-                #print("Q: ", path_queue)
             for key, direction in X_SPEED_CHANGE.items():
                 if pressed == key:
-                    #print("X CHANGE")
                     self.position_x_change = direction * self.speed
                     if self.position_x_change < 0:
                         self.collision_x(self.position_x)
@@ -155,7 +141,6 @@ class Ghost(Character):
 
             for key, direction in Y_SPEED_CHANGE.items():
                 if pressed == key:
-                    #print("Y CHANGE")
                     self.position_y_change = direction * self.speed
                     if self.position_y_change < 0:
                         self.collision_y(self.position_y)
@@ -164,24 +149,16 @@ class Ghost(Character):
                     self.position_y_change = 0
             self.distance_traveled += self.speed
 
-
             if self.distance_traveled >= self.MAX_MOVEMENT:
                 self.distance_traveled = 0
                 del self.possible_movements[0]
-                #path_queue.clear()
-                #print("POSSIBLE: ", self.possible_movements)
-            #print("POSSIBLE: ", self.possible_movements)
-            #if self.distance_traveled == 0:
-                #self.possible_movements.clear()
-            self.set_position(self.position_x, self.position_y)
-            #print("GHOST: ", self.position_x, " ", self.position_y)
-
-            #print("QUEUE: ", path_queue)
-            #print("POS MOVE:", self.POSSIBLE_MOVEMENTS)
         except IndexError:
             print("out of index")
         except:
-            print("Unknown error in the following bot")
+            print("Unknow error in following ghost")
+        finally:
+            self.set_position(self.position_x, self.position_y)
+
 #Ghost picks random path, but cannot choose last block he was on
     def move_random_without_back(self):
         """
@@ -325,8 +302,6 @@ class Ghost(Character):
             self.move_random_without_back()
         elif self.mode == self.HARD and self.is_alive == True:
             self.following_player()
-            print("POSSIBLE MOVEMENETS: ", self.possible_movements)
-
 
     def remove_ghost(self):
         del self
