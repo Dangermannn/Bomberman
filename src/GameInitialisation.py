@@ -139,11 +139,6 @@ def mark_player_on_map(player):
         game_map[player.last_position[0]][player.last_position[1]] = 'P'
 
 
-def mapP(game_map):
-    for x in game_map:
-        print(x)
-        if x == 'P':
-            print("FOUND P")
 # PATH FINDING ALGORITHM
 
 wall, goal = '#', 'P'
@@ -156,7 +151,6 @@ def find_shortest_path(grid, start):
         path = queue.popleft()
         x, y = path[-1]
         if grid[x][y] == goal:
-            print("PLAYER POS: ", x, " ", y, " = ", grid[y][x])
             return path
         for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
             if 0 <= x2 < width and 0 <= y2 < height and grid[x2][y2] != wall and (x2, y2) not in seen:
