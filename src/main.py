@@ -46,7 +46,7 @@ while True:
     pygame.display.update()
 
     pygame.time.wait(1000)
-    #main.main_game(ghosts_list, level_iterator)
+
     while running:
         if main.main_game(ch1, ghosts_list, level_iterator) == False:
             level_iterator += 1
@@ -54,7 +54,7 @@ while True:
             ghosts_list.clear()
             ghosts_list.append(g1)
             ghosts_list.append(g2)
-
+            ghosts_list.append(g3)
             for g in ghosts_list:
                 g.set_to_default()
             ch1.set_to_default()
@@ -72,7 +72,7 @@ while True:
                 if ch1.health > 1:
                     ch1.health -= 1
 
-            game_map.clear()
+            #game_map.clear()
             generate_map(game_map)
             place_stones()
 

@@ -47,6 +47,8 @@ class Character:
         if (game_map[corner//BLOCK_SIZE - 1][upper_corner//BLOCK_SIZE - 1] in self.FREE_WAY and
             game_map[corner//BLOCK_SIZE - 1][lower_corner//BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_x += self.position_x_change
+            return False
+        return True
 
     def collision_y(self, corner):
         """
@@ -59,7 +61,8 @@ class Character:
         if (game_map[left_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] in self.FREE_WAY and
             game_map[right_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_y += self.position_y_change
-
+            return False
+        return True
     def set_position(self, position_x, position_y):
         """
         Placing bot on map
