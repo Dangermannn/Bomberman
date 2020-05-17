@@ -105,7 +105,9 @@ class Bomb:
         """
         iteration = 0
         currentX = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
-        i = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
+        start_iter_x = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
+        start_iter_y = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
+        i = start_iter_y
 
         # downward
         while True:
@@ -128,7 +130,7 @@ class Bomb:
             iteration += 1
 
         iteration = 0
-        i = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
+        i = start_iter_y
         # upward
         while True:
             if game_map[currentX][i] == 'S':
@@ -150,8 +152,8 @@ class Bomb:
             iteration += 1
 
         iteration = 0
-        currentY = (self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1
-        i = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
+        currentY = start_iter_y
+        i = start_iter_x
         # print(" -------------- LEFT ----------------------")
         while True:
             if game_map[i][currentY] == 'S':
@@ -173,7 +175,7 @@ class Bomb:
             iteration += 1
 
         iteration = 0
-        i = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
+        i = start_iter_x
         # -------------- DOWNWARD -------------
         while True:
 
@@ -252,17 +254,17 @@ class Bomb:
         Handling collision with ghosts, if it is reduces it's hp. If it's hp is 0 -> removes it from the list
         :param ghosts: list of ghosts
         """
+
         blocks = self.get_fireblocks_position()
-        for b in blocks:
-            for g in ghosts:
-                pos = []
-                pos = g.get_border_positions_on_map()
-                for p in pos:
-                    if p == b:
-                        g.health -= 1
-                        if g.health == 0:
-                            g.is_alive = False
-                            ghosts.remove(g)
+        for g in ghosts:
+            pos = []
+            pos = g.get_border_positions_on_map()
+            for p in pos:
+                if p in blocks:
+                    g.health -=1
+                    if g.health == 0:
+                        g.is_alive = False
+                        ghosts.remove(g)
 
     def is_collision_with_player(self, coords):
         """
@@ -272,9 +274,8 @@ class Bomb:
         """
         blocks = self.get_fireblocks_position()
         for b in blocks:
-            for c in coords:
-                if c == b:
-                    return True
+            if b in coords:
+                return True
         return False
 
     def set_position(self, position_x, position_y):

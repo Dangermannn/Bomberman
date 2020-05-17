@@ -15,6 +15,9 @@ pygame.mixer.init()
 mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
 mixer.music.set_volume(0.2)
 
+transparent_surface = pygame.Surface((750, 50))
+transparent_surface.set_alpha(128)
+
 about_message = []
 
 show_about = False
@@ -124,6 +127,11 @@ def place_stones():
 			if game_map[i][j] == 'S':
 				screen.blit(stone, (BLOCK_SIZE * i, BLOCK_SIZE * j))
 
+
+def show_stats(player, level, x, y):
+    font_s = pygame.font.SysFont("comicsans", 32)
+    score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) + " Level: " + str(level), True, (255, 255, 255))
+    screen.blit(score, (x, y))
 
 def print_about_game(boolean):
     if boolean == True:

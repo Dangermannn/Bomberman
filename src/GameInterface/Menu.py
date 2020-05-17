@@ -19,7 +19,6 @@ class Menu:
             self.__start_button.draw(screen, (0, 0, 0))
             self.__end_button.draw(screen, (255, 255, 255))
             self.__about_button.draw(screen, (255, 255, 255))
-            print(self.__show_about)
             print_about_game(self.__show_about)
             pygame.display.update()
             # self.self.__start_button.blitBut()

@@ -13,12 +13,14 @@ menu = Menu()
 main = MainGame()
 while True:
     menu.menu()
-    ch1 = Player(50, 50, 5, 6, 13, 13, 'Images/Hero.png')
+    ch1 = Player(50, 50, 5, 8, 13, 13, 'Images/Hero.png')
     g1 = Ghost(650, 50, 1, 4, 2, 1, 'Images/whiteGhost.png', EASY)
     g2 = Ghost(50, 650, 1, 3, 2, 1, 'Images/blueGhost.png', MEDIUM)
     g3 = Ghost(650, 650, 1, 1, 1, 1, 'Images/redGhost.png', HARD)
 
+    game_map.clear()
     generate_map(game_map)
+    place_stones()
     ghosts_list = []
 
     game_map[ch1.last_position[0]][ch1.last_position[1]] = 'P'
@@ -72,7 +74,7 @@ while True:
                 if ch1.health > 1:
                     ch1.health -= 1
 
-            #game_map.clear()
+            game_map.clear()
             generate_map(game_map)
             place_stones()
 
