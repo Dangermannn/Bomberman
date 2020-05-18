@@ -19,7 +19,7 @@ class Bomb:
         self.position_y = position_y
         self.range_field = range_field
         self.bomb_image = pygame.transform.scale((pygame.image.load('Images/bombv1.png').convert_alpha()), (45, 45))
-        self.bomb_sprite = SpriteTool("Images/BombSprit.png", 7, 3, 48)
+        self.bomb_sprite = SpriteTool("Images/BombSprit.png", 7, 3)
         self.fire_blocks = []
         self.destroyed_blocks = []
         self.set_time = time.time()
@@ -97,11 +97,11 @@ class Bomb:
             return True
         return False
 
-    def get_explosion_blocks(self, sHit):
+    def get_explosion_blocks(self, blocks_to_destroy):
         """
         Function scanning vertically and horizontally blocks, where it should place fire animation of the bomb
         CAUTION: IT RETURNS BLOCKS AS A LIST IN THROUGH THE PARAMETER
-        :param sHit: Output list
+        :param blocks_to_destroy: Output list
         """
         iteration = 0
         currentX = (self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1
@@ -113,7 +113,7 @@ class Bomb:
         while True:
             if game_map[currentX][i] == 'S':
                 game_map[currentX][i] == ' '
-                sHit.append((currentX, i))
+                blocks_to_destroy.append((currentX, i))
                 break
             if game_map[currentX][i] == '#':
                 break;
@@ -135,7 +135,7 @@ class Bomb:
         while True:
             if game_map[currentX][i] == 'S':
                 game_map[currentX][i] == ' '
-                sHit.append((currentX, i))
+                blocks_to_destroy.append((currentX, i))
                 break
             if game_map[currentX][i] == '#':
                 break
@@ -158,14 +158,14 @@ class Bomb:
         while True:
             if game_map[i][currentY] == 'S':
                 game_map[i][currentY] == ' '
-                sHit.append((i, currentY))
+                blocks_to_destroy.append((i, currentY))
                 break
             if game_map[i][currentY] == '#':
                 break
             if iteration > self.range_field:
                 break
             if game_map[i][currentY] == ' ':
-                if self.is_intersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE) == True:
+                if self.is_intersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
                     self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.INTERSECTION, None))
                 elif self.is_vertical(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
                     self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
@@ -181,14 +181,14 @@ class Bomb:
 
             if game_map[i][currentY] == 'S':
                 game_map[i][currentY] == ' '
-                sHit.append((i, currentY))
+                blocks_to_destroy.append((i, currentY))
                 break
             if game_map[i][currentY] == '#':
                 break
             if iteration > self.range_field:
                 break
             if game_map[i][currentY] == ' ':
-                if self.is_intersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE) == True:
+                if self.is_intersection(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
                     self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.INTERSECTION, None))
                 elif self.is_vertical(i * BLOCK_SIZE, currentY * BLOCK_SIZE):
                     self.fire_blocks.append((i * BLOCK_SIZE, currentY * BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
@@ -218,7 +218,7 @@ class Bomb:
                 self.last_animation_time = time.time()
             for x in self.fire_blocks:
                 if x[3] == self.VERTICAL:
-                    self.bomb_sprite.drawVertical(screen, (self.animation_step % 7) + x[2], x[0], x[1])
+                    self.bomb_sprite.draw_vertical(screen, (self.animation_step % 7) + x[2], x[0], x[1])
                 else:
                     self.bomb_sprite.draw(screen, (self.animation_step % 7) + x[2], x[0], x[1])
                 if self.animation_step % 7 == 6:

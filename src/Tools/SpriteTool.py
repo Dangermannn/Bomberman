@@ -1,42 +1,45 @@
 import pygame
-from pygame.locals import *
 
 class SpriteTool:
-    def __init__(self, fileName, cols, rows, pixels):
-        #self.sheet = pygame.image.load(fileName).convert_alpha()
-        self.sheet = pygame.transform.scale((pygame.image.load(fileName).convert_alpha()), (350, 150))
-        self.sheetVertical = pygame.transform.rotate(pygame.transform.scale(
-            (pygame.image.load(fileName).convert_alpha()), (350, 150)), 90)
+    """
+    Class loading sprite image to memory and drawing on the screen in the particular area
+    """
+
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self, file_name, cols, rows):
+
+        temp = pygame.image.load(file_name).convert_alpha()
+        self.sheet = pygame.transform.scale((temp), (350, 150))
+        self.sheet_vertical = pygame.transform.rotate(pygame.transform.scale(
+            (pygame.image.load(file_name).convert_alpha()), (350, 150)), 90)
         self.cols = cols
         self.rows = rows
-        self.totalCellCount = cols * rows
+        self.total_cell_count = cols * rows
         self.rect = self.sheet.get_rect()
-        w = self.cellWidth = int(self.rect.width / cols)
-        h = self.cellHeight = int(self.rect.height / rows)
-        hw , hh = self.cellCenter = (int(w / 2), int(h / 2))
-
-        self.cells = list([(index % cols * w, int(index / cols) * h + 4, w, h) for index in range(self.totalCellCount)])
-        self.cellsRotated = list([(int(index / cols) * h + 4, index % cols * w, w, h) for index in range(self.totalCellCount)])
-        #self.handle = list([0, 0])
-
-    def draw(self, surface, cellIndex, x, y):
+        width = self.cell_width = int(self.rect.width / cols)
+        height = self.cell_height = int(self.rect.height / rows)
+        self.cells = list([(index%cols*width, int(index/cols)*height+4, width, height) \
+                           for index in range(self.total_cell_count)])
+        self.cells_rotated = list([(int(index / cols)*height+4, index%cols*width, width, height) \
+                                   for index in range(self.total_cell_count)])
+    def draw(self, surface, cell_index, x_coordinate, y_coordinate):
         """
-        Drawing cellIndex frame on position (x, y) on surface (horizontal)
+        Drawing cellIndex frame on position (x_coordinate, y_coordinate) on surface (horizontal)
         :param surface: screen
-        :param cellIndex: frame index
-        :param x: position x
-        :param y: position y
+        :param cell_index: frame index
+        :param x_coordinate: position x_coordinate
+        :param y_coordinate: position y_coordinate
         :return:
         """
-        surface.blit(self.sheet, (x, y), self.cells[cellIndex])
-        
-    def drawVertical(self, surface, cellIndex, x, y):
+        surface.blit(self.sheet, (x_coordinate, y_coordinate), self.cells[cell_index])
+    def draw_vertical(self, surface, cell_index, x_coordinate, y_coordinate):
         """
-        Drawing cellIndex frame on position (x, y) on surface (vertical)
+        Drawing cellIndex frame on position (x_coordinate, y_coordinate) on surface (vertical)
         :param surface: screen
-        :param cellIndex: frame index
-        :param x: position x
-        :param y: position y
+        :param cell_index: frame index
+        :param x_coordinate: position x_coordinate
+        :param y_coordinate: position y_coordinate
         :return:
         """
-        surface.blit(self.sheetVertical, (x, y), self.cellsRotated[cellIndex])
+        temp = (x_coordinate, y_coordinate)
+        surface.blit(self.sheet_vertical, temp, self.cells_rotated[cell_index])

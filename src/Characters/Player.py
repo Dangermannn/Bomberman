@@ -14,11 +14,9 @@ Y_SPEED_CHANGE = {
 # variable for tolerace setting player's possitions.
 # Used in getting fireblocks collision
 
-
 class Player(Character):
     PIXEL_TOLERANCE = 5
     def handle_movement(self):
-
         pressed = pygame.key.get_pressed()
         for key, direction in X_SPEED_CHANGE.items():
             if pressed[key]:
@@ -51,7 +49,6 @@ class Player(Character):
                 self.bomb_amount -= 1
                 return True
         return False
-                
 
     def set_bombs_on_map(self):
         if not self.bomb_list:
@@ -59,7 +56,6 @@ class Player(Character):
         for item in self.bomb_list:
             if item.show_bomb == True:
                 item.set_position(item.position_x, item.position_y)
-
 
     def check_explosion(self, ghosts, playerCords):
         blocksToRemove = []

@@ -24,36 +24,31 @@ class Menu:
             # self.self.__start_button.blitBut()
             for event in pygame.event.get():
                 pos = pygame.mouse.get_pos()
-    
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
                     quit()
-    
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.__start_button.mouseHover(pos):
+                    if self.__start_button.mouse_hover(pos):
                         mixer.music.stop()
                         mixer.music.rewind()
                         return
-                    if self.__end_button.mouseHover(pos):
+                    if self.__end_button.mouse_hover(pos):
                         running = False
                         pygame.quit()
                         quit()
-                    if self.__about_button.mouseHover(pos):
+                    if self.__about_button.mouse_hover(pos):
                         self.__show_about = True
-    
                 if event.type == pygame.MOUSEMOTION:
-                    if self.__start_button.mouseHover(pos):
+                    if self.__start_button.mouse_hover(pos):
                         self.__start_button.color = (10, 10, 150)
                     else:
                         self.__start_button.color = (51, 51, 255)
-    
-                    if self.__end_button.mouseHover(pos):
+                    if self.__end_button.mouse_hover(pos):
                         self.__end_button.color = (255, 0, 0)
                     else:
                         self.__end_button.color = (150, 0, 0)
-    
-                    if self.__about_button.mouseHover(pos):
+                    if self.__about_button.mouse_hover(pos):
                         self.__about_button.color = (51, 170, 51)
                     else:
                         self.__about_button.color = (51, 255, 51)

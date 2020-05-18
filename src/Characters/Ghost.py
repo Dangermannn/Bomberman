@@ -8,9 +8,7 @@ class Ghost(Character):
     MEDIUM = 2
     HARD = 3
     MAX_MOVEMENT = 50
-
     PIXEL_TOLERANCE = 3
-
     POSSIBLE_MOVEMENTS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
     def __init__(self, position_x, position_y, health, speed, bomb_amount, bomb_range, image_name, mode):
         super(Ghost, self).__init__(position_x, position_y, health,
@@ -71,7 +69,6 @@ class Ghost(Character):
                 #self.distance_traveled = 0
             return False
         return True
-
 
     def move_random(self):
         """

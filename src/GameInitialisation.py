@@ -2,6 +2,7 @@ import pygame
 import queue
 import collections
 from pygame import mixer
+
 screen = pygame.display.set_mode((750, 750))
 background = pygame.image.load('Images/Mapv2.png')
 stone = pygame.image.load('Images/stone.png')
@@ -45,8 +46,6 @@ Your main goal is to kill all the ghosts walking around the map.
 
                         GOOD LUCK!
 """
-for line_str in about_message_str.splitlines():
-    about_message.append(line_str)
 
 EASY = 1
 MEDIUM = 2
@@ -73,7 +72,11 @@ game_map_str =  """\
 ###############
 """
 
+for line_str in about_message_str.splitlines():
+    about_message.append(line_str)
+
 # functions to add outline to the text
+
 _circle_cache = {}
 def _circlepoints(r):
     r = int(round(r))
@@ -146,11 +149,9 @@ def mark_player_on_map(player):
         player.last_position = player.get_player_position_on_map()
         game_map[player.last_position[0]][player.last_position[1]] = 'P'
 
-
 # PATH FINDING ALGORITHM
-
-wall, goal = '#', 'P'
-width, height = 15, 15
+WALL, GOAL = '#', 'P'
+WIDTH, HEIGHT = 15, 15
 
 def find_shortest_path(grid, start):
     queue = collections.deque([[start]])
@@ -158,9 +159,9 @@ def find_shortest_path(grid, start):
     while queue:
         path = queue.popleft()
         x, y = path[-1]
-        if grid[x][y] == goal:
+        if grid[x][y] == GOAL:
             return path
-        for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
-            if 0 <= x2 < width and 0 <= y2 < height and grid[x2][y2] != wall and (x2, y2) not in seen:
+        for x2, y2 in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
+            if 0 <= x2 < WIDTH and 0 <= y2 < HEIGHT and grid[x2][y2] != WALL and (x2, y2) not in seen:
                 queue.append(path + [(x2, y2)])
                 seen.add((x2, y2))
