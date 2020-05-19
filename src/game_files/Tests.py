@@ -1,10 +1,9 @@
 import unittest
-import pygame
 
-from src.Characters.Player import *
-from src.Characters.Ghost import Ghost
-from src.GameInitialisation import *
-from src.GameInterface import MainGame
+#Qfrom src.Characters.Player import *
+#from src.Characters.Ghost import Ghost
+#from src.GameInitialisation import *
+#from src.GameInterface import MainGame
 from src.Bomb import Bomb
 
 class Tests(unittest.TestCase):

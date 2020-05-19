@@ -1,13 +1,13 @@
-from src.game_files import Button
+#from src.game_files import Button
 from src.game_files.GameInitialisation import *
+from src.game_files import Button
 from pygame import mixer
-import pygame
 
 class Menu:
     def __init__(self):
-        self.__start_button = Button((51, 51, 255), 70, 70, 100, 50, 21, "Start game")
-        self.__end_button = Button((255, 0, 0), 300, 70, 100, 50, 21, "Quit")
-        self.__about_button = Button((51, 255, 51), 500, 70, 100, 50, 21, "About game")
+        self.__start_button = Button.Button((51, 51, 255), 70, 70, 100, 50, 21, "Start game")
+        self.__end_button = Button.Button((255, 0, 0), 300, 70, 100, 50, 21, "Quit")
+        self.__about_button = Button.Button((51, 255, 51), 500, 70, 100, 50, 21, "About game")
         self.__show_about = False
 
     def menu(self):
