@@ -7,6 +7,7 @@ from src.GameInitialisation import *
 from src.GameInterface import MainGame
 from src.Bomb import Bomb
 
+
 class Tests(unittest.TestCase):
     """
     Tests for collisions
@@ -276,7 +277,6 @@ class Tests(unittest.TestCase):
 
         self.assertEqual(temp, False)
 
-
     # test if ghosts moves
     def test_easy_ghost_movement(self):
         ch1 = Player(50, 50, 5, 6, 13, 13, 'Images/Hero.png')
@@ -313,7 +313,7 @@ class Tests(unittest.TestCase):
             temp = True
 
         self.assertEqual(temp, True)
-    
+
     def test_hard_ghost_movement(self):
         print("INITIALIS")
         g1 = Ghost(650, 650, 1, 4, 2, 1, 'Images/whiteGhost.png', HARD)
@@ -334,8 +334,6 @@ class Tests(unittest.TestCase):
             temp = True
 
         self.assertEqual(temp, True)
-
-
 
     # Test for checking whether player's position on map is marked properly (letter 'P')
 

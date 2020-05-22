@@ -4,6 +4,7 @@ class SpriteTool:
     """
     Class loading sprite image to memory and drawing on the screen in the particular area
     """
+
     # pylint: disable=too-many-instance-attributes
     def __init__(self, file_name, cols, rows):
 
