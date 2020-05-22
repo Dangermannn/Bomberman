@@ -1,4 +1,4 @@
-import pygame
+import pygame, queue, collections
 import queue
 import collections
 from pygame import mixer
@@ -51,6 +51,9 @@ EASY = 1
 MEDIUM = 2
 HARD = 3
 
+WALL, CLEAR, GOAL, STONE = '#', ' ', 'P', 'S',
+WIDTH, HEIGHT = 15, 15
+
 game_map = []
 BLOCK_SIZE = 50
 stoneBlocks = []
@@ -92,9 +95,12 @@ def _circlepoints(r):
         else:
             x -= 1
             e += 2 * (y - x) - 1
-    points += [(y, x) for x, y in points if x > y]
-    points += [(-x, y) for x, y in points if x]
-    points += [(x, -y) for x, y in points if y]
+    points.extend([(y, x) for x, y in points if x > y])
+    points.extend([(-x, y) for x, y in points if x])
+    points.extend([(x, -y) for x, y in points if y])
+    #points += [(y, x) for x, y in points if x > y]
+    #points += [(-x, y) for x, y in points if x]
+    #points += [(x, -y) for x, y in points if y]
     points.sort()
     return points
 
@@ -150,8 +156,6 @@ def mark_player_on_map(player):
         game_map[player.last_position[0]][player.last_position[1]] = 'P'
 
 # PATH FINDING ALGORITHM
-WALL, GOAL = '#', 'P'
-WIDTH, HEIGHT = 15, 15
 
 def find_shortest_path(grid, start):
     queue = collections.deque([[start]])

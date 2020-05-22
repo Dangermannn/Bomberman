@@ -1,12 +1,11 @@
-from src.game_files.GameInitialisation import *
-from src.game_files import Player, Ghost, Button, SpriteTool
 import time
-import tracemalloc
+from src.game_files.GameInitialisation import *
+from src.game_files import Button
 from threading import Thread
 
 class MainGame:
     def __init__(self):
-        self.__leave_button = Button((51, 51, 255), 700, 15, 50, 30, 21, "Leave")
+        self.__leave_button = Button.Button((51, 51, 255), 700, 15, 50, 30, 21, "Leave")
 
     def end_func(self):
         for event in pygame.event.get():
