@@ -1,6 +1,7 @@
-from src.game_files.GameInitialisation import *
-from src.game_files import Button
+import pygame
 from pygame import mixer
+from src.game_files import Button, Constants
+from src.game_files import GameInitialisation as init
 
 class Menu:
     def __init__(self):
@@ -13,12 +14,12 @@ class Menu:
         self.__show_about = False
         mixer.music.play(loops=-1)
         while True:
-            screen.fill(pygame.Color("black"))
-            screen.blit(MENU_BACKGROUND_IMG, (0, 0))
-            self.__start_button.draw(screen, (0, 0, 0))
-            self.__end_button.draw(screen, (255, 255, 255))
-            self.__about_button.draw(screen, (255, 255, 255))
-            print_about_game(self.__show_about)
+            Constants.screen.fill(pygame.Color("black"))
+            Constants.screen.blit(Constants.MENU_BACKGROUND_IMG, (0, 0))
+            self.__start_button.draw(Constants.screen, (0, 0, 0))
+            self.__end_button.draw(Constants.screen, (255, 255, 255))
+            self.__about_button.draw(Constants.screen, (255, 255, 255))
+            init.print_about_game(self.__show_about)
             pygame.display.update()
             # self.self.__start_button.blitBut()
             for event in pygame.event.get():
@@ -37,7 +38,10 @@ class Menu:
                         pygame.quit()
                         quit()
                     if self.__about_button.mouse_hover(pos):
-                        self.__show_about = True
+                        if not self.__show_about:
+                            self.__show_about = True
+                        else:
+                            self.__show_about = False
                 if event.type == pygame.MOUSEMOTION:
                     if self.__start_button.mouse_hover(pos):
                         self.__start_button.color = (10, 10, 150)

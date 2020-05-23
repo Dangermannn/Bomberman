@@ -1,7 +1,9 @@
 import time
-from src.game_files.GameInitialisation import *
-from src.game_files import Button
 from threading import Thread
+from src.game_files.GameInitialisation import *
+from src.game_files import Button, GameInitialisation as Init
+#from src.game_files import GameInitialisation as init
+
 
 class MainGame:
     def __init__(self):
@@ -24,16 +26,16 @@ class MainGame:
 
     def set_labels_in_game(self, player, level):
         # upper info bar
-        screen.blit(TRANSPARENT_SURFACE, (0, 0))
+        Constants.screen.blit(TRANSPARENT_SURFACE, (0, 0))
         print_label("Player's lifes:", 0, 0, 20)
         for x in range(0, player.health):
-            screen.blit(HEART_IMG, (x * 40, 20))
+            Constants.screen.blit(Constants.HEART_IMG, (x * 40, 20))
         print_label("Bombs amount: " + str(player.bomb_amount)
                     + "  Bombs' range: " + str(player.bomb_range)
                     + "  Level: " + str(level), 200, 15, 30)
 
     def leave_button_handler(self):
-        self.__leave_button.draw(screen, (255, 255, 255))
+        self.__leave_button.draw(Constants.screen, (255, 255, 255))
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -53,12 +55,12 @@ class MainGame:
         transparent_surface.set_alpha(128)
         while True:
             start_time = time.time()
-            screen.fill((0, 0, 0))
-            screen.blit(BACKGROUND_IMG, (0, 0))
-            screen.blit(transparent_surface, (0, 0))
+            Constants.screen.fill((0, 0, 0))
+            Constants.screen.blit(Constants.BACKGROUND_IMG, (0, 0))
+            Constants.screen.blit(transparent_surface, (0, 0))
             print_label("Player's lifes:", 0, 0, 20)
             for x in range(0, player.health):
-                screen.blit(HEART_IMG, (x * 40, 20))
+                Constants.screen.blit(Constants.HEART_IMG, (x * 40, 20))
             #show_stats(player, level, 400, 15)
             #print_label("Bombs amount/range: " + str(player.bomb_amount)
             #            + "Level: " + str(level), 200, 15, 30)

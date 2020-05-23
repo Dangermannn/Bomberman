@@ -7,7 +7,6 @@ class SpriteTool:
 
     # pylint: disable=too-many-instance-attributes
     def __init__(self, file_name, cols, rows):
-
         temp = pygame.image.load(file_name).convert_alpha()
         self.sheet = pygame.transform.scale((temp), (350, 150))
         self.sheet_vertical = pygame.transform.rotate(pygame.transform.scale(

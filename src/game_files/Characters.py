@@ -1,13 +1,22 @@
-from src.game_files.GameInitialisation import *
 import random, collections, pygame, os, time
-from src.game_files import Bomb
 from pygame import mixer, Surface
+from src.game_files import Bomb, Constants, GameInitialisation as init
+
+X_SPEED_CHANGE = {
+    pygame.K_LEFT: -1,
+    pygame.K_RIGHT: +1,
+}
+
+Y_SPEED_CHANGE = {
+    pygame.K_UP: -1,
+    pygame.K_DOWN: +1,
+}
 
 class Character:
-    FREE_WAY = [CLEAR, 'P']
+    FREE_WAY = [' ', 'P']
 
     def __init__(self, position_x = 50, position_y = 50, health = 5, speed = 6,
-                 bomb_amount = 13, bomb_range = 13, image_name="Images/Hero.png"):
+                 bomb_amount = 13, bomb_range = 13, image_name=Constants.HERO_IMG_PATH):
         self.position_x = position_x
         self.position_y = position_y
         self.health = health
@@ -39,11 +48,11 @@ class Character:
         Function for checking collision on x-coordinate. If there's no collision, player moves.
         :param corner: player's corner position
         """
-        corner += self.position_x_change + BLOCK_SIZE
-        lower_corner = self.position_y + self.character_image.get_height() + BLOCK_SIZE
-        upper_corner = self.position_y + BLOCK_SIZE
-        if (game_map[corner//BLOCK_SIZE - 1][upper_corner//BLOCK_SIZE - 1] in self.FREE_WAY and
-            game_map[corner//BLOCK_SIZE - 1][lower_corner//BLOCK_SIZE - 1] in self.FREE_WAY):
+        corner += self.position_x_change + Constants.BLOCK_SIZE
+        lower_corner = self.position_y + self.character_image.get_height() + Constants.BLOCK_SIZE
+        upper_corner = self.position_y + Constants.BLOCK_SIZE
+        if (init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and
+            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_x += self.position_x_change
             return False
         return True
@@ -53,11 +62,11 @@ class Character:
         Function for checking collision on x-coordinate. If there's no collision, player moves.
         :param corner: player's corner position
         """
-        corner += self.position_y_change + BLOCK_SIZE
-        left_corner = self.position_x + BLOCK_SIZE
-        right_corner = self.position_x + self.character_image.get_width() + BLOCK_SIZE
-        if (game_map[left_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] in self.FREE_WAY and
-            game_map[right_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] in self.FREE_WAY):
+        corner += self.position_y_change + Constants.BLOCK_SIZE
+        left_corner = self.position_x + Constants.BLOCK_SIZE
+        right_corner = self.position_x + self.character_image.get_width() + Constants.BLOCK_SIZE
+        if (init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and
+            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_y += self.position_y_change
             return False
         return True
@@ -67,24 +76,11 @@ class Character:
         :param position_x: character's position
         :param position_y: character's position
         """
-        screen.blit(self.character_image, (position_x, position_y))
+        Constants.screen.blit(self.character_image, (position_x, position_y))
     def reduce_health_by_one(self):
         self.health -= 1
     def set_not_alive(self):
         self.is_alive = False
-
-
-X_SPEED_CHANGE = {
-    pygame.K_LEFT: -1,
-    pygame.K_RIGHT: +1,
-}
-
-Y_SPEED_CHANGE = {
-    pygame.K_UP: -1,
-    pygame.K_DOWN: +1,
-}
-# variable for tolerace setting player's possitions.
-# Used in getting fireblocks collision
 
 class Player(Character):
     PIXEL_TOLERANCE = 5
@@ -111,8 +107,8 @@ class Player(Character):
 
     def is_bomb_added_to_list(self):
         pressed = pygame.key.get_pressed()
-        gridX = (self.position_x + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
-        gridY = (self.position_y + 20)//BLOCK_SIZE * BLOCK_SIZE + 3
+        gridX = (self.position_x + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
+        gridY = (self.position_y + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
         if pressed[pygame.K_SPACE]:
             if self.bomb_amount > 0:
                 popSound = mixer.Sound("Sounds/Pop-Sound Effect.wav")
@@ -138,25 +134,25 @@ class Player(Character):
                 self.bomb_list.remove(item)
                 self.bomb_amount += 1
                 # for x, y in blocksToRemove:
-                #     game_map[x][y] = CLEAR
+                #     init.game_map[x][y] = CLEAR
                 #     self.Score += 10
         self.health = hp[0]
         if self.health == 0:
             self.is_alive = False
 
     def get_player_position_on_map(self):
-        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         return (x, y)
 
     def get_border_positions_on_map(self):
         pos = []
-        x = ((self.position_x + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.position_y + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 
@@ -187,8 +183,8 @@ class Ghost(Character):
         self.current_direction = None
         self.possible_movements = []
         self.last_positions = []
-        self.last_positions.append((((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1),
-                                      ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)))
+        self.last_positions.append((((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1),
+                                      ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)))
         self.is_alive = True
         self.mode = mode
         self.default_position = (position_x, position_y)
@@ -207,11 +203,11 @@ class Ghost(Character):
         :param corner:
         :return: True if there's collision
         """
-        corner += self.position_x_change + BLOCK_SIZE
-        lower_corner = self.position_y + self.character_image.get_height() + BLOCK_SIZE
-        upper_corner = self.position_y + BLOCK_SIZE
-        if (game_map[corner//BLOCK_SIZE - 1][upper_corner//BLOCK_SIZE - 1] != WALL and
-            game_map[corner//BLOCK_SIZE - 1][lower_corner//BLOCK_SIZE - 1] != WALL):
+        corner += self.position_x_change + Constants.BLOCK_SIZE
+        lower_corner = self.position_y + self.character_image.get_height() + Constants.BLOCK_SIZE
+        upper_corner = self.position_y + Constants.BLOCK_SIZE
+        if (init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and
+            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL):
             if self.distance_traveled < self.MAX_MOVEMENT:
                 self.position_x += self.position_x_change
             else:
@@ -227,11 +223,11 @@ class Ghost(Character):
         :param corner:
         :return: True if there's collision
         """
-        corner += self.position_y_change + BLOCK_SIZE
-        left_corner = self.position_x + BLOCK_SIZE
-        right_corner = self.position_x + self.character_image.get_width() + BLOCK_SIZE
-        if (game_map[left_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] != WALL and
-            game_map[right_corner//BLOCK_SIZE - 1][corner//BLOCK_SIZE - 1] != WALL):
+        corner += self.position_y_change + Constants.BLOCK_SIZE
+        left_corner = self.position_x + Constants.BLOCK_SIZE
+        right_corner = self.position_x + self.character_image.get_width() + Constants.BLOCK_SIZE
+        if (init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and
+            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] != Constants.WALL):
             if self.distance_traveled < self.MAX_MOVEMENT:
                 self.position_y += self.position_y_change
             else:
@@ -278,7 +274,7 @@ class Ghost(Character):
         #path_queue = collections.deque()
         try:
             if not self.possible_movements:
-                path_queue = find_shortest_path(game_map, self.get_position_on_map())
+                path_queue = init.find_shortest_path(init.game_map, self.get_position_on_map())
                 #print("Q: ", path_queue)
                 if path_queue != None:
                     path_queue.reverse()
@@ -331,16 +327,16 @@ class Ghost(Character):
         """
         Handling random moving bot. Little clever than move_random
         """
-        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
-        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
+        x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
+        y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
         if self.distance_traveled == 0:
-            x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
-            y = ((self.position_y  + BLOCK_SIZE) // BLOCK_SIZE - 1) * BLOCK_SIZE
+            x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
+            y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
             # available paths
             left = x
-            right = x + 2 * BLOCK_SIZE
-            down = y + BLOCK_SIZE
-            up = y - BLOCK_SIZE
+            right = x + 2 * Constants.BLOCK_SIZE
+            down = y + Constants.BLOCK_SIZE
+            up = y - Constants.BLOCK_SIZE
             leftSide = False
             rightSide = False
             upperSide = False
@@ -348,36 +344,36 @@ class Ghost(Character):
             #print("-------------------------------------------------------------------")
             #print("DISTANCE TRAVELED", self.distance_traveled)
             #print("WARUNKI")
-            #print("POSITION: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
-            #print("LEFT: [", left // BLOCK_SIZE - 1, ", ", y // BLOCK_SIZE, "]", "GAME MAP: ", game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] )
-            if (game_map[left // BLOCK_SIZE - 1][y // BLOCK_SIZE] != WALL):
+            #print("POSITION: [", x // constants.BLOCK_SIZE, ", ", y // constants.BLOCK_SIZE, "]")
+            #print("LEFT: [", left // constants.BLOCK_SIZE - 1, ", ", y // constants.BLOCK_SIZE, "]", "GAME MAP: ", init.game_map[left // constants.BLOCK_SIZE - 1][y // constants.BLOCK_SIZE] )
+            if (init.game_map[left // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL):
                 leftSide = True
-            if (game_map[right // BLOCK_SIZE - 1][y // BLOCK_SIZE] != WALL):
+            if (init.game_map[right // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL):
                 rightSide = True
-            if (game_map[x // BLOCK_SIZE][up // BLOCK_SIZE] != WALL):
+            if (init.game_map[x // Constants.BLOCK_SIZE][up // Constants.BLOCK_SIZE] != Constants.WALL):
                 upperSide = True
-            if (game_map[x // BLOCK_SIZE][down // BLOCK_SIZE] != WALL):
+            if (init.game_map[x // Constants.BLOCK_SIZE][down // Constants.BLOCK_SIZE] != Constants.WALL):
                 downSide = True
 
 
             #print("LAST POSITIONS: ", self.last_positions)
            # print("LEWO: ", leftSide, " PRAWO: ", rightSide, " GORA", upperSide, " DOL", downSide)
-            #print("UPPER: ", (x // BLOCK_SIZE, y // BLOCK_SIZE - 1))
-            #print("LEFT: ", (x // BLOCK_SIZE - 1, y // BLOCK_SIZE))
-            #print("RIGHT: ", (x // BLOCK_SIZE + 1, y // BLOCK_SIZE))
-            #print("DOWN: ", (x // BLOCK_SIZE, y // BLOCK_SIZE + 1))
-            if (upperSide and (x//BLOCK_SIZE, y // BLOCK_SIZE - 1) not in self.last_positions) or (y // BLOCK_SIZE - 1 == 12):
+            #print("UPPER: ", (x // constants.BLOCK_SIZE, y // constants.BLOCK_SIZE - 1))
+            #print("LEFT: ", (x // constants.BLOCK_SIZE - 1, y // constants.BLOCK_SIZE))
+            #print("RIGHT: ", (x // constants.BLOCK_SIZE + 1, y // constants.BLOCK_SIZE))
+            #print("DOWN: ", (x // constants.BLOCK_SIZE, y // constants.BLOCK_SIZE + 1))
+            if (upperSide and (x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE - 1) not in self.last_positions) or (y // Constants.BLOCK_SIZE - 1 == 12):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
-               # print("APPENDED x, y : [",x // BLOCK_SIZE, ", ", y // BLOCK_SIZE - 1, "]")
+               # print("APPENDED x, y : [",x // constants.BLOCK_SIZE, ", ", y // constants.BLOCK_SIZE - 1, "]")
                 #print("DODAJTE GORA")
-            if (leftSide and (x // BLOCK_SIZE - 1, y // BLOCK_SIZE) not in self.last_positions) or (x // BLOCK_SIZE - 1 == 12):
+            if (leftSide and (x // Constants.BLOCK_SIZE - 1, y // Constants.BLOCK_SIZE) not in self.last_positions) or (x // Constants.BLOCK_SIZE - 1 == 12):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
-               # print("APPENDED x, y : [",x // BLOCK_SIZE - 1, ", ", y // BLOCK_SIZE, "]")
+               # print("APPENDED x, y : [",x // constants.BLOCK_SIZE - 1, ", ", y // constants.BLOCK_SIZE, "]")
                 #print("DODAJE LEWO")
-            if (rightSide and (x // BLOCK_SIZE + 1, y // BLOCK_SIZE) not in self.last_positions) or (x // BLOCK_SIZE + 1 == 2):
+            if (rightSide and (x // Constants.BLOCK_SIZE + 1, y // Constants.BLOCK_SIZE) not in self.last_positions) or (x // Constants.BLOCK_SIZE + 1 == 2):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
                 #print("DODAJE PRAWO")
-            if (downSide and (x // BLOCK_SIZE, y // BLOCK_SIZE + 1) not in self.last_positions) or (y // BLOCK_SIZE + 1 == 2):
+            if (downSide and (x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE + 1) not in self.last_positions) or (y // Constants.BLOCK_SIZE + 1 == 2):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
                # print("DODAJE DOL")
        # print("DISTANCE: ", self.distance_traveled)
@@ -403,13 +399,13 @@ class Ghost(Character):
                 if self.position_x_change < 0:
                     self.collision_x(self.position_x)
                     if self.distance_traveled == 0:
-                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
-                        #print("LEFT ADDED: [", x//BLOCK_SIZE, ", ", y//BLOCK_SIZE, "]")
+                        self.last_positions.append((x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE))
+                        #print("LEFT ADDED: [", x//constants.BLOCK_SIZE, ", ", y//constants.BLOCK_SIZE, "]")
                 else:
                     self.collision_x(self.position_x + self.character_image.get_width())
                     if self.distance_traveled == 0:
-                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
-                        #print("RIGHT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+                        self.last_positions.append((x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE))
+                        #print("RIGHT ADDED: [", x // constants.BLOCK_SIZE, ", ", y // constants.BLOCK_SIZE, "]")
                 self.position_y_change = 0
 
         for key, direction in Y_SPEED_CHANGE.items():
@@ -418,13 +414,13 @@ class Ghost(Character):
                 if self.position_y_change < 0:
                     self.collision_y(self.position_y)
                     if self.distance_traveled == 0:
-                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE ))
-                        #print("UP ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+                        self.last_positions.append((x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE))
+                        #print("UP ADDED: [", x // constants.BLOCK_SIZE, ", ", y // constants.BLOCK_SIZE, "]")
                 else:
                     self.collision_y(self.position_y + self.character_image.get_height())
                     if self.distance_traveled == 0:
-                        self.last_positions.append((x // BLOCK_SIZE, y // BLOCK_SIZE))
-                        #print("LEFT ADDED: [", x // BLOCK_SIZE, ", ", y // BLOCK_SIZE, "]")
+                        self.last_positions.append((x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE))
+                        #print("LEFT ADDED: [", x // constants.BLOCK_SIZE, ", ", y // constants.BLOCK_SIZE, "]")
                 self.position_y_change = 0
         self.distance_traveled += self.speed
         #print("DISTANCE AFTER ADDING", self.distanceTraveled)
@@ -439,8 +435,8 @@ class Ghost(Character):
         Gets ghost's position on the map
         :return: ghost's coordinates on map
         """
-        x = ((self.position_x + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.position_y + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         return (x, y)
 
 
@@ -450,12 +446,12 @@ class Ghost(Character):
         :return: ghost's coordinates of borders on the amp
         """
         pos = []
-        x = ((self.position_x + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.position_y + self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
-        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + BLOCK_SIZE) // BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 

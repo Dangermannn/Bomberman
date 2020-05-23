@@ -1,87 +1,22 @@
 import pygame, queue, collections
-import queue
-import collections
 from pygame import mixer
+from src.game_files import Constants
 
-screen = pygame.display.set_mode((750, 750))
-BACKGROUND_IMG = pygame.image.load('Images/Mapv2.png')
-STONE_IMG = pygame.image.load('Images/stone.png')
-HEART_IMG = pygame.transform.scale((pygame.image.load('Images/heart.png').convert_alpha()), (25, 25))
-MENU_BACKGROUND_IMG = pygame.image.load('Images/menuBackground.png')
-BOMB_IMAGE = pygame.image.load('Images/bombv1.png')
-ICON_IMG = pygame.image.load('Images/whiteGhost.png')
 
-pygame.display.set_icon(ICON_IMG)
+pygame.display.set_icon(Constants.ICON_IMG)
 pygame.display.set_caption('Bomberman')
 pygame.mixer.init()
 mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
 mixer.music.set_volume(0.2)
 
-TRANSPARENT_SURFACE = pygame.Surface((750, 50))
-TRANSPARENT_SURFACE.set_alpha(128)
-
-EASY = 1
-MEDIUM = 2
-HARD = 3
-
-BLOCK_SIZE = 50
-
-WALL, CLEAR, GOAL, STONE = '#', ' ', 'P', 'S',
-WIDTH, HEIGHT = 15, 15
-
-ABOUT_MESSAGE_STR = """\
-Your main goal is to kill all the ghosts walking around the map.
-        The thing is you cannot allow them catch you!
-
-        By going to next levels your statistics will get worse.
-                
-                            LEVEL > 5
-         Bombs amount and bomb range as well are decreasing
-                    
-                             LEVEL > 10
-                     Speed is being decreased
-                             
-                            LEVEL > 15
-          Your health is decreasing (cannot die because of it)
-                             
-                         KEY UP - move up
-                        KEY DOWN - move down
-                        KEY LEFT - move left
-                        KEY RIGHT - move right
-                        SPACEBAR - place a bomb
-
-
-                        GOOD LUCK!
-"""
-
-GAME_MAP_STR =  """\
-###############
-#   # # # #   #
-# #   SSS   # #
-#  S#S# #S#S S#
-## ##S# #S##S##
-#   S  S S  S #
-#S#S#######S#S#
-#   S  S S    #
-# ### # # ### #
-# S S S S S S #
-## ## # # ## ##
-#   #S# #S# S #
-# #S  SSS S # #
-#   # # # #   #
-###############
-"""
-
 about_message = []
-
-show_about = False
 
 game_map = []
 
 stoneBlocks = []
 
 
-for line_str in ABOUT_MESSAGE_STR.splitlines():
+for line_str in Constants.ABOUT_MESSAGE_STR.splitlines():
     about_message.append(line_str)
 
 # functions to add outline to the text
@@ -130,22 +65,22 @@ def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(0, 0, 0), opx
 
 def print_label(text, x, y, fontSize):
 	font = pygame.font.SysFont('comicsans', fontSize)
-	screen.blit(render(text, font), (x, y))
+	Constants.screen.blit(render(text, font), (x, y))
 	
 def generate_map(game_map):
-	for line_str in GAME_MAP_STR.splitlines():
+	for line_str in Constants.GAME_MAP_STR.splitlines():
 		game_map.append(list(line_str))
 
 def place_stones():
 	for i in range(len(game_map)):
 		for j in range(len(game_map[i])):
 			if game_map[i][j] == 'S':
-				screen.blit(STONE_IMG, (BLOCK_SIZE * i, BLOCK_SIZE * j))
+				Constants.screen.blit(Constants.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
 
 def show_stats(player, level, x, y):
     font_s = pygame.font.SysFont("comicsans", 32)
     score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) + " Level: " + str(level), True, (255, 255, 255))
-    screen.blit(score, (x, y))
+    Constants.screen.blit(score, (x, y))
 
 def print_about_game(boolean):
     if boolean == True:
@@ -168,9 +103,9 @@ def find_shortest_path(grid, start):
     while queue:
         path = queue.popleft()
         x, y = path[-1]
-        if grid[x][y] == GOAL:
+        if grid[x][y] == Constants.GOAL:
             return path
         for x2, y2 in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
-            if 0 <= x2 < WIDTH and 0 <= y2 < HEIGHT and grid[x2][y2] != WALL and (x2, y2) not in seen:
+            if 0 <= x2 < Constants.WIDTH and 0 <= y2 < Constants.HEIGHT and grid[x2][y2] != Constants.WALL and (x2, y2) not in seen:
                 queue.append(path + [(x2, y2)])
                 seen.add((x2, y2))
