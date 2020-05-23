@@ -24,10 +24,10 @@ class MainGame:
 
     def set_labels_in_game(self, player, level):
         # upper info bar
-        screen.blit(transparent_surface, (0, 0))
+        screen.blit(TRANSPARENT_SURFACE, (0, 0))
         print_label("Player's lifes:", 0, 0, 20)
         for x in range(0, player.health):
-            screen.blit(heart, (x * 40, 20))
+            screen.blit(HEART_IMG, (x * 40, 20))
         print_label("Bombs amount: " + str(player.bomb_amount)
                     + "  Bombs' range: " + str(player.bomb_range)
                     + "  Level: " + str(level), 200, 15, 30)
@@ -54,11 +54,11 @@ class MainGame:
         while True:
             start_time = time.time()
             screen.fill((0, 0, 0))
-            screen.blit(background, (0, 0))
+            screen.blit(BACKGROUND_IMG, (0, 0))
             screen.blit(transparent_surface, (0, 0))
             print_label("Player's lifes:", 0, 0, 20)
             for x in range(0, player.health):
-                screen.blit(heart, (x * 40, 20))
+                screen.blit(HEART_IMG, (x * 40, 20))
             #show_stats(player, level, 400, 15)
             #print_label("Bombs amount/range: " + str(player.bomb_amount)
             #            + "Level: " + str(level), 200, 15, 30)

@@ -14,7 +14,7 @@ class Menu:
         mixer.music.play(loops=-1)
         while True:
             screen.fill(pygame.Color("black"))
-            screen.blit(menuBackground, (0, 0))
+            screen.blit(MENU_BACKGROUND_IMG, (0, 0))
             self.__start_button.draw(screen, (0, 0, 0))
             self.__end_button.draw(screen, (255, 255, 255))
             self.__about_button.draw(screen, (255, 255, 255))

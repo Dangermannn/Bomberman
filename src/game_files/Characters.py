@@ -7,7 +7,7 @@ class Character:
     FREE_WAY = [CLEAR, 'P']
 
     def __init__(self, position_x = 50, position_y = 50, health = 5, speed = 6,
-                 bomb_amount = 13, bomb_range = 13, image_name = "Images/Hero.png"):
+                 bomb_amount = 13, bomb_range = 13, image_name="Images/Hero.png"):
         self.position_x = position_x
         self.position_y = position_y
         self.health = health
@@ -198,6 +198,7 @@ class Ghost(Character):
         self.position_y = self.default_position[1]
         self.health = 1
         self.is_alive = True
+        self.distance_traveled = 0
 
     def collision_x(self, corner):
         """

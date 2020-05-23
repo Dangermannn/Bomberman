@@ -7,6 +7,7 @@ pygame.init()
 running = True
 
 # ---------------------- MAIN LOOP ---------------------------
+
 menu = Menu.Menu()
 main = MainGame.MainGame()
 while True:
@@ -29,7 +30,7 @@ while True:
     transparent_surface = pygame.Surface((750, 750))
     transparent_surface.set_alpha(128)
     transparent_surface.fill((0, 0, 0))
-    screen.blit(background, (0, 0))
+    screen.blit(BACKGROUND_IMG, (0, 0))
     level_iterator = 1
     ch1.set_position(ch1.default_position[0], ch1.default_position[1])
     place_stones()

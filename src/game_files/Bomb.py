@@ -13,7 +13,7 @@ class Bomb:
         self.position_x = position_x
         self.position_y = position_y
         self.range_field = range_field
-        self.bomb_image = pygame.transform.scale((pygame.image.load('Images/bombv1.png').convert_alpha()), (45, 45))
+        self.bomb_image = pygame.transform.scale((BOMB_IMAGE.convert_alpha()), (45, 45))
         self.bomb_sprite = SpriteTool.SpriteTool("Images/BombSprit.png", 7, 3)
         self.fire_blocks = []
         self.destroyed_blocks = []
@@ -48,7 +48,7 @@ class Bomb:
             right_side = True
             free_sides += 1
         if (game_map[x // BLOCK_SIZE][up // BLOCK_SIZE] != WALL):
-            upper_size = True
+            upper_side = True
             free_sides += 1
         if (game_map[x // BLOCK_SIZE][down // BLOCK_SIZE] != WALL):
             down_side = True
@@ -175,6 +175,7 @@ class Bomb:
                     self.fire_blocks.append((i * BLOCK_SIZE, current_y * BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i += 1
             iteration += 1
+
     def get_explosion_blocks(self, blocks_to_destroy):
         """
         Function scanning vertically and horizontally blocks, where it should place fire animation of the bomb

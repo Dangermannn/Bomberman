@@ -4,25 +4,32 @@ import collections
 from pygame import mixer
 
 screen = pygame.display.set_mode((750, 750))
-background = pygame.image.load('Images/Mapv2.png')
-stone = pygame.image.load('Images/stone.png')
-pygame.display.set_caption('Bomberman')
-icon = pygame.image.load('Images/whiteGhost.png')
-heart = pygame.transform.scale((pygame.image.load('Images/heart.png').convert_alpha()), (25, 25))
-menuBackground = pygame.image.load('Images/menuBackground.png')
-pygame.display.set_icon(icon)
+BACKGROUND_IMG = pygame.image.load('Images/Mapv2.png')
+STONE_IMG = pygame.image.load('Images/stone.png')
+HEART_IMG = pygame.transform.scale((pygame.image.load('Images/heart.png').convert_alpha()), (25, 25))
+MENU_BACKGROUND_IMG = pygame.image.load('Images/menuBackground.png')
+BOMB_IMAGE = pygame.image.load('Images/bombv1.png')
+ICON_IMG = pygame.image.load('Images/whiteGhost.png')
 
+pygame.display.set_icon(ICON_IMG)
+pygame.display.set_caption('Bomberman')
 pygame.mixer.init()
 mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
 mixer.music.set_volume(0.2)
 
-transparent_surface = pygame.Surface((750, 50))
-transparent_surface.set_alpha(128)
+TRANSPARENT_SURFACE = pygame.Surface((750, 50))
+TRANSPARENT_SURFACE.set_alpha(128)
 
-about_message = []
+EASY = 1
+MEDIUM = 2
+HARD = 3
 
-show_about = False
-about_message_str = """\
+BLOCK_SIZE = 50
+
+WALL, CLEAR, GOAL, STONE = '#', ' ', 'P', 'S',
+WIDTH, HEIGHT = 15, 15
+
+ABOUT_MESSAGE_STR = """\
 Your main goal is to kill all the ghosts walking around the map.
         The thing is you cannot allow them catch you!
 
@@ -47,17 +54,7 @@ Your main goal is to kill all the ghosts walking around the map.
                         GOOD LUCK!
 """
 
-EASY = 1
-MEDIUM = 2
-HARD = 3
-
-WALL, CLEAR, GOAL, STONE = '#', ' ', 'P', 'S',
-WIDTH, HEIGHT = 15, 15
-
-game_map = []
-BLOCK_SIZE = 50
-stoneBlocks = []
-game_map_str =  """\
+GAME_MAP_STR =  """\
 ###############
 #   # # # #   #
 # #   SSS   # #
@@ -75,7 +72,16 @@ game_map_str =  """\
 ###############
 """
 
-for line_str in about_message_str.splitlines():
+about_message = []
+
+show_about = False
+
+game_map = []
+
+stoneBlocks = []
+
+
+for line_str in ABOUT_MESSAGE_STR.splitlines():
     about_message.append(line_str)
 
 # functions to add outline to the text
@@ -127,15 +133,14 @@ def print_label(text, x, y, fontSize):
 	screen.blit(render(text, font), (x, y))
 	
 def generate_map(game_map):
-	for line_str in game_map_str.splitlines():
+	for line_str in GAME_MAP_STR.splitlines():
 		game_map.append(list(line_str))
 
 def place_stones():
 	for i in range(len(game_map)):
 		for j in range(len(game_map[i])):
 			if game_map[i][j] == 'S':
-				screen.blit(stone, (BLOCK_SIZE * i, BLOCK_SIZE * j))
-
+				screen.blit(STONE_IMG, (BLOCK_SIZE * i, BLOCK_SIZE * j))
 
 def show_stats(player, level, x, y):
     font_s = pygame.font.SysFont("comicsans", 32)
