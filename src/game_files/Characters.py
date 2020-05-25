@@ -136,7 +136,7 @@ class Player(Character):
                 # for x, y in blocksToRemove:
                 #     init.game_map[x][y] = CLEAR
                 #     self.Score += 10
-        self.health = hp[0]
+        #elf.health = hp[0]
         if self.health == 0:
             self.is_alive = False
 
@@ -459,12 +459,9 @@ class Ghost(Character):
         """
         Handling movement of ghost. It's for using one function for every created bot not depending on difficulty
         """
-        if self.mode == self.EASY and self.is_alive == True:
+        if self.mode == self.EASY and self.is_alive:
             self.move_random()
-        elif self.mode == self.MEDIUM and self.is_alive == True:
+        elif self.mode == self.MEDIUM and self.is_alive:
             self.move_random_without_back()
-        elif self.mode == self.HARD and self.is_alive == True:
+        elif self.mode == self.HARD and self.is_alive:
             self.following_player()
-
-    def remove_ghost(self):
-        del self

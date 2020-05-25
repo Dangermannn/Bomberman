@@ -89,29 +89,13 @@ class Bomb:
             return True
         return False
 
-    def get_explosion_blocks_downward(self, blocks_to_destroy, current_x, start_point_y):
-        i = start_point_y
-        iteration = 0
-        while True:
-            if init.game_map[current_x][i] == Constants.STONE:
-                init.game_map[current_x][i] == Constants.CLEAR
-                blocks_to_destroy.append((current_x, i))
-                break
-            if init.game_map[current_x][i] == Constants.WALL:
-                break;
-            if iteration > self.range_field:
-                break
-            if init.game_map[current_x][i] == Constants.CLEAR:
-                if self.is_intersection(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.is_vertical(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.is_horizontal(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
-            i += 1
-            iteration += 1
-
-    def get_explosion_blocks_upward(self, blocks_to_destroy, current_x, start_point_y):
+    def get_explosion_blocks_vertically(self, blocks_to_destroy, current_x, start_point_y, direction):
+        """
+        Function scanning horizontally blocks, where it should place fire animation of the bomb
+        CAUTION: IT RETURNS BLOCKS AS A LIST IN THROUGH THE PARAMETER
+        :param blocks_to_destroy: output list
+        :param directiony: -1 if up, 1 if down
+        """
         i = start_point_y
         iteration = 0
         while True:
@@ -130,10 +114,16 @@ class Bomb:
                     self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
                 elif self.is_horizontal(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
                     self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
-            i -= 1
+            i += direction
             iteration += 1
 
-    def get_explosion_blocks_left(self, blocks_to_destroy, current_y, start_point_x):
+    def get_explosion_blocks_horizontally(self, blocks_to_destroy, current_y, start_point_x, direction):
+        """
+        Function scanning horizontally blocks, where it should place fire animation of the bomb
+        CAUTION: IT RETURNS BLOCKS AS A LIST IN THROUGH THE PARAMETER
+        :param blocks_to_destroy: output list
+        :param direction: -1 if left, 1 if right
+        """
         i = start_point_x
         iteration = 0
         while True:
@@ -147,35 +137,17 @@ class Bomb:
                 break
             if init.game_map[i][current_y] == Constants.CLEAR:
                 if self.is_intersection(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE) == True:
-                    self.fire_blocks.append((i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.INTERSECTION, None))
+                    self.fire_blocks.append(
+                        (i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.INTERSECTION, None))
                 elif self.is_vertical(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                    self.fire_blocks.append(
+                        (i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
                 elif self.is_horizontal(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
-            i -= 1
+                    self.fire_blocks.append(
+                        (i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+            i += direction
             iteration += 1
 
-    def get_explosion_blocks_right(self, blocks_to_destroy, current_y, start_point_x):
-        i = start_point_x
-        iteration = 0
-        while True:
-            if init.game_map[i][current_y] == Constants.STONE:
-                init.game_map[i][current_y] == Constants.CLEAR
-                blocks_to_destroy.append((i, current_y))
-                break
-            if init.game_map[i][current_y] == Constants.WALL:
-                break
-            if iteration > self.range_field:
-                break
-            if init.game_map[i][current_y] == Constants.CLEAR:
-                if self.is_intersection(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE) == True:
-                    self.fire_blocks.append((i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.is_vertical(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.is_horizontal(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
-            i += 1
-            iteration += 1
 
     def get_explosion_blocks(self, blocks_to_destroy):
         """
@@ -186,10 +158,10 @@ class Bomb:
         start_iter_x = (self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1
         start_iter_y = (self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1
 
-        self.get_explosion_blocks_downward(blocks_to_destroy, start_iter_x, start_iter_y)
-        self.get_explosion_blocks_upward(blocks_to_destroy, start_iter_x, start_iter_y)
-        self.get_explosion_blocks_left(blocks_to_destroy, start_iter_y, start_iter_x)
-        self.get_explosion_blocks_right(blocks_to_destroy, start_iter_y, start_iter_x)
+        self.get_explosion_blocks_vertically(blocks_to_destroy, start_iter_x, start_iter_y, -1)
+        self.get_explosion_blocks_vertically(blocks_to_destroy, start_iter_x, start_iter_y, 1)
+        self.get_explosion_blocks_horizontally(blocks_to_destroy,  start_iter_y, start_iter_x, -1)
+        self.get_explosion_blocks_horizontally(blocks_to_destroy,  start_iter_y, start_iter_x, 1)
 
     def explosion(self, ghosts, playerCords, health, is_alive):
         """
@@ -256,7 +228,7 @@ class Bomb:
                 if p in blocks:
                     g.reduce_health_by_one()
                     if g.health == 0:
-                        g.is_alive = False
+                        g.set_not_alive()
                         ghosts.remove(g)
 
     def is_collision_with_player(self, coords):

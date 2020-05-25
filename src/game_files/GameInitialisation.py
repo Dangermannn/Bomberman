@@ -23,6 +23,9 @@ for line_str in Constants.ABOUT_MESSAGE_STR.splitlines():
 
 _circle_cache = {}
 def _circlepoints(r):
+    """
+    Selects points for outlining text
+    """
     r = int(round(r))
     if r in _circle_cache:
         return _circle_cache[r]
@@ -46,6 +49,10 @@ def _circlepoints(r):
     return points
 
 def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(0, 0, 0), opx=2):
+    """
+    Renders texts with outline
+    :return: surface
+    """
     textsurface = font.render(text, True, gfcolor).convert_alpha()
     w = textsurface.get_width() + 2 * opx
     h = font.get_height()
