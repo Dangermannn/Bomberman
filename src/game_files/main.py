@@ -1,5 +1,5 @@
-from src.game_files import Menu, MainGame, Button, Characters, SpriteTool, Constants, GameInitialisation as init
 import pygame
+from src.game_files import Menu, MainGame, Button, Characters, SpriteTool, Constants, GameInitialisation as init
 
 pygame.init()
 
@@ -17,7 +17,7 @@ def main_game_func():
         g3 = Characters.Ghost(650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
         init.game_map.clear()
         init.generate_map(init.game_map)
-        init.place_stones()
+        #init.place_stones()
         ghosts_list = []
         init.game_map[ch1.last_position[0]][ch1.last_position[1]] = 'P'
         init.place_stones()
