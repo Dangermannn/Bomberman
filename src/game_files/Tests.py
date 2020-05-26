@@ -40,44 +40,23 @@ class BombTest(unittest.TestCase):
         self.assertFalse(self.bomb.is_intersection(100, 200))
 
     def test_is_vertical_true(self):
-        #generate_map(game_map)
-        #b = Bomb(50, 50, 3, 2)
-        #self.assertEqual(b.is_vertical(100, 200), True)
         self.assertTrue(self.bomb.is_vertical(100, 200))
 
     def test_is_vertical_false(self):
-        #generate_map(game_map)
-        #b = Bomb(50, 50, 3, 2)
-        #self.assertEqual(b.is_vertical(150, 250), False)
         self.assertFalse(self.bomb.is_vertical(150, 250))
+
     def test_is_horizontal_true(self):
-        #generate_map(game_map)
-        #b = Bomb(50, 50, 3, 2)
-        #self.assertEqual(b.is_horizontal(150, 250), True)
         self.assertTrue(self.bomb.is_horizontal(150, 250))
 
     def test_is_horizontal_false(self):
-        #generate_map(game_map)
-        #b = Bomb(50, 50, 3, 2)
-        #self.assertEqual(b.is_horizontal(100, 200), False)
         self.assertFalse(self.bomb.is_horizontal(100, 200))
 
     # Fire removes blocks / reduces hp
     def test_reduces_player_hp(self):
-        # ch1 = Player(50, 50, 5, 6, 13, 13, 'Images/Hero.png')
-        # g1 = Ghost(650, 50, 1, 4, 2, 1, 'Images/whiteGhost.png', EASY)
-        # g2 = Ghost(50, 650, 1, 3, 2, 1, 'Images/blueGhost.png', MEDIUM)
-        # g3 = Ghost(650, 650, 1, 1, 1, 1, 'Images/redGhost.png', HARD)
-        # ghosts_list = []
-        # ghosts_list.append(g1)
-        # ghosts_list.append(g2)
-        # ghosts_list.append(g3)
-        # generate_map(game_map)
         temp = [self.player.health]
         b = Bomb.Bomb(50, 50, 3, 2)
         while (self.bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), temp, self.player.is_alive) != True):
             pass
-        #self.assertEqual(ch1.health == temp, False)
         self.assertFalse(self.player.health == temp)
 
     def test_kills_ghost(self):
@@ -101,7 +80,6 @@ class BombTest(unittest.TestCase):
         temp3 = False
         if init.game_map[3][3] == ' ':
             temp3 = True
-        #self.assertEqual(temp3, True)
         self.assertTrue(temp3, True)
 
     # getting blocks to destroy
@@ -112,7 +90,6 @@ class BombTest(unittest.TestCase):
         temp = False
         if (5, 4) in blocks:
             temp = True
-        #self.assertEqual(temp, True)
         self.assertTrue(temp)
 
     def test_blocks_to_destroy_right_true(self):
@@ -122,7 +99,6 @@ class BombTest(unittest.TestCase):
         temp = False
         if (6, 3) in blocks:
             temp = True
-        #self.assertEqual(temp, True)
         self.assertTrue(temp, True)
 
     def test_blocks_to_destroy_left_true(self):
@@ -132,7 +108,6 @@ class BombTest(unittest.TestCase):
         temp = False
         if (4, 5) in blocks:
             temp = True
-        #self.assertEqual(temp, True)
         self.assertTrue(temp)
 
     def test_blocks_to_destroy_up_true(self):
@@ -152,7 +127,6 @@ class BombTest(unittest.TestCase):
         temp = False
         if (3, 2) in blocks:
             temp = True
-
         self.assertFalse(temp)
 
     def test_blocks_to_destroy_right_false(self):
@@ -184,7 +158,7 @@ class BombTest(unittest.TestCase):
         self.assertFalse(temp)
 
 class GhostTest(unittest.TestCase):
-    "Class for ghost testss"
+    "Class for ghost tests"
     def setUp(self):
         self.player = Characters.Player(200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
         self.bomb = Bomb.Bomb(50, 50, 3, 2)
