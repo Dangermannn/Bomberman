@@ -30,11 +30,11 @@ def main_game_func():
         transparent_surface.fill((0, 0, 0))
         Constants.screen.blit(Constants.BACKGROUND_IMG, (0, 0))
         level_iterator = 1
-        ch1.set_position(ch1.default_position[0], ch1.default_position[1])
+        ch1.set_position(ch1.default_position.x, ch1.default_position.y)
         init.place_stones()
 
         for g in ghosts_list:
-            g.set_position(g.default_position[0], g.default_position[1])
+            g.set_position(g.default_position.x, g.default_position.y)
 
         Constants.screen.blit(transparent_surface, (0, 0))
         init.print_label("LEVEL " + str(level_iterator), 300, 300, 40)
@@ -55,14 +55,14 @@ def main_game_func():
                 ch1.set_to_default()
                 if level_iterator > 5:
                     if ch1.bomb_amount > 1:
-                        ch1.bomb_amount -= 1
-                        ch1.bomb_range -= 1
+                        ch1.reduce_bomb_amout_by_one()
+                        ch1.reduce_bomb_range_by_one()
                 if level_iterator > 10:
                     if ch1.speed >= 3:
-                        ch1.speed -= 1
+                        ch1.reduce_speed_by_one()
                 if level_iterator > 15:
                     if ch1.health > 1:
-                        ch1.health -= 1
+                        ch1.reduce_health_by_one()
                 init.game_map.clear()
                 init.generate_map(init.game_map)
                 init.place_stones()

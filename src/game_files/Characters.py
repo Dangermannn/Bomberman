@@ -26,10 +26,11 @@ class Character:
         self.position_x_change = 0
         self.position_y_change = 0
         self.bomb_list = []
-        self.character_image = pygame.transform.scale((pygame.image.load(image_name).convert_alpha()), (40, 40))
+        self.character_image = pygame.transform.scale(
+            (pygame.image.load(image_name).convert_alpha()), (40, 40))
         self.is_alive = True
-        self.default_position = (position_x, position_x)
-        self.last_position = (1, 1)
+        self.default_position = init.Point(position_x, position_x)
+        self.last_position = init.Point(1, 1)
 
     def set_to_default(self):
         """
@@ -77,10 +78,21 @@ class Character:
         :param position_y: character's position
         """
         Constants.screen.blit(self.character_image, (position_x, position_y))
+
     def reduce_health_by_one(self):
         self.health -= 1
+
     def set_not_alive(self):
         self.is_alive = False
+
+    def reduce_bomb_amout_by_one(self):
+        self.bomb_amount -= 1
+
+    def reduce_bomb_range_by_one(self):
+        self.bomb_range -= 1
+
+    def reduce_speed_by_one(self):
+        self.speed -= 1
 
 class Player(Character):
     PIXEL_TOLERANCE = 5
@@ -138,7 +150,7 @@ class Player(Character):
                 #     self.Score += 10
         #elf.health = hp[0]
         if self.health == 0:
-            self.is_alive = False
+            self.set_not_alive()
 
     def get_player_position_on_map(self):
         x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
@@ -183,15 +195,15 @@ class Ghost(Character):
         self.current_direction = None
         self.possible_movements = []
         self.last_positions = []
-        self.last_positions.append((((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1),
+        self.last_positions.append(init.Point(((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1),
                                       ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)))
         self.is_alive = True
         self.mode = mode
-        self.default_position = (position_x, position_y)
+        self.default_position = init.Point(position_x, position_y)
 
     def set_to_default(self):
-        self.position_x = self.default_position[0]
-        self.position_y = self.default_position[1]
+        self.position_x = self.default_position.x
+        self.position_y = self.default_position.x
         self.health = 1
         self.is_alive = True
         self.distance_traveled = 0

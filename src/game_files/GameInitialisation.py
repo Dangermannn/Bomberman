@@ -21,7 +21,11 @@ for line_str in Constants.ABOUT_MESSAGE_STR.splitlines():
 
 # functions to add outline to the text
 
+Point = collections.namedtuple('Point', 'x y')
+Fire_tuple = collections.namedtuple('Fire_tuple', 'x y block_type direction')
 _circle_cache = {}
+
+
 def _circlepoints(r):
     """
     Selects points for outlining text

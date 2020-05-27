@@ -107,13 +107,19 @@ class Bomb:
                 break
             if iteration > self.range_field:
                 break
+
             if init.game_map[current_x][i] == Constants.CLEAR:
                 if self.is_intersection(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.INTERSECTION, None))
+                    self.fire_blocks.append(
+                        init.Fire_tuple(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.INTERSECTION, None))
                 elif self.is_vertical(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                    self.fire_blocks.append(
+                        init.Fire_tuple(
+                            current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
                 elif self.is_horizontal(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
-                    self.fire_blocks.append((current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                    self.fire_blocks.append(
+                        init.Fire_tuple(
+                            current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i += direction
             iteration += 1
 
@@ -138,13 +144,13 @@ class Bomb:
             if init.game_map[i][current_y] == Constants.CLEAR:
                 if self.is_intersection(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE) == True:
                     self.fire_blocks.append(
-                        (i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.INTERSECTION, None))
+                        init.Fire_tuple(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.INTERSECTION, None))
                 elif self.is_vertical(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        (i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                        init.Fire_tuple(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
                 elif self.is_horizontal(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        (i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                       init.Fire_tuple(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
             i += direction
             iteration += 1
 
@@ -183,10 +189,12 @@ class Bomb:
                 self.animation_step += 1
                 self.last_animation_time = time.time()
             for x in self.fire_blocks:
-                if x[3] == self.VERTICAL:
-                    self.bomb_sprite.draw_vertical(Constants.screen, (self.animation_step % 7) + x[2], x[0], x[1])
+                if x.direction == self.VERTICAL:
+                    self.bomb_sprite.draw_vertical(
+                        Constants.screen, (self.animation_step % 7) + x.block_type, x.x, x.y)
                 else:
-                    self.bomb_sprite.draw(Constants.screen, (self.animation_step % 7) + x[2], x[0], x[1])
+                    self.bomb_sprite.draw(
+                        Constants.screen, (self.animation_step % 7) + x.block_type, x.x, x.y)
                 if self.animation_step % 7 == 6:
                     if self.is_collision_with_player(playerCords):
                         health[0] -= 1
@@ -212,7 +220,7 @@ class Bomb:
         """
         ret = []
         for x in self.fire_blocks:
-            ret.append((x[0] // Constants.BLOCK_SIZE, x[1] // Constants.BLOCK_SIZE))
+            ret.append((x.x // Constants.BLOCK_SIZE, x.y // Constants.BLOCK_SIZE))
         return ret
 
     def is_collision_with_ghost(self, ghosts):
