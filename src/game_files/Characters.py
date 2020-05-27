@@ -200,6 +200,7 @@ class Ghost(Character):
         self.is_alive = True
         self.mode = mode
         self.default_position = init.Point(position_x, position_y)
+        self.last_move = None
 
     def set_to_default(self):
         self.position_x = self.default_position.x
@@ -369,25 +370,26 @@ class Ghost(Character):
 
 
             #print("LAST POSITIONS: ", self.last_positions)
-           # print("LEWO: ", leftSide, " PRAWO: ", rightSide, " GORA", upperSide, " DOL", downSide)
-            #print("UPPER: ", (x // constants.BLOCK_SIZE, y // constants.BLOCK_SIZE - 1))
-            #print("LEFT: ", (x // constants.BLOCK_SIZE - 1, y // constants.BLOCK_SIZE))
-            #print("RIGHT: ", (x // constants.BLOCK_SIZE + 1, y // constants.BLOCK_SIZE))
-            #print("DOWN: ", (x // constants.BLOCK_SIZE, y // constants.BLOCK_SIZE + 1))
+            print("LEWO: ", leftSide, " PRAWO: ", rightSide, " GORA", upperSide, " DOL", downSide)
+            print("UPPER: ", (x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE - 1))
+            print("LEFT: ", (x // Constants.BLOCK_SIZE - 1, y // Constants.BLOCK_SIZE))
+            print("RIGHT: ", (x // Constants.BLOCK_SIZE + 1, y // Constants.BLOCK_SIZE))
+            print("DOWN: ", (x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE + 1))
             if (upperSide and (x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE - 1) not in self.last_positions) or (y // Constants.BLOCK_SIZE - 1 == 12):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
-               # print("APPENDED x, y : [",x // constants.BLOCK_SIZE, ", ", y // constants.BLOCK_SIZE - 1, "]")
-                #print("DODAJTE GORA")
+                print("APPENDED x, y : [",x // Constants.BLOCK_SIZE, ", ", y // Constants.BLOCK_SIZE - 1, "]")
+                print("DODAJTE GORA")
             if (leftSide and (x // Constants.BLOCK_SIZE - 1, y // Constants.BLOCK_SIZE) not in self.last_positions) or (x // Constants.BLOCK_SIZE - 1 == 12):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
-               # print("APPENDED x, y : [",x // constants.BLOCK_SIZE - 1, ", ", y // constants.BLOCK_SIZE, "]")
-                #print("DODAJE LEWO")
+                print("APPENDED x, y : [",x // Constants.BLOCK_SIZE - 1, ", ", y // Constants.BLOCK_SIZE, "]")
+                print("DODAJE LEWO")
             if (rightSide and (x // Constants.BLOCK_SIZE + 1, y // Constants.BLOCK_SIZE) not in self.last_positions) or (x // Constants.BLOCK_SIZE + 1 == 2):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
-                #print("DODAJE PRAWO")
+                print("DODAJE PRAWO")
             if (downSide and (x // Constants.BLOCK_SIZE, y // Constants.BLOCK_SIZE + 1) not in self.last_positions) or (y // Constants.BLOCK_SIZE + 1 == 2):
                 self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
-               # print("DODAJE DOL")
+                print("DODAJE DOL")
+            print(self.last_positions)
        # print("DISTANCE: ", self.distance_traveled)
         #self.setPosition(self.PositionX, self.PositionY)
 
@@ -439,7 +441,7 @@ class Ghost(Character):
         if self.distance_traveled >= self.MAX_MOVEMENT:
             self.distance_traveled = 0
         self.set_position(self.position_x, self.position_y)
-
+        print("POS: ", self.possible_movements)
         self.possible_movements.clear()
 
     def get_position_on_map(self):

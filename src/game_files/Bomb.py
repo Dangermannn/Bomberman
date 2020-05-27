@@ -96,31 +96,30 @@ class Bomb:
         :param blocks_to_destroy: output list
         :param directiony: -1 if up, 1 if down
         """
-        i = start_point_y
+        iterator = start_point_y
         iteration = 0
+        x_coordinate = current_x * Constants.BLOCK_SIZE
         while True:
-            if init.game_map[current_x][i] == Constants.STONE:
-                init.game_map[current_x][i] == Constants.CLEAR
-                blocks_to_destroy.append((current_x, i))
+            if init.game_map[current_x][iterator] == Constants.STONE:
+                init.game_map[current_x][iterator] == Constants.CLEAR
+                blocks_to_destroy.append((current_x, iterator))
                 break
-            if init.game_map[current_x][i] == Constants.WALL:
+            if init.game_map[current_x][iterator] == Constants.WALL:
                 break
             if iteration > self.range_field:
                 break
 
-            if init.game_map[current_x][i] == Constants.CLEAR:
-                if self.is_intersection(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
+            if init.game_map[current_x][iterator] == Constants.CLEAR:
+                if self.is_intersection(x_coordinate, iterator * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        init.Fire_tuple(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.is_vertical(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
+                        init.Fire_tuple(x_coordinate, iterator * Constants.BLOCK_SIZE, self.INTERSECTION, None))
+                elif self.is_vertical(x_coordinate, iterator * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        init.Fire_tuple(
-                            current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.is_horizontal(current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE):
+                        init.Fire_tuple(x_coordinate, iterator * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                elif self.is_horizontal(x_coordinate, iterator * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        init.Fire_tuple(
-                            current_x * Constants.BLOCK_SIZE, i * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
-            i += direction
+                        init.Fire_tuple(x_coordinate, iterator * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+            iterator += direction
             iteration += 1
 
     def get_explosion_blocks_horizontally(self, blocks_to_destroy, current_y, start_point_x, direction):
@@ -130,28 +129,30 @@ class Bomb:
         :param blocks_to_destroy: output list
         :param direction: -1 if left, 1 if right
         """
-        i = start_point_x
+        #ttt
+        iterator = start_point_x
         iteration = 0
+        y_coordinate = current_y * Constants.BLOCK_SIZE
         while True:
-            if init.game_map[i][current_y] == Constants.STONE:
-                init.game_map[i][current_y] == Constants.CLEAR
-                blocks_to_destroy.append((i, current_y))
+            if init.game_map[iterator][current_y] == Constants.STONE:
+                init.game_map[iterator][current_y] == Constants.CLEAR
+                blocks_to_destroy.append((iterator, current_y))
                 break
-            if init.game_map[i][current_y] == Constants.WALL:
+            if init.game_map[iterator][current_y] == Constants.WALL:
                 break
             if iteration > self.range_field:
                 break
-            if init.game_map[i][current_y] == Constants.CLEAR:
-                if self.is_intersection(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE) == True:
+            if init.game_map[iterator][current_y] == Constants.CLEAR:
+                if self.is_intersection(iterator * Constants.BLOCK_SIZE, y_coordinate):
                     self.fire_blocks.append(
-                        init.Fire_tuple(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.INTERSECTION, None))
-                elif self.is_vertical(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
+                        init.Fire_tuple(iterator * Constants.BLOCK_SIZE, y_coordinate, self.INTERSECTION, None))
+                elif self.is_vertical(iterator * Constants.BLOCK_SIZE, y_coordinate):
                     self.fire_blocks.append(
-                        init.Fire_tuple(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
-                elif self.is_horizontal(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE):
+                        init.Fire_tuple(iterator * Constants.BLOCK_SIZE, y_coordinate, self.STRAIGHT, self.VERTICAL))
+                elif self.is_horizontal(iterator * Constants.BLOCK_SIZE, y_coordinate):
                     self.fire_blocks.append(
-                       init.Fire_tuple(i * Constants.BLOCK_SIZE, current_y * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
-            i += direction
+                       init.Fire_tuple(iterator * Constants.BLOCK_SIZE, y_coordinate, self.STRAIGHT, self.HORIZONTAL))
+            iterator += direction
             iteration += 1
 
 

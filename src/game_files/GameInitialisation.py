@@ -90,7 +90,8 @@ def place_stones():
 
 def show_stats(player, level, x, y):
     font_s = pygame.font.SysFont("comicsans", 32)
-    score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) + " Level: " + str(level), True, (255, 255, 255))
+    score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) \
+                          + " Level: " + str(level), True, (255, 255, 255))
     Constants.screen.blit(score, (x, y))
 
 def print_about_game(boolean):
@@ -117,6 +118,7 @@ def find_shortest_path(grid, start):
         if grid[x][y] == Constants.GOAL:
             return path
         for x2, y2 in ((x+1, y), (x-1, y), (x, y+1), (x, y-1)):
-            if 0 <= x2 < Constants.WIDTH and 0 <= y2 < Constants.HEIGHT and grid[x2][y2] != Constants.WALL and (x2, y2) not in seen:
+            if 0 <= x2 < Constants.WIDTH and 0 <= y2 < Constants.HEIGHT \
+                    and grid[x2][y2] != Constants.WALL and (x2, y2) not in seen:
                 queue.append(path + [(x2, y2)])
                 seen.add((x2, y2))
