@@ -49,8 +49,8 @@ def main_game_func():
                 ghosts_list.append(ghost_easy)
                 ghosts_list.append(ghost_medium)
                 ghosts_list.append(ghost_hard)
-                for g in ghosts_list:
-                    g.set_to_default()
+                for ghost in ghosts_list:
+                    ghost.set_to_default()
                 main_hero.set_to_default()
                 if level_iterator > 5:
                     if main_hero.bomb_amount > 1:
