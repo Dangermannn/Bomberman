@@ -55,14 +55,14 @@ class BombTest(unittest.TestCase):
     def test_reduces_player_hp(self):
         temp = [self.player.health]
         bomb = Bomb.Bomb(50, 50, 3, 2)
-        while (self.bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), temp, self.player.is_alive) != True):
+        while not self.bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), temp, self.player.is_alive):
             pass
         self.assertFalse(self.player.health == temp)
 
     def test_kills_ghost(self):
         self.ghosts_list.append(self.ghost_1)
         bomb = Bomb.Bomb(50, 50, 3, 2)
-        while (bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), self.player.health, self.player.is_alive) != True):
+        while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), self.player.health, self.player.is_alive):
             pass
         temp = (len(self.ghosts_list) != 3)
         self.assertTrue(temp)
@@ -75,7 +75,7 @@ class BombTest(unittest.TestCase):
         init.generate_map(init.game_map)
         bomb = Bomb.Bomb(150, 100, 10, 10)
 
-        while (bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), self.player.health, self.player.is_alive) != True):
+        while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), self.player.health, self.player.is_alive):
             pass
         temp3 = False
         if init.game_map[3][3] == ' ':
