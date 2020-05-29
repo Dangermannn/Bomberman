@@ -1,4 +1,6 @@
-import random, time, math
+import random
+import time
+import math
 import pygame
 from pygame import mixer
 from src.game_files import Bomb, Constants, GameInitialisation as init
@@ -126,13 +128,13 @@ class Player(Character):
 
     def is_bomb_added_to_list(self):
         pressed = pygame.key.get_pressed()
-        gridX = (self.position_x + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
-        gridY = (self.position_y + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
+        grid_x = (self.position_x + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
+        grid_y = (self.position_y + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
         if pressed[pygame.K_SPACE]:
             if self.bomb_amount > 0:
                 pop_sound = mixer.Sound("Sounds/Pop-Sound Effect.wav")
                 pop_sound.play()
-                self.bomb_list.append(Bomb.Bomb(gridX, gridY, self.bomb_range, time.time()))
+                self.bomb_list.append(Bomb.Bomb(grid_x, grid_y, self.bomb_range, time.time()))
                 self.bomb_amount -= 1
                 return True
         return False
@@ -145,13 +147,10 @@ class Player(Character):
                 item.set_position(item.position_x, item.position_y)
 
     def check_explosion(self, ghosts):
-        hp = [self.health]
-        isAlive = self.is_alive
         for item in self.bomb_list:
-            if item.explosion(ghosts, self.get_border_positions_on_map(), hp, isAlive):
+            if item.explosion(ghosts, self.get_border_positions_on_map(), self.reduce_health_by_one):
                 self.bomb_list.remove(item)
                 self.bomb_amount += 1
-        self.health = hp[0]
         if self.health == 0:
             self.set_not_alive()
 
@@ -183,15 +182,12 @@ class Ghost(Character):
     """
     Enemy ghost class
     """
-    EASY = 1
-    MEDIUM = 2
-    HARD = 3
     MAX_MOVEMENT = 50
     PIXEL_TOLERANCE = 3
-    Y_BLOCK_SECURE_VALUES = [5, 6, 7, 8, 9]
     X_LEFT_BLOCK_SECURE = 1
     X_RIGHT_BLOCK_SECURE = 13
     POSSIBLE_MOVEMENTS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
+
     def __init__(self, position_x, position_y, health, speed, bomb_amount, bomb_range, image_name, mode):
         super(Ghost, self).__init__(position_x, position_y, health,
                                     speed, bomb_amount, bomb_range, image_name)
@@ -255,15 +251,33 @@ class Ghost(Character):
         return True
 
     def correct_position(self):
-        temp_x = self.position_x % Constants.BLOCK_SIZE
-        if temp_x != 0 and temp_x < 4:
-            self.position_x -= temp_x
+        if self.distance_traveled >= self.MAX_MOVEMENT:
+            self.distance_traveled = 0
+            if self.position_x % Constants.BLOCK_SIZE > Constants.BLOCK_SIZE - self.PIXEL_TOLERANCE:
+                self.position_x = math.ceil(self.position_x / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
+            elif self.position_x % Constants.BLOCK_SIZE < self.PIXEL_TOLERANCE:
+                self.position_x = math.floor(self.position_x / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
 
-        temp_y = self.position_y % Constants.BLOCK_SIZE
-        if temp_y != 0 and temp_y < 4:
-            self.position_y -= temp_y
-        print("T1: ", temp_x, " T2: ", temp_y)
+            if self.position_y % Constants.BLOCK_SIZE < self.PIXEL_TOLERANCE:
+                self.position_y = math.floor(self.position_y / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
+            elif self.position_y % Constants.BLOCK_SIZE > Constants.BLOCK_SIZE - self.PIXEL_TOLERANCE:
+                self.position_y = math.ceil(self.position_y / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
 
+    def set_possible_movements_for_following_ghost(self, path_queue):
+        path_queue.reverse()
+        next_cords = path_queue.pop()
+        if next_cords == self.get_position_on_map():
+            next_cords = path_queue.pop()
+        ghost_cords = self.get_position_on_map()
+        if next_cords[0] < ghost_cords[0]:
+            self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
+        elif next_cords[0] > ghost_cords[0]:
+            self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
+
+        if next_cords[1] < ghost_cords[1]:
+            self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
+        elif next_cords[1] > ghost_cords[1]:
+            self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
 
     def move_random(self):
         """
@@ -306,20 +320,7 @@ class Ghost(Character):
                 path_queue = init.find_shortest_path(init.game_map, self.get_position_on_map())
                 #print("Q: ", path_queue)
                 if path_queue is not None:
-                    path_queue.reverse()
-                    next_cords = path_queue.pop()
-                    if next_cords == self.get_position_on_map():
-                        next_cords = path_queue.pop()
-                    ghost_cords = self.get_position_on_map()
-                    if next_cords[0] < ghost_cords[0]:
-                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
-                    elif next_cords[0] > ghost_cords[0]:
-                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
-
-                    if next_cords[1] < ghost_cords[1]:
-                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
-                    elif next_cords[1] > ghost_cords[1]:
-                        self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
+                    self.set_possible_movements_for_following_ghost(path_queue)
 
             pressed = self.possible_movements[0]
             for key, direction in X_SPEED_CHANGE.items():
@@ -345,7 +346,7 @@ class Ghost(Character):
                 self.distance_traveled = 0
                 del self.possible_movements[0]
         except IndexError:
-            print("out of index")
+            pass
         except:
             print("Unknow error in following ghost")
         finally:
@@ -434,26 +435,10 @@ class Ghost(Character):
                         self.last_positions.append((current_x, current_y))
                 self.position_y_change = 0
         self.distance_traveled += self.speed
-
-        if self.distance_traveled >= self.MAX_MOVEMENT:
-            self.distance_traveled = 0
-            if self.position_x % Constants.BLOCK_SIZE > Constants.BLOCK_SIZE - self.PIXEL_TOLERANCE:
-                self.position_x = math.ceil(self.position_x / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
-            elif self.position_x % Constants.BLOCK_SIZE < self.PIXEL_TOLERANCE:
-                self.position_x = math.floor(self.position_x / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
-
-            if self.position_y % Constants.BLOCK_SIZE < self.PIXEL_TOLERANCE:
-                self.position_y = math.floor(self.position_y / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
-            elif self.position_y % Constants.BLOCK_SIZE > Constants.BLOCK_SIZE - self.PIXEL_TOLERANCE:
-                self.position_y = math.ceil(self.position_y / Constants.BLOCK_SIZE) * Constants.BLOCK_SIZE
+        self.correct_position()
 
         self.set_position(self.position_x, self.position_y)
         self.possible_movements.clear()
-
-    def move_random_without_back_test(self):
-        x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
-        y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
-
 
     def get_position_on_map(self):
         """
@@ -468,7 +453,7 @@ class Ghost(Character):
     def get_border_positions_on_map(self):
         """
         Gets ghost's borders position on the map
-        :return: ghost's coordinates of borders on the amp
+        :return: ghost's coordinates of borders on the map
         """
         pos = []
         x = ((self.position_x + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
@@ -484,9 +469,9 @@ class Ghost(Character):
         """
         Handling movement of ghost. It's for using one function for every created bot not depending on difficulty
         """
-        if self.mode == self.EASY and self.is_alive:
+        if self.mode == Constants.EASY and self.is_alive:
             self.move_random()
-        elif self.mode == self.MEDIUM and self.is_alive:
+        elif self.mode == Constants.MEDIUM and self.is_alive:
             self.move_random_without_back()
-        elif self.mode == self.HARD and self.is_alive:
+        elif self.mode == Constants.HARD and self.is_alive:
             self.following_player()

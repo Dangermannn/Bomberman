@@ -11,13 +11,20 @@ class Menu:
         self.__show_about = False
 
     def draw_menu(self):
+        """
+        Draws background and buttons in menu
+        :return:
+        """
         Constants.screen.fill(pygame.Color("black"))
         Constants.screen.blit(Constants.MENU_BACKGROUND_IMG, (0, 0))
         self.__start_button.draw(Constants.screen, (0, 0, 0))
         self.__end_button.draw(Constants.screen, (255, 255, 255))
         self.__about_button.draw(Constants.screen, (255, 255, 255))
-        
+
     def menu(self):
+        """
+        Main menu function that handles buttons
+        """
         self.__show_about = False
         mixer.music.play(loops=-1)
         while True:

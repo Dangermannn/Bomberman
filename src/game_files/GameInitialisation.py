@@ -71,9 +71,9 @@ def print_label(text, x, y, font_size):
     font = pygame.font.SysFont('comicsans', font_size)
     Constants.screen.blit(render(text, font), (x, y))
 
-def generate_map(game_map):
+def generate_map(out_map):
     for line_str in Constants.GAME_MAP_STR.splitlines():
-        game_map.append(list(line_str))
+        out_map.append(list(line_str))
 
 def place_stones():
     for i in range(len(game_map)):

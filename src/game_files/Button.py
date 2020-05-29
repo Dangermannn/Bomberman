@@ -25,6 +25,10 @@ class Button():
             screen.blit(text, (temp_x, temp_y))
 
     def mouse_hover(self, pos):
+        """
+        :param pos: mouse position
+        :return: True if mouse position is on the field of button, otherwise False
+        """
         if pos[0] > self.position_x and pos[0] < self.position_x + self.width:
             if pos[1] > self.position_y and pos[1] < self.position_y + self.height:
                 return True

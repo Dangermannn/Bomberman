@@ -1,8 +1,7 @@
 import pygame
 import time
 from pygame import mixer
-from src.game_files import SpriteTool, Constants
-from src.game_files import GameInitialisation as init
+from src.game_files import SpriteTool, Constants, GameInitialisation as init
 
 class Bomb:
     """
@@ -13,6 +12,7 @@ class Bomb:
     END_STRIGHT = 14
     VERTICAL = 1
     HORIZONTAL = 2
+
     def __init__(self, position_x, position_y, range_field, set_time):
         self.position_x = position_x
         self.position_y = position_y
@@ -172,12 +172,12 @@ class Bomb:
         self.get_explosion_blocks_horizontally(blocks_to_destroy, start_iter_y, start_iter_x, -1)
         self.get_explosion_blocks_horizontally(blocks_to_destroy, start_iter_y, start_iter_x, 1)
 
-    def explosion(self, ghosts, player_cords, health, is_alive):
+    def explosion(self, ghosts, player_cords, reduce_health_func):
         """
         Handling explosion
         :param ghosts: list of ghosts
         :param player_cords: player coordinates
-        :param health: player's health
+        :param reduce_health: function for reducing player's hp
         :param is_alive: player is_alive stat
         :return: True if it exploded
         """
@@ -200,8 +200,7 @@ class Bomb:
                         Constants.screen, (self.animation_step % 7) + block.block_type, block.x, block.y)
                 if self.animation_step % 7 == 6:
                     if self.is_collision_with_player(player_cords):
-                        health[0] -= 1
-                        is_alive = False
+                        reduce_health_func()
                     self.is_collision_with_ghost(ghosts)
                     self.fire_blocks.clear()
                     for x, y in self.destroyed_blocks:
