@@ -1,7 +1,7 @@
-import pygame, queue, collections
+import collections
+import pygame
 from pygame import mixer
 from src.game_files import Constants
-
 
 pygame.display.set_icon(Constants.ICON_IMG)
 pygame.display.set_caption('Bomberman')
@@ -10,11 +10,8 @@ mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
 mixer.music.set_volume(0.2)
 
 about_message = []
-
 game_map = []
-
 stoneBlocks = []
-
 
 for line_str in Constants.ABOUT_MESSAGE_STR.splitlines():
     about_message.append(line_str)
@@ -22,10 +19,9 @@ for line_str in Constants.ABOUT_MESSAGE_STR.splitlines():
 # functions to add outline to the text
 
 Point = collections.namedtuple('Point', 'x y')
-Fire_tuple = collections.namedtuple('Fire_tuple', 'x y block_type direction')
+FireTuple = collections.namedtuple('Fire_tuple', 'x y block_type direction')
+
 _circle_cache = {}
-
-
 def _circlepoints(r):
     """
     Selects points for outlining text
@@ -46,9 +42,6 @@ def _circlepoints(r):
     points.extend([(y, x) for x, y in points if x > y])
     points.extend([(-x, y) for x, y in points if x])
     points.extend([(x, -y) for x, y in points if y])
-    #points += [(y, x) for x, y in points if x > y]
-    #points += [(-x, y) for x, y in points if x]
-    #points += [(x, -y) for x, y in points if y]
     points.sort()
     return points
 
@@ -74,19 +67,19 @@ def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(0, 0, 0), opx
     surf.blit(textsurface, (opx, opx))
     return surf
 
-def print_label(text, x, y, fontSize):
-	font = pygame.font.SysFont('comicsans', fontSize)
-	Constants.screen.blit(render(text, font), (x, y))
-	
+def print_label(text, x, y, font_size):
+    font = pygame.font.SysFont('comicsans', font_size)
+    Constants.screen.blit(render(text, font), (x, y))
+
 def generate_map(game_map):
-	for line_str in Constants.GAME_MAP_STR.splitlines():
-		game_map.append(list(line_str))
+    for line_str in Constants.GAME_MAP_STR.splitlines():
+        game_map.append(list(line_str))
 
 def place_stones():
-	for i in range(len(game_map)):
-		for j in range(len(game_map[i])):
-			if game_map[i][j] == 'S':
-				Constants.screen.blit(Constants.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
+    for i in range(len(game_map)):
+        for j in range(len(game_map[i])):
+            if game_map[i][j] == 'S':
+                Constants.screen.blit(Constants.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
 
 def show_stats(player, level, x, y):
     font_s = pygame.font.SysFont("comicsans", 32)
@@ -95,7 +88,7 @@ def show_stats(player, level, x, y):
     Constants.screen.blit(score, (x, y))
 
 def print_about_game(boolean):
-    if boolean == True:
+    if boolean:
         add = 0
         for x in about_message:
             print_label(x, 150, 230 + add, 21)

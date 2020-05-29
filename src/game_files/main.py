@@ -33,17 +33,16 @@ def main_game_func():
         main_hero.set_position(main_hero.default_position.x, main_hero.default_position.y)
         init.place_stones()
 
-        for g in ghosts_list:
-            g.set_position(g.default_position.x, g.default_position.y)
+        for ghost in ghosts_list:
+            ghost.set_position(ghost.default_position.x, ghost.default_position.y)
 
         Constants.screen.blit(transparent_surface, (0, 0))
         init.print_label("LEVEL " + str(level_iterator), 300, 300, 40)
 
         pygame.display.update()
-
         pygame.time.wait(1000)
 
-        while running:
+        while True:
             if not main.main_game(main_hero, ghosts_list, level_iterator):
                 level_iterator += 1
                 ghosts_list.clear()

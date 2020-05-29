@@ -10,22 +10,24 @@ class Menu:
         self.__about_button = Button.Button((51, 255, 51), 500, 70, 100, 50, 21, "About game")
         self.__show_about = False
 
+    def draw_menu(self):
+        Constants.screen.fill(pygame.Color("black"))
+        Constants.screen.blit(Constants.MENU_BACKGROUND_IMG, (0, 0))
+        self.__start_button.draw(Constants.screen, (0, 0, 0))
+        self.__end_button.draw(Constants.screen, (255, 255, 255))
+        self.__about_button.draw(Constants.screen, (255, 255, 255))
+        
     def menu(self):
         self.__show_about = False
         mixer.music.play(loops=-1)
         while True:
-            Constants.screen.fill(pygame.Color("black"))
-            Constants.screen.blit(Constants.MENU_BACKGROUND_IMG, (0, 0))
-            self.__start_button.draw(Constants.screen, (0, 0, 0))
-            self.__end_button.draw(Constants.screen, (255, 255, 255))
-            self.__about_button.draw(Constants.screen, (255, 255, 255))
+            self.draw_menu()
             init.print_about_game(self.__show_about)
             pygame.display.update()
             # self.self.__start_button.blitBut()
             for event in pygame.event.get():
                 pos = pygame.mouse.get_pos()
                 if event.type == pygame.QUIT:
-                    running = False
                     pygame.quit()
                     quit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -34,7 +36,6 @@ class Menu:
                         mixer.music.rewind()
                         return
                     if self.__end_button.mouse_hover(pos):
-                        running = False
                         pygame.quit()
                         quit()
                     if self.__about_button.mouse_hover(pos):
@@ -55,3 +56,4 @@ class Menu:
                         self.__about_button.color = (51, 170, 51)
                     else:
                         self.__about_button.color = (51, 255, 51)
+                        

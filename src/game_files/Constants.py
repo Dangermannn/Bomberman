@@ -1,4 +1,5 @@
 import pygame
+
 # screen must be defined here just to let images load as a variable
 screen = pygame.display.set_mode((750, 750))
 
@@ -24,7 +25,7 @@ HARD = 3
 
 BLOCK_SIZE = 50
 
-WALL, CLEAR, GOAL, STONE = '#', ' ', 'P', 'S',
+WALL, CLEAR, GOAL, STONE = '#', ' ', 'P', 'S'
 WIDTH, HEIGHT = 15, 15
 
 ABOUT_MESSAGE_STR = """\
