@@ -27,6 +27,9 @@ class Bomb:
         self.show_bomb = True
         self.explosion_sound = mixer.Sound('Sounds/bombExplosion.wav')
 
+    def set_should_explode(self):
+        self.should_explode = True
+
     def is_intersection(self, x, y):
         """
         Checking if  on coordinates (x, y) is an intersection. It is if it has:
@@ -186,6 +189,7 @@ class Bomb:
         explosion_timer = time.time()
         if explosion_timer - self.set_time > 2:
             if self.animation_step == 0:
+                self.in_explosion = True
                 self.explosion_sound.play()
             self.show_bomb = False
             if time.time() - self.last_animation_time > 0.05:
@@ -216,7 +220,7 @@ class Bomb:
         x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         return (x, y)
-
+    
     def get_fireblocks_position(self):
         """
         :return: List of fireblocks positions as a tuple (x, y)

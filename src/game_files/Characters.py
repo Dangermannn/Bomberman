@@ -149,8 +149,10 @@ class Player(Character):
     def check_explosion(self, ghosts):
         for item in self.bomb_list:
             if item.explosion(ghosts, self.get_border_positions_on_map(), self.reduce_health_by_one):
+                #for block in item.file_blocks:
                 self.bomb_list.remove(item)
                 self.bomb_amount += 1
+
         if self.health == 0:
             self.set_not_alive()
 
