@@ -1,13 +1,7 @@
 import collections
 import pygame
-from pygame import mixer
+from src.game_files import Colors
 from src.game_files import Constants
-
-pygame.display.set_icon(Constants.ICON_IMG)
-pygame.display.set_caption('Bomberman')
-pygame.mixer.init()
-mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
-mixer.music.set_volume(0.2)
 
 about_message = []
 game_map = []
@@ -22,30 +16,30 @@ Point = collections.namedtuple('Point', 'x y')
 FireTuple = collections.namedtuple('Fire_tuple', 'x y block_type direction')
 
 _circle_cache = {}
-def _circlepoints(r):
+def _circlepoints(radius):
     """
     Selects points for outlining text
     """
-    r = int(round(r))
-    if r in _circle_cache:
-        return _circle_cache[r]
-    x, y, e = r, 0, 1 - r
-    _circle_cache[r] = points = []
+    radius = int(round(radius))
+    if radius in _circle_cache:
+        return _circle_cache[radius]
+    x, y, east_point = radius, 0, 1 - radius
+    _circle_cache[radius] = points = []
     while x >= y:
         points.append((x, y))
         y += 1
-        if e < 0:
-            e += 2 * y - 1
+        if east_point < 0:
+            east_point += 2 * y - 1
         else:
             x -= 1
-            e += 2 * (y - x) - 1
+            east_point += 2 * (y - x) - 1
     points.extend([(y, x) for x, y in points if x > y])
     points.extend([(-x, y) for x, y in points if x])
     points.extend([(x, -y) for x, y in points if y])
     points.sort()
     return points
 
-def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=(0, 0, 0), opx=2):
+def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=Colors.Colors.BLACK, opx=2):
     """
     Renders texts with outline
     :return: surface
@@ -79,12 +73,12 @@ def place_stones():
     for i in range(len(game_map)):
         for j in range(len(game_map[i])):
             if game_map[i][j] == 'S':
-                Constants.screen.blit(Constants.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
+                Constants.screen.blit(Constants.Assets.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
 
 def show_stats(player, level, x, y):
     font_s = pygame.font.SysFont("comicsans", 32)
     score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) \
-                          + " Level: " + str(level), True, (255, 255, 255))
+                          + " Level: " + str(level), True, Colors.WHITE)
     Constants.screen.blit(score, (x, y))
 
 def print_about_game(boolean):

@@ -1,12 +1,24 @@
 import pygame
-from src.game_files import Menu, MainGame, Button, Characters, SpriteTool, Constants, GameInitialisation as init
+from src.game_files import Menu
+from src.game_files import MainGame
+from src.game_files import Button
+from src.game_files import Characters
+from src.game_files import SpriteTool
+from src.game_files import Constants
+from src.game_files import GameInitialisation as init
 
-pygame.init()
 
 running = True
 
 # ---------------------- MAIN LOOP ---------------------------
-def main_game_func():
+def main():
+    pygame.init()
+    pygame.mixer.init()
+    Constants.Assets.load()
+    pygame.display.set_icon(Constants.Assets.ICON_IMG)
+    pygame.display.set_caption('Bomberman')
+    pygame.mixer.music.load('Sounds/TheFatRat-Xenogenesis.wav')
+    pygame.mixer.music.set_volume(0.2)
     menu = Menu.Menu()
     main = MainGame.MainGame()
     while True:
@@ -17,7 +29,6 @@ def main_game_func():
         ghost_hard = Characters.Ghost(650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
         init.game_map.clear()
         init.generate_map(init.game_map)
-        #init.place_stones()
         ghosts_list = []
         init.game_map[main_hero.last_position.x][main_hero.last_position.y] = 'P'
         init.place_stones()
@@ -28,7 +39,7 @@ def main_game_func():
         transparent_surface = pygame.Surface((750, 750))
         transparent_surface.set_alpha(128)
         transparent_surface.fill((0, 0, 0))
-        Constants.screen.blit(Constants.BACKGROUND_IMG, (0, 0))
+        Constants.screen.blit(Constants.Assets.BACKGROUND_IMG, (0, 0))
         level_iterator = 1
         main_hero.set_position(main_hero.default_position.x, main_hero.default_position.y)
         init.place_stones()
@@ -77,4 +88,4 @@ def main_game_func():
                 break
 
 if __name__ == '__main__':
-    main_game_func()
+    main()

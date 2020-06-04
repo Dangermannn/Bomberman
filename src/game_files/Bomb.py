@@ -1,7 +1,9 @@
 import pygame
 import time
 from pygame import mixer
-from src.game_files import SpriteTool, Constants, GameInitialisation as init
+from src.game_files import SpriteTool
+from src.game_files import Constants
+from src.game_files import GameInitialisation as init
 
 class Bomb:
     """
@@ -12,12 +14,15 @@ class Bomb:
     END_STRIGHT = 14
     VERTICAL = 1
     HORIZONTAL = 2
+    ANIMATION_DELAY = 0.05
+    ANIMATION_MAX_FRAME = 7
+    EXPLOSION_DELAY = 2
 
     def __init__(self, position_x, position_y, range_field, set_time):
         self.position_x = position_x
         self.position_y = position_y
         self.range_field = range_field
-        self.bomb_image = pygame.transform.scale((Constants.BOMB_IMAGE.convert_alpha()), (45, 45))
+        self.bomb_image = pygame.transform.scale((Constants.Assets.BOMB_IMAGE.convert_alpha()), (45, 45))
         self.bomb_sprite = SpriteTool.SpriteTool(Constants.BOMB_SPRITE_PATH, 7, 3)
         self.fire_blocks = []
         self.destroyed_blocks = []
@@ -26,6 +31,8 @@ class Bomb:
         self.last_animation_time = time.time()
         self.show_bomb = True
         self.explosion_sound = mixer.Sound('Sounds/bombExplosion.wav')
+        # self.in_explosion = False
+        # self.should_explode = False
 
     def set_should_explode(self):
         self.should_explode = True
@@ -187,26 +194,26 @@ class Bomb:
         if self.animation_step == 0:
             self.get_explosion_blocks(self.destroyed_blocks)
         explosion_timer = time.time()
-        if explosion_timer - self.set_time > 2:
+        if explosion_timer - self.set_time > self.EXPLOSION_DELAY:
             if self.animation_step == 0:
                 self.in_explosion = True
                 self.explosion_sound.play()
             self.show_bomb = False
-            if time.time() - self.last_animation_time > 0.05:
+            if time.time() - self.last_animation_time > self.ANIMATION_DELAY:
                 self.animation_step += 1
                 self.last_animation_time = time.time()
             for block in self.fire_blocks:
                 if block.direction == self.VERTICAL:
                     self.bomb_sprite.draw_vertical(
-                        Constants.screen, (self.animation_step % 7) + block.block_type, block.x, block.y)
+                        Constants.screen, (self.animation_step % self.ANIMATION_MAX_FRAME) + block.block_type, block.x, block.y)
                 else:
                     self.bomb_sprite.draw(
-                        Constants.screen, (self.animation_step % 7) + block.block_type, block.x, block.y)
+                        Constants.screen, (self.animation_step % self.ANIMATION_MAX_FRAME) + block.block_type, block.x, block.y)
                 if self.animation_step % 7 == 6:
                     if self.is_collision_with_player(player_cords):
                         reduce_health_func()
                     self.is_collision_with_ghost(ghosts)
-                    self.fire_blocks.clear()
+                    #self.fire_blocks.clear()
                     for x, y in self.destroyed_blocks:
                         init.game_map[x][y] = Constants.CLEAR
                     self.destroyed_blocks.clear()

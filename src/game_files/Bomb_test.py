@@ -1,11 +1,17 @@
 import unittest, time
-from src.game_files import Characters, Bomb, Constants, GameInitialisation as init
+import pygame
+from src.game_files import Characters
+from src.game_files import Bomb
+from src.game_files import Constants
+from src.game_files import GameInitialisation as init
 """
 Module for unit tests
 """
 class BombTest(unittest.TestCase):
     """Class for bomb tests"""
     def setUp(self):
+        pygame.init()
+        pygame.mixer.init()
         self.player = Characters.Player(200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
         self.bomb = Bomb.Bomb(50, 50, 3, 2)
         self.ghost_1 = Characters.Ghost(650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
@@ -55,14 +61,16 @@ class BombTest(unittest.TestCase):
     def test_reduces_player_hp(self):
         temp = [self.player.health]
         bomb = Bomb.Bomb(50, 50, 3, 2)
-        while not self.bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), temp, self.player.is_alive):
+        while not self.bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(),
+                                      self.player.reduce_health_by_one):
             pass
         self.assertFalse(self.player.health == temp)
 
     def test_kills_ghost(self):
         self.ghosts_list.append(self.ghost_1)
         bomb = Bomb.Bomb(50, 50, 3, 2)
-        while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), self.player.health, self.player.is_alive):
+        while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(),
+                                 self.player.reduce_health_by_one):
             pass
         temp = (len(self.ghosts_list) != 3)
         self.assertTrue(temp)
@@ -75,7 +83,8 @@ class BombTest(unittest.TestCase):
         init.generate_map(init.game_map)
         bomb = Bomb.Bomb(150, 100, 10, 10)
 
-        while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(), self.player.health, self.player.is_alive):
+        while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(),
+                                 self.player.reduce_health_by_one):
             pass
         temp3 = False
         if init.game_map[3][3] == ' ':
@@ -156,120 +165,6 @@ class BombTest(unittest.TestCase):
         if (2, 4) in blocks:
             temp = True
         self.assertFalse(temp)
-
-class GhostTest(unittest.TestCase):
-    "Class for ghost tests"
-    def setUp(self):
-        self.player = Characters.Player(200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
-        self.bomb = Bomb.Bomb(50, 50, 3, 2)
-        self.ghost_1 = Characters.Ghost(650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
-        self.ghost_2 = Characters.Ghost(50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
-        self.ghost_3 = Characters.Ghost(650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
-        self.ghosts_list = []
-        init.generate_map(init.game_map)
-
-    def test_easy_ghost_movement(self):
-        pos_x, pos_y = self.ghost_1.position_x, self.ghost_1.position_y
-        before_time = time.time()
-        while True:
-            self.ghost_1.handle_movement()
-            now = time.time()
-            if now - before_time > 2:
-                break
-        temp = False
-
-        if pos_x != self.ghost_1.position_x or pos_y != self.ghost_1.position_y:
-            temp = True
-        self.assertTrue(temp)
-
-    def test_medium_ghost_movement(self):
-        pos_x, pos_y = self.ghost_2.position_x, self.ghost_2.position_y
-        before_time = time.time()
-        while True:
-            self.ghost_2.move_random_without_back()
-            now = time.time()
-            if now - before_time > 2:
-                break
-        temp = False
-
-        if pos_x != self.ghost_2.position_x or pos_y != self.ghost_2.position_y:
-            temp = True
-
-        self.assertTrue(temp)
-
-    def test_hard_ghost_movement(self):
-        pos_x, pos_y = self.ghost_3.position_x, self.ghost_3.position_y
-        init.game_map[1][1] = 'P'
-        before_time = time.time()
-        while True:
-            self.ghost_3.following_player()
-            now = time.time()
-            if now - before_time > 5:
-                break
-        temp = False
-
-        #print("CURRENT POS: ", g1.position_x, " ", g1.position_y)
-        if pos_x != self.ghost_3.position_x or pos_y != self.ghost_3.position_y:
-            temp = True
-        self.assertTrue(temp)
-
-class PlayerTest(unittest.TestCase):
-    """
-    Class for player tests
-    """
-    def setUp(self):
-        self.player = Characters.Player(50, 50, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
-        init.generate_map(init.game_map)
-
-    def test_marking_player_on_map(self):
-        temp = False
-        init.mark_player_on_map(self.player)
-        self.player.position_x = 100
-        init.mark_player_on_map(self.player)
-
-        if init.game_map[1][1] == ' ' and init.game_map[2][1] == 'P':
-            temp = True
-        self.assertTrue(temp)
-
-    def test_collision_left_true(self):
-        self.player.position_x = 200
-        self.player.position_y = 200
-        self.assertTrue(self.player.collision_x(self.player.position_x - 5))
-
-    def test_collision_right_true(self):
-        self.player.position_x = 300
-        self.player.position_y = 150
-        self.assertTrue(self.player.collision_x(self.player.position_x + 5))
-
-    def test_collision_up_true(self):
-        self.player.position_x = 200
-        self.player.position_y = 100
-        self.assertTrue(self.player.collision_y(self.player.position_y - 5))
-
-    def test_collision_down_true(self):
-        self.player.position_x = 300
-        self.player.position_y = 150
-        self.assertTrue(self.player.collision_y(self.player.position_y + 5))
-
-    def test_collision_left_false(self):
-        self.player.position_x = 100
-        self.player.position_y = 250
-        self.assertFalse(self.player.collision_x(self.player.position_x - 5))
-
-    def test_collision_right_false(self):
-        self.player.position_x = 100
-        self.player.position_y = 250
-        self.assertFalse(self.player.collision_x(self.player.position_x + 5))
-
-    def test_collision_up_false(self):
-        self.player.position_x = 100
-        self.player.position_y = 250
-        self.assertFalse(self.player.collision_y(self.player.position_y - 5))
-
-    def test_collision_down_false(self):
-        self.player.position_x = 100
-        self.player.position_y = 250
-        self.assertFalse(self.player.collision_y(self.player.position_y + 5))
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,8 +2,9 @@ import random
 import time
 import math
 import pygame
-from pygame import mixer
-from src.game_files import Bomb, Constants, GameInitialisation as init
+from src.game_files import Bomb
+from src.game_files import Constants
+from src.game_files import GameInitialisation as init
 
 X_SPEED_CHANGE = {
     pygame.K_LEFT: -1,
@@ -21,8 +22,11 @@ class Character:
     """
     FREE_WAY = [' ', 'P']
 
-    def __init__(self, position_x=50, position_y=50, health=5, speed=6,
-                 bomb_amount=13, bomb_range=13, image_name=Constants.HERO_IMG_PATH):
+    def __init__(self, position_x=Constants.DEFAULT_PLAYER_XY, position_y=Constants.DEFAULT_PLAYER_XY,
+                 health=Constants.DEFAULT_PLAYER_HP, speed=Constants.DEFAULT_PLAYER_SPEED,
+                 bomb_amount=Constants.DEFAULT_PLAYER_BOMB_AMOUNT_RANGE,
+                 bomb_range=Constants.DEFAULT_PLAYER_BOMB_AMOUNT_RANGE,
+                 image_name=Constants.HERO_IMG_PATH):
         self.position_x = position_x
         self.position_y = position_y
         self.health = health
@@ -33,7 +37,8 @@ class Character:
         self.position_y_change = 0
         self.bomb_list = []
         self.character_image = pygame.transform.scale(
-            (pygame.image.load(image_name).convert_alpha()), (40, 40))
+            (pygame.image.load(image_name).convert_alpha()),
+            (Constants.IMG_SCALING_WIDTH_HEIGHT, Constants.IMG_SCALING_WIDTH_HEIGHT))
         self.is_alive = True
         self.default_position = init.Point(position_x, position_x)
         self.last_position = init.Point(1, 1)
@@ -42,12 +47,11 @@ class Character:
         """
         Setting character stats to default
         """
-        self.position_x = 50
-        self.position_y = 50
+        self.position_x = Constants.DEFAULT_PLAYER_XY
+        self.position_y = Constants.DEFAULT_PLAYER_XY
         self.position_x_change = 0
         self.position_y_change = 0
         self.bomb_list = []
-        #self.Score = 0
         self.is_alive = True
 
     def collision_x(self, corner):
@@ -58,8 +62,8 @@ class Character:
         corner += self.position_x_change + Constants.BLOCK_SIZE
         lower_corner = self.position_y + self.character_image.get_height() + Constants.BLOCK_SIZE
         upper_corner = self.position_y + Constants.BLOCK_SIZE
-        if init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and \
-            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY:
+        if (init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and
+            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_x += self.position_x_change
             return False
         return True
@@ -72,11 +76,12 @@ class Character:
         corner += self.position_y_change + Constants.BLOCK_SIZE
         left_corner = self.position_x + Constants.BLOCK_SIZE
         right_corner = self.position_x + self.character_image.get_width() + Constants.BLOCK_SIZE
-        if init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and \
-            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY:
+        if (init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and
+            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_y += self.position_y_change
             return False
         return True
+
     def set_position(self, position_x, position_y):
         """
         Placing bot on map
@@ -132,7 +137,7 @@ class Player(Character):
         grid_y = (self.position_y + 20) // Constants.BLOCK_SIZE * Constants.BLOCK_SIZE + 3
         if pressed[pygame.K_SPACE]:
             if self.bomb_amount > 0:
-                pop_sound = mixer.Sound("Sounds/Pop-Sound Effect.wav")
+                pop_sound = pygame.mixer.Sound("Sounds/Pop-Sound Effect.wav")
                 pop_sound.play()
                 self.bomb_list.append(Bomb.Bomb(grid_x, grid_y, self.bomb_range, time.time()))
                 self.bomb_amount -= 1
@@ -149,10 +154,8 @@ class Player(Character):
     def check_explosion(self, ghosts):
         for item in self.bomb_list:
             if item.explosion(ghosts, self.get_border_positions_on_map(), self.reduce_health_by_one):
-                #for block in item.file_blocks:
                 self.bomb_list.remove(item)
                 self.bomb_amount += 1
-
         if self.health == 0:
             self.set_not_alive()
 
@@ -167,8 +170,10 @@ class Player(Character):
         y = ((self.position_y + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
-        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE)
+             // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE)
+             // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 
@@ -222,8 +227,8 @@ class Ghost(Character):
         corner += self.position_x_change + Constants.BLOCK_SIZE
         lower_corner = self.position_y + self.character_image.get_height() + Constants.BLOCK_SIZE
         upper_corner = self.position_y + Constants.BLOCK_SIZE
-        if init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and \
-            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL:
+        if (init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and
+            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL):
             if self.distance_traveled < self.MAX_MOVEMENT:
                 self.position_x += self.position_x_change
             else:
@@ -242,8 +247,8 @@ class Ghost(Character):
         corner += self.position_y_change + Constants.BLOCK_SIZE
         left_corner = self.position_x + Constants.BLOCK_SIZE
         right_corner = self.position_x + self.character_image.get_width() + Constants.BLOCK_SIZE
-        if init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and \
-            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] != Constants.WALL:
+        if (init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and
+            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] != Constants.WALL):
             if self.distance_traveled < self.MAX_MOVEMENT:
                 self.position_y += self.position_y_change
             else:
@@ -316,11 +321,9 @@ class Ghost(Character):
         """
         Ghost trying to follow the player
         """
-        #path_queue = collections.deque()
         try:
             if not self.possible_movements:
                 path_queue = init.find_shortest_path(init.game_map, self.get_position_on_map())
-                #print("Q: ", path_queue)
                 if path_queue is not None:
                     self.set_possible_movements_for_following_ghost(path_queue)
 
@@ -359,12 +362,9 @@ class Ghost(Character):
         """
         Handling random moving bot. Little clever than move_random
         """
-        #x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
-        #y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
         if self.distance_traveled == 0:
             x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
             y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1) * Constants.BLOCK_SIZE
-            # available paths
 
             left_side = False
             right_side = False
@@ -384,19 +384,19 @@ class Ghost(Character):
                 down_side = True
 
             if (upper_side and (current_x, current_y - 1) not in self.last_positions):
-                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[2])
+                self.possible_movements.append(pygame.K_UP)
             if (left_side and (current_x - 1, current_y) not in self.last_positions):
-                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
+                self.possible_movements.append(pygame.K_LEFT)
             if (right_side and (current_x + 1, current_y) not in self.last_positions):
-                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
+                self.possible_movements.append(pygame.K_RIGHT)
             if (down_side and (current_x, current_y + 1) not in self.last_positions):
-                self.possible_movements.append(self.POSSIBLE_MOVEMENTS[3])
+                self.possible_movements.append(pygame.K_DOWN)
 
             if not self.possible_movements:
                 if current_x == self.X_LEFT_BLOCK_SECURE:
-                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[1])
+                    self.possible_movements.append(pygame.K_RIGHT)
                 elif current_x == self.X_RIGHT_BLOCK_SECURE:
-                    self.possible_movements.append(self.POSSIBLE_MOVEMENTS[0])
+                    self.possible_movements.append(pygame.K_LEFT)
 
         if not self.possible_movements:
             self.possible_movements.append(None)
@@ -462,8 +462,10 @@ class Ghost(Character):
         y = ((self.position_y + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
-        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) //
+             Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) //
+             Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 
