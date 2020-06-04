@@ -45,10 +45,10 @@ def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=Colors.Colors.
     :return: surface
     """
     textsurface = font.render(text, True, gfcolor).convert_alpha()
-    w = textsurface.get_width() + 2 * opx
-    h = font.get_height()
+    width = textsurface.get_width() + 2 * opx
+    height = font.get_height()
 
-    osurf = pygame.Surface((w, h + 2 * opx)).convert_alpha()
+    osurf = pygame.Surface((width, height + 2 * opx)).convert_alpha()
     osurf.fill((0, 0, 0, 0))
 
     surf = osurf.copy()
@@ -70,6 +70,9 @@ def generate_map(out_map):
         out_map.append(list(line_str))
 
 def place_stones():
+    """
+    Places stones on map
+    """
     for i in range(len(game_map)):
         for j in range(len(game_map[i])):
             if game_map[i][j] == 'S':
@@ -78,7 +81,7 @@ def place_stones():
 def show_stats(player, level, x, y):
     font_s = pygame.font.SysFont("comicsans", 32)
     score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) \
-                          + " Level: " + str(level), True, Colors.WHITE)
+                          + " Level: " + str(level), True, Colors.Colors.WHITE)
     Constants.screen.blit(score, (x, y))
 
 def print_about_game(boolean):

@@ -1,14 +1,9 @@
 import pygame
 from src.game_files import Menu
 from src.game_files import MainGame
-from src.game_files import Button
 from src.game_files import Characters
-from src.game_files import SpriteTool
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
-
-
-running = True
 
 # ---------------------- MAIN LOOP ---------------------------
 def main():

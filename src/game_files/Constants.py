@@ -3,6 +3,9 @@ import pygame
 screen = pygame.display.set_mode((750, 750))
 
 class Assets:
+    """
+    Class storing assets
+    """
     @staticmethod
     def load():
         Assets.BACKGROUND_IMG = pygame.image.load('Images/Mapv2.png')
@@ -88,4 +91,3 @@ GAME_MAP_STR = """\
 #   # # # #   #
 ###############
 """
-

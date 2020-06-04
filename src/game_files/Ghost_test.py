@@ -1,4 +1,5 @@
-import unittest, time
+import unittest
+import time
 import pygame
 from src.game_files import Characters
 from src.game_files import Bomb
@@ -10,8 +11,6 @@ class GhostTest(unittest.TestCase):
     def setUp(self):
         pygame.init()
         pygame.mixer.init()
-        self.player = Characters.Player(200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
-        self.bomb = Bomb.Bomb(50, 50, 3, 2)
         self.ghost_1 = Characters.Ghost(650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
         self.ghost_2 = Characters.Ghost(50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
         self.ghost_3 = Characters.Ghost(650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)

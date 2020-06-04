@@ -31,11 +31,6 @@ class Bomb:
         self.last_animation_time = time.time()
         self.show_bomb = True
         self.explosion_sound = mixer.Sound('Sounds/bombExplosion.wav')
-        # self.in_explosion = False
-        # self.should_explode = False
-
-    def set_should_explode(self):
-        self.should_explode = True
 
     def is_intersection(self, x, y):
         """
@@ -97,7 +92,7 @@ class Bomb:
         """
         left = x
         right = x + 2 * Constants.BLOCK_SIZE
-        if (init.game_map[left // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL) or (
+        if (init.game_map[left // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL or
                 init.game_map[right // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL):
             return True
         return False
@@ -114,7 +109,6 @@ class Bomb:
         x_coordinate = current_x * Constants.BLOCK_SIZE
         while True:
             if init.game_map[current_x][iterator] == Constants.STONE:
-                init.game_map[current_x][iterator] == Constants.CLEAR
                 blocks_to_destroy.append((current_x, iterator))
                 break
             if init.game_map[current_x][iterator] == Constants.WALL:
@@ -124,13 +118,16 @@ class Bomb:
             if init.game_map[current_x][iterator] == Constants.CLEAR:
                 if self.is_intersection(x_coordinate, iterator * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        init.FireTuple(x_coordinate, iterator * Constants.BLOCK_SIZE, self.INTERSECTION, None))
+                        init.FireTuple(x_coordinate, iterator * Constants.BLOCK_SIZE,
+                                       self.INTERSECTION, None))
                 elif self.is_vertical(x_coordinate, iterator * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        init.FireTuple(x_coordinate, iterator * Constants.BLOCK_SIZE, self.STRAIGHT, self.VERTICAL))
+                        init.FireTuple(x_coordinate, iterator * Constants.BLOCK_SIZE,
+                                       self.STRAIGHT, self.VERTICAL))
                 elif self.is_horizontal(x_coordinate, iterator * Constants.BLOCK_SIZE):
                     self.fire_blocks.append(
-                        init.FireTuple(x_coordinate, iterator * Constants.BLOCK_SIZE, self.STRAIGHT, self.HORIZONTAL))
+                        init.FireTuple(x_coordinate, iterator * Constants.BLOCK_SIZE,
+                                       self.STRAIGHT, self.HORIZONTAL))
             iterator += direction
             i += 1
 

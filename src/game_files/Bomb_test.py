@@ -1,11 +1,12 @@
-import unittest, time
+import unittest
+import time
 import pygame
 from src.game_files import Characters
 from src.game_files import Bomb
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
 """
-Module for unit tests
+Module for bomb unit tests
 """
 class BombTest(unittest.TestCase):
     """Class for bomb tests"""
@@ -19,10 +20,6 @@ class BombTest(unittest.TestCase):
         self.ghost_3 = Characters.Ghost(650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
         self.ghosts_list = []
         init.generate_map(init.game_map)
-
-    """
-    Tests for checking if place on map is intersection or vertical/horizontal path
-    """
 
     def test_is_intersection_true_4way(self):
         self.assertTrue(self.bomb.is_intersection(100, 250))

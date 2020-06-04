@@ -63,7 +63,7 @@ class Character:
         lower_corner = self.position_y + self.character_image.get_height() + Constants.BLOCK_SIZE
         upper_corner = self.position_y + Constants.BLOCK_SIZE
         if (init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and
-            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
+                init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_x += self.position_x_change
             return False
         return True
@@ -77,7 +77,7 @@ class Character:
         left_corner = self.position_x + Constants.BLOCK_SIZE
         right_corner = self.position_x + self.character_image.get_width() + Constants.BLOCK_SIZE
         if (init.game_map[left_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY and
-            init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
+                init.game_map[right_corner // Constants.BLOCK_SIZE - 1][corner // Constants.BLOCK_SIZE - 1] in self.FREE_WAY):
             self.position_y += self.position_y_change
             return False
         return True
@@ -228,7 +228,7 @@ class Ghost(Character):
         lower_corner = self.position_y + self.character_image.get_height() + Constants.BLOCK_SIZE
         upper_corner = self.position_y + Constants.BLOCK_SIZE
         if (init.game_map[corner // Constants.BLOCK_SIZE - 1][upper_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL and
-            init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL):
+                init.game_map[corner // Constants.BLOCK_SIZE - 1][lower_corner // Constants.BLOCK_SIZE - 1] != Constants.WALL):
             if self.distance_traveled < self.MAX_MOVEMENT:
                 self.position_x += self.position_x_change
             else:
