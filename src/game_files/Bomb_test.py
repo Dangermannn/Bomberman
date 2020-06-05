@@ -1,8 +1,8 @@
-import unittest
 import time
+import unittest
 import pygame
-from src.game_files import Characters
 from src.game_files import Bomb
+from src.game_files import Characters
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
 """
@@ -13,11 +13,13 @@ class BombTest(unittest.TestCase):
     def setUp(self):
         pygame.init()
         pygame.mixer.init()
-        self.player = Characters.Player(200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
-        self.bomb = Bomb.Bomb(50, 50, 3, 2)
-        self.ghost_1 = Characters.Ghost(650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
-        self.ghost_2 = Characters.Ghost(50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
-        self.ghost_3 = Characters.Ghost(650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
+        self.screen = pygame.display.set_mode((750, 750))
+        Constants.Assets.load()
+        self.player = Characters.Player(self.screen, 200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
+        self.bomb = Bomb.Bomb(self.screen, 50, 50, 3, 2)
+        self.ghost_1 = Characters.Ghost(self.screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
+        self.ghost_2 = Characters.Ghost(self.screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
+        self.ghost_3 = Characters.Ghost(self.screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
         self.ghosts_list = []
         init.generate_map(init.game_map)
 
@@ -57,20 +59,19 @@ class BombTest(unittest.TestCase):
     # Fire removes blocks / reduces hp
     def test_reduces_player_hp(self):
         temp = [self.player.health]
-        bomb = Bomb.Bomb(50, 50, 3, 2)
+        bomb = Bomb.Bomb(self.screen, 50, 50, 3, 2)
         while not self.bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(),
                                       self.player.reduce_health_by_one):
             pass
-        self.assertFalse(self.player.health == temp)
+        self.assertEqual(self.player.health, temp[0])
 
     def test_kills_ghost(self):
         self.ghosts_list.append(self.ghost_1)
-        bomb = Bomb.Bomb(50, 50, 3, 2)
+        bomb = Bomb.Bomb(self.screen, 50, 50, 3, 2)
         while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(),
                                  self.player.reduce_health_by_one):
             pass
-        temp = (len(self.ghosts_list) != 3)
-        self.assertTrue(temp)
+        self.assertNotEqual(len(self.ghosts_list), 3)
 
     def test_remove_block_true(self):
         self.ghosts_list = []
@@ -78,90 +79,62 @@ class BombTest(unittest.TestCase):
         self.ghosts_list.append(self.ghost_1)
 
         init.generate_map(init.game_map)
-        bomb = Bomb.Bomb(150, 100, 10, 10)
+        bomb = Bomb.Bomb(self.screen, 150, 100, 10, 10)
 
         while not bomb.explosion(self.ghosts_list, self.player.get_player_position_on_map(),
                                  self.player.reduce_health_by_one):
             pass
-        temp3 = False
-        if init.game_map[3][3] == ' ':
-            temp3 = True
-        self.assertTrue(temp3, True)
+        self.assertEqual(init.game_map[3][3], Constants.CLEAR)
+
 
     # getting blocks to destroy
     def test_blocks_to_destroy_down_true(self):
-        bomb = Bomb.Bomb(250, 150, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 250, 150, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        temp = False
-        if (5, 4) in blocks:
-            temp = True
-        self.assertTrue(temp)
+        self.assertIn((5, 4), blocks)
 
     def test_blocks_to_destroy_right_true(self):
-        bomb = Bomb.Bomb(250, 150, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 250, 150, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        temp = False
-        if (6, 3) in blocks:
-            temp = True
-        self.assertTrue(temp, True)
+        self.assertIn((6, 3), blocks)
 
     def test_blocks_to_destroy_left_true(self):
-        bomb = Bomb.Bomb(250, 250, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 250, 250, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        temp = False
-        if (4, 5) in blocks:
-            temp = True
-        self.assertTrue(temp)
+        self.assertIn((4, 5), blocks)
 
     def test_blocks_to_destroy_up_true(self):
-        bomb = Bomb.Bomb(250, 250, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 250, 250, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        temp = False
-        if (5, 4) in blocks:
-            temp = True
-        self.assertTrue(temp)
+        self.assertIn((5, 4), blocks)
 
     def test_blocks_to_destroy_down_false(self):
-        bomb = Bomb.Bomb(150, 150, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 150, 150, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        print(blocks)
-        temp = False
-        if (3, 2) in blocks:
-            temp = True
-        self.assertFalse(temp)
+        self.assertIn((3, 3), blocks)
 
     def test_blocks_to_destroy_right_false(self):
-        bomb = Bomb.Bomb(50, 50, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 150, 150, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        print(blocks)
-        temp = False
-        if (2, 1) in blocks:
-            temp = True
-        self.assertFalse(temp)
+        self.assertIn((3, 3), blocks)
 
     def test_blocks_to_destroy_left_false(self):
-        bomb = Bomb.Bomb(150, 250, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 150, 250, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        temp = False
-        if (2, 1) in blocks:
-            temp = True
-        self.assertFalse(temp)
+        self.assertIn((3, 5), blocks)
 
     def test_blocks_to_destroy_up_false(self):
-        bomb = Bomb.Bomb(100, 150, 5, 5)
+        bomb = Bomb.Bomb(self.screen, 100, 150, 5, 5)
         blocks = []
         bomb.get_explosion_blocks(blocks)
-        temp = False
-        if (2, 4) in blocks:
-            temp = True
-        self.assertFalse(temp)
+        self.assertIn((2, 6), blocks)
 
 if __name__ == "__main__":
     unittest.main()

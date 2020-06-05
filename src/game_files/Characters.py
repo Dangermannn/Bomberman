@@ -1,6 +1,6 @@
+import math
 import random
 import time
-import math
 import pygame
 from src.game_files import Bomb
 from src.game_files import Constants
@@ -22,7 +22,7 @@ class Character:
     """
     FREE_WAY = [' ', 'P']
 
-    def __init__(self, position_x=Constants.DEFAULT_PLAYER_XY, position_y=Constants.DEFAULT_PLAYER_XY,
+    def __init__(self, surface, position_x=Constants.DEFAULT_PLAYER_XY, position_y=Constants.DEFAULT_PLAYER_XY,
                  health=Constants.DEFAULT_PLAYER_HP, speed=Constants.DEFAULT_PLAYER_SPEED,
                  bomb_amount=Constants.DEFAULT_PLAYER_BOMB_AMOUNT_RANGE,
                  bomb_range=Constants.DEFAULT_PLAYER_BOMB_AMOUNT_RANGE,
@@ -42,6 +42,7 @@ class Character:
         self.is_alive = True
         self.default_position = init.Point(position_x, position_x)
         self.last_position = init.Point(1, 1)
+        self.screen = surface
 
     def set_to_default(self):
         """
@@ -88,7 +89,7 @@ class Character:
         :param position_x: character's position
         :param position_y: character's position
         """
-        Constants.screen.blit(self.character_image, (position_x, position_y))
+        self.screen.blit(self.character_image, (position_x, position_y))
 
     def reduce_health_by_one(self):
         self.health -= 1
@@ -139,7 +140,7 @@ class Player(Character):
             if self.bomb_amount > 0:
                 pop_sound = pygame.mixer.Sound("Sounds/Pop-Sound Effect.wav")
                 pop_sound.play()
-                self.bomb_list.append(Bomb.Bomb(grid_x, grid_y, self.bomb_range, time.time()))
+                self.bomb_list.append(Bomb.Bomb(self.screen, grid_x, grid_y, self.bomb_range, time.time()))
                 self.bomb_amount -= 1
                 return True
         return False
@@ -195,8 +196,8 @@ class Ghost(Character):
     X_RIGHT_BLOCK_SECURE = 13
     POSSIBLE_MOVEMENTS = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN]
 
-    def __init__(self, position_x, position_y, health, speed, bomb_amount, bomb_range, image_name, mode):
-        super(Ghost, self).__init__(position_x, position_y, health,
+    def __init__(self, surface, position_x, position_y, health, speed, bomb_amount, bomb_range, image_name, mode):
+        super(Ghost, self).__init__(surface, position_x, position_y, health,
                                     speed, bomb_amount, bomb_range, image_name)
         self.character_image = pygame.transform.scale((pygame.image.load(image_name).convert_alpha()), (44, 44))
         self.distance_traveled = 0

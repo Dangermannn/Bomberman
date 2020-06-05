@@ -1,6 +1,5 @@
 import collections
 import pygame
-from src.game_files import Colors
 from src.game_files import Constants
 
 about_message = []
@@ -39,7 +38,7 @@ def _circlepoints(radius):
     points.sort()
     return points
 
-def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=Colors.Colors.BLACK, opx=2):
+def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=Constants.BLACK, opx=2):
     """
     Renders texts with outline
     :return: surface
@@ -61,34 +60,34 @@ def render(text, font, gfcolor=pygame.Color('dodgerblue'), ocolor=Colors.Colors.
     surf.blit(textsurface, (opx, opx))
     return surf
 
-def print_label(text, x, y, font_size):
+def print_label(surface, text, x, y, font_size):
     font = pygame.font.SysFont('comicsans', font_size)
-    Constants.screen.blit(render(text, font), (x, y))
+    surface.blit(render(text, font), (x, y))
 
 def generate_map(out_map):
     for line_str in Constants.GAME_MAP_STR.splitlines():
         out_map.append(list(line_str))
 
-def place_stones():
+def place_stones(surface):
     """
     Places stones on map
     """
     for i in range(len(game_map)):
         for j in range(len(game_map[i])):
-            if game_map[i][j] == 'S':
-                Constants.screen.blit(Constants.Assets.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
+            if game_map[i][j] == Constants.STONE:
+                surface.blit(Constants.Assets.STONE_IMG, (Constants.BLOCK_SIZE * i, Constants.BLOCK_SIZE * j))
 
-def show_stats(player, level, x, y):
+def show_stats(player, level, x, y, surface):
     font_s = pygame.font.SysFont("comicsans", 32)
-    score = font_s.render("Bombs amount/range: " + str(player.bomb_amount) \
-                          + " Level: " + str(level), True, Colors.Colors.WHITE)
-    Constants.screen.blit(score, (x, y))
+    score = font_s.render("Bombs amount/range: {} Level: {}".format(str(player.bomb_amount), str(level)),
+                          True, Constants.WHITE)
+    surface.blit(score, (x, y))
 
-def print_about_game(boolean):
+def print_about_game(boolean, surface):
     if boolean:
         add = 0
         for x in about_message:
-            print_label(x, 150, 230 + add, 21)
+            print_label(surface, x, 150, 230 + add, 21)
             add += 20
 
 def mark_player_on_map(player):

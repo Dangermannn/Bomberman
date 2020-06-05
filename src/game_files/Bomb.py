@@ -1,6 +1,5 @@
-import pygame
 import time
-from pygame import mixer
+import pygame
 from src.game_files import SpriteTool
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
@@ -18,7 +17,7 @@ class Bomb:
     ANIMATION_MAX_FRAME = 7
     EXPLOSION_DELAY = 2
 
-    def __init__(self, position_x, position_y, range_field, set_time):
+    def __init__(self, surface, position_x, position_y, range_field, set_time):
         self.position_x = position_x
         self.position_y = position_y
         self.range_field = range_field
@@ -30,7 +29,8 @@ class Bomb:
         self.animation_step = 0
         self.last_animation_time = time.time()
         self.show_bomb = True
-        self.explosion_sound = mixer.Sound('Sounds/bombExplosion.wav')
+        self.explosion_sound = Constants.Assets.EXPLOSION_SOUND
+        self.screen = surface
 
     def is_intersection(self, x, y):
         """
@@ -138,7 +138,6 @@ class Bomb:
         :param blocks_to_destroy: output list
         :param direction: -1 if left, 1 if right
         """
-        #ttt
         iterator = start_point_x
         i = 0
         y_coordinate = current_y * Constants.BLOCK_SIZE
@@ -202,10 +201,10 @@ class Bomb:
             for block in self.fire_blocks:
                 if block.direction == self.VERTICAL:
                     self.bomb_sprite.draw_vertical(
-                        Constants.screen, (self.animation_step % self.ANIMATION_MAX_FRAME) + block.block_type, block.x, block.y)
+                        self.screen, (self.animation_step % self.ANIMATION_MAX_FRAME) + block.block_type, block.x, block.y)
                 else:
                     self.bomb_sprite.draw(
-                        Constants.screen, (self.animation_step % self.ANIMATION_MAX_FRAME) + block.block_type, block.x, block.y)
+                        self.screen, (self.animation_step % self.ANIMATION_MAX_FRAME) + block.block_type, block.x, block.y)
                 if self.animation_step % 7 == 6:
                     if self.is_collision_with_player(player_cords):
                         reduce_health_func()
@@ -257,4 +256,4 @@ class Bomb:
         return any(b in coords for b in self.get_fireblocks_position())
 
     def set_position(self, position_x, position_y):
-        Constants.screen.blit(self.bomb_image, (position_x, position_y))
+        self.screen.blit(self.bomb_image, (position_x, position_y))

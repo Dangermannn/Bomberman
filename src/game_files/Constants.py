@@ -1,6 +1,6 @@
 import pygame
 # screen must be defined here just to let images load as a variable
-screen = pygame.display.set_mode((750, 750))
+
 
 class Assets:
     """
@@ -14,16 +14,10 @@ class Assets:
         Assets.MENU_BACKGROUND_IMG = pygame.image.load('Images/menuBackground.png')
         Assets.BOMB_IMAGE = pygame.image.load('Images/bombv1.png')
         Assets.ICON_IMG = pygame.image.load('Images/whiteGhost.png')
+        Assets.WIN_SOUND = pygame.mixer.Sound("Sounds/Victory-Sound Effect.wav")
+        Assets.LOSE_SOUND = pygame.mixer.Sound("Sounds/SadTrombone-GamingSoundEffect.wav")
+        Assets.EXPLOSION_SOUND = pygame.mixer.Sound('Sounds/bombExplosion.wav')
 
-
-"""
-BACKGROUND_IMG = pygame.image.load('Images/Mapv2.png')
-STONE_IMG = pygame.image.load('Images/stone.png')
-HEART_IMG = pygame.transform.scale((pygame.image.load('Images/heart.png').convert_alpha()), (25, 25))
-MENU_BACKGROUND_IMG = pygame.image.load('Images/menuBackground.png')
-BOMB_IMAGE = pygame.image.load('Images/bombv1.png')
-ICON_IMG = pygame.image.load('Images/whiteGhost.png')
-"""
 BOMB_SPRITE_PATH = "Images/BombSprit.png" #path cuz SpriteTool requires a direct path to the image
 HERO_IMG_PATH = "Images/Hero.png"
 WHITE_GHOST_PATH = 'Images/whiteGhost.png'
@@ -32,6 +26,17 @@ RED_GHOST_PATH = 'Images/redGhost.png'
 
 TRANSPARENT_SURFACE = pygame.Surface((750, 50))
 TRANSPARENT_SURFACE.set_alpha(128)
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BLUE = (51, 51, 255)
+DARK_BLUE = (10, 10, 150)
+RED = (255, 0, 0)
+LIME = (51, 255, 51)
+BURGUNDY = (150, 0, 0)
+DARK_GREEN = (51, 170, 51)
+BRIGHT_GREEN = (51, 255, 51)
+PURPLE = (51, 51, 200)
 
 EASY = 1
 MEDIUM = 2
