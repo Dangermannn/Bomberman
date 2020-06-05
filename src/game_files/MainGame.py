@@ -36,8 +36,8 @@ class MainGame:
         init.print_label(self.__screen, "Player's lifes:", 0, 0, 20)
         for x in range(0, player.health):
             self.__screen.blit(Constants.Assets.HEART_IMG, (x * 40, 20))
-        init.print_label(self.__screen, "Bombs amount: {} Bombs' range: {} Level: {}".format(str(player.bomb_amount),
-                    str(player.bomb_range), str(level)), 200, 15, 30)
+        init.print_label(self.__screen, "Bombs amount: {} Bombs' range: {} Level: {}".format(
+            str(player.bomb_amount), str(player.bomb_range), str(level)), 200, 15, 30)
 
     def leave_button_handler(self):
         self.__leave_button.draw(self.__screen, Constants.WHITE)
