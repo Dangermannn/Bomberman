@@ -459,14 +459,16 @@ class Ghost(Character):
         :return: ghost's coordinates of borders on the map
         """
         pos = []
-        x = ((self.position_x + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
-        y = ((self.position_y + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
+        x = ((self.position_x + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE)
+             // Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE)
+             // Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
 
-        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) //
-             Constants.BLOCK_SIZE - 1)
-        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE) //
-             Constants.BLOCK_SIZE - 1)
+        x = ((self.position_x + self.character_image.get_width() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE)
+             //Constants.BLOCK_SIZE - 1)
+        y = ((self.position_y + self.character_image.get_height() - self.PIXEL_TOLERANCE + Constants.BLOCK_SIZE)
+             //Constants.BLOCK_SIZE - 1)
         pos.append((x, y))
         return pos
 
