@@ -2,8 +2,13 @@ import pygame
 from src.game_files import Button
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
-
+"""
+Moudle with Menu class
+"""
 class Menu:
+    """
+    Handles whole menu
+    """
     def __init__(self, surface):
         self.__start_button = Button.Button(Constants.BLUE, 70, 70, 100, 50, 21, "Start game")
         self.__end_button = Button.Button(Constants.RED, 300, 70, 100, 50, 21, "Quit")

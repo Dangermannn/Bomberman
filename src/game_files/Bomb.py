@@ -4,6 +4,9 @@ from src.game_files import SpriteTool
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
 
+"""
+Module with bomb class
+"""
 class Bomb:
     """
     Class forhandling bomb behaviour
@@ -21,7 +24,8 @@ class Bomb:
         self.position_x = position_x
         self.position_y = position_y
         self.range_field = range_field
-        self.bomb_image = pygame.transform.scale((Constants.Assets.BOMB_IMAGE.convert_alpha()), (45, 45))
+        self.bomb_image = pygame.transform.scale(
+            (Constants.Assets.BOMB_IMAGE.convert_alpha()), (45, 45))
         self.bomb_sprite = SpriteTool.SpriteTool(Constants.BOMB_SPRITE_PATH, 7, 3)
         self.fire_blocks = []
         self.destroyed_blocks = []
@@ -41,25 +45,27 @@ class Bomb:
         :param y: coordinate y
         :return: True if it's intersection
         """
-        left = x
-        right = x + 2 * Constants.BLOCK_SIZE
-        down = y + Constants.BLOCK_SIZE
-        up = y - Constants.BLOCK_SIZE
+        left = x // Constants.BLOCK_SIZE
+        right = (x + 2 * Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE
+        down = (y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE
+        uppper = (y - Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE
+        const_y = y // Constants.BLOCK_SIZE
+        const_x = x // Constants.BLOCK_SIZE
         free_sides = 0
         left_side = False
         right_side = False
         upper_side = False
         down_side = False
-        if init.game_map[left // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL:
+        if init.game_map[left - 1][const_y] != Constants.WALL:
             left_side = True
             free_sides += 1
-        if init.game_map[right // Constants.BLOCK_SIZE - 1][y // Constants.BLOCK_SIZE] != Constants.WALL:
+        if init.game_map[right - 1][const_y] != Constants.WALL:
             right_side = True
             free_sides += 1
-        if init.game_map[x // Constants.BLOCK_SIZE][up // Constants.BLOCK_SIZE] != Constants.WALL:
+        if init.game_map[const_x][uppper] != Constants.WALL:
             upper_side = True
             free_sides += 1
-        if init.game_map[x // Constants.BLOCK_SIZE][down // Constants.BLOCK_SIZE] != Constants.WALL:
+        if init.game_map[const_x][down] != Constants.WALL:
             down_side = True
             free_sides += 1
 
@@ -223,7 +229,7 @@ class Bomb:
         x = ((self.position_x + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         y = ((self.position_y + Constants.BLOCK_SIZE) // Constants.BLOCK_SIZE - 1)
         return (x, y)
-    
+
     def get_fireblocks_position(self):
         """
         :return: List of fireblocks positions as a tuple (x, y)

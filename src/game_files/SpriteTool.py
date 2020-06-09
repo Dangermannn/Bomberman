@@ -1,10 +1,12 @@
 import pygame
 
+"""
+Module with SpriteTool
+"""
 class SpriteTool:
     """
     Class loading sprite image to memory and drawing on the screen in the particular area
     """
-
     # pylint: disable=too-many-instance-attributes
     def __init__(self, file_name, cols, rows):
         temp = pygame.image.load(file_name).convert_alpha()

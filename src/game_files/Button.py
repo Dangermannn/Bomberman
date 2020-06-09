@@ -1,6 +1,12 @@
 import pygame
 
+"""
+Module with button class.
+"""
 class Button():
+    """
+    Class for drowing button and handling mouse hover.
+    """
     def __init__(self, color, position_x, position_y, width, height, font_size, text=''):
         self.color = color
         self.position_x = position_x
@@ -11,6 +17,11 @@ class Button():
         self.font_size = font_size
 
     def draw(self, screen, text_colour, outline=None):
+        """
+        Draws the button.
+        :param screen: surface
+        :param text_colour: colour in RGB
+        """
         if outline:
             temp = (self.position_x - 2, self.position_y - 2, self.width + 4, self.height + 4)
             pygame.draw.rect(screen, outline, temp, 0)

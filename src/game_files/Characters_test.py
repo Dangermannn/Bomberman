@@ -1,7 +1,6 @@
 import time
 import unittest
 import pygame
-from src.game_files import Bomb
 from src.game_files import Characters
 from src.game_files import Constants
 from src.game_files import GameInitialisation as init
