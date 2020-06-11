@@ -6,9 +6,7 @@ about_message = []
 game_map = []
 stoneBlocks = []
 
-for line_str in Constants.ABOUT_MESSAGE_STR.splitlines():
-    about_message.append(line_str)
-
+about_message = Constants.ABOUT_MESSAGE_STR.splitlines();
 # functions to add outline to the text
 
 Point = collections.namedtuple('Point', 'x y')

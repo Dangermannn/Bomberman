@@ -40,7 +40,7 @@ class Button():
         :param pos: mouse position
         :return: True if mouse position is on the field of button, otherwise False
         """
-        if pos[0] > self.position_x and pos[0] < self.position_x + self.width:
-            if pos[1] > self.position_y and pos[1] < self.position_y + self.height:
+        if self.position_x < pos[0] < self.position_x + self.width:
+            if self.position_y < pos[1] < self.position_y + self.height:
                 return True
         return False
