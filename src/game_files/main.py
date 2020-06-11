@@ -20,18 +20,11 @@ def main():
     while True:
         menu.menu()
         main_hero = Characters.Player(screen, 50, 50, 5, 8, 13, 13, Constants.HERO_IMG_PATH)
-        ghost_easy = Characters.Ghost(screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
-        ghost_medium = Characters.Ghost(screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
-        ghost_hard = Characters.Ghost(screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
         init.game_map.clear()
         init.generate_map(init.game_map)
         ghosts_list = []
         init.game_map[main_hero.last_position.x][main_hero.last_position.y] = Constants.GOAL
         init.place_stones(screen)
-        ghosts_list.clear()
-        ghosts_list.append(ghost_easy)
-        ghosts_list.append(ghost_medium)
-        ghosts_list.append(ghost_hard)
         transparent_surface = pygame.Surface((750, 750))
         transparent_surface.set_alpha(128)
         transparent_surface.fill((0, 0, 0))
@@ -50,6 +43,13 @@ def main():
         pygame.time.wait(1000)
 
         while True:
+            ghost_easy = Characters.Ghost(screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
+            ghost_medium = Characters.Ghost(screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
+            ghost_hard = Characters.Ghost(screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
+            ghosts_list.clear()
+            ghosts_list.append(ghost_easy)
+            ghosts_list.append(ghost_medium)
+            ghosts_list.append(ghost_hard)
             if not game.main_game(main_hero, ghosts_list, level_iterator):
                 level_iterator += 1
                 ghosts_list.clear()
