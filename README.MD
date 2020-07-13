@@ -1,3 +1,6 @@
+Used:
+* python 3.8.1
+* pygame 1.9.6
 # Bomberman
 Well known bomberman game written in python.
 
@@ -51,11 +54,20 @@ It creates a button at any place with a particular size. Additionaly handles mou
 ##### SpriteTool
 Loading sprite to memory, picking right frame.
 
-#### Menu
+##### Menu
 Simple menu class
 
-#### MainGame
+##### MainGame
 Class for handling main game
 
-#### Tests
-Class for simple unit tests
+##### BombTest
+Class for bomb tests
+
+##### PlayerTest
+Class for player tests
+
+##### GhostTest
+Class for ghost tests
+
+##### Assets
+Class for loaded images
