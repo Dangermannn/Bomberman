@@ -46,7 +46,7 @@ Ghost class handles movement of the bots.
 
 ##### Bomb
 Class for creating a bomb, finding blocks to set fire, checking if there's collision with player/ghosts/bricks after explosion,
-picking proper animation frame
+picking proper animation frame.
 
 ##### Button
 It creates a button at any place with a particular size. Additionaly handles mouse hover.
@@ -58,16 +58,22 @@ Loading sprite to memory, picking right frame.
 Simple menu class
 
 ##### MainGame
-Class for handling main game
+Class for handling main game.
 
 ##### BombTest
-Class for bomb tests
+Class for bomb tests.
 
 ##### PlayerTest
-Class for player tests
+Class for player tests.
 
 ##### GhostTest
-Class for ghost tests
+Class for ghost tests.
 
 ##### Assets
-Class for loaded images
+Class for loaded images.
+
+##### MainGame
+Class for handling main game.
+
+##### Menu
+It creates a menu with button and handles particular buttons.
