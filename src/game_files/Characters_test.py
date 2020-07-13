@@ -13,12 +13,15 @@ class PlayerTest(unittest.TestCase):
     """
     Class for player tests
     """
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         pygame.init()
-        self.screen = pygame.display.set_mode((750, 750))
+        cls.screen = pygame.display.set_mode((750, 750))
         Constants.Assets.load()
-        self.player = Characters.Player(self.screen, 50, 50, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
         init.generate_map(init.game_map)
+
+    def setUp(self):
+        self.player = Characters.Player(self.screen, 50, 50, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
 
     def test_marking_player_on_map(self):
         temp = False
@@ -72,15 +75,16 @@ class PlayerTest(unittest.TestCase):
 
 class GhostTest(unittest.TestCase):
     "Class for ghost tests"
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         pygame.init()
         pygame.mixer.init()
-        self.screen = pygame.display.set_mode((750, 750))
+        cls.screen = pygame.display.set_mode((750, 750))
         Constants.Assets.load()
-        self.ghost_1 = Characters.Ghost(self.screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
-        self.ghost_2 = Characters.Ghost(self.screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
-        self.ghost_3 = Characters.Ghost(self.screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
-        self.ghosts_list = []
+        cls.ghost_1 = Characters.Ghost(cls.screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
+        cls.ghost_2 = Characters.Ghost(cls.screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
+        cls.ghost_3 = Characters.Ghost(cls.screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
+        cls.ghosts_list = []
         init.generate_map(init.game_map)
 
     def test_easy_ghost_movement(self):

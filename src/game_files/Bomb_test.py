@@ -10,17 +10,18 @@ Module for bomb unit tests
 """
 class BombTest(unittest.TestCase):
     """Class for bomb tests"""
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         pygame.init()
         pygame.mixer.init()
-        self.screen = pygame.display.set_mode((750, 750))
+        cls.screen = pygame.display.set_mode((750, 750))
         Constants.Assets.load()
-        self.player = Characters.Player(self.screen, 200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
-        self.bomb = Bomb.Bomb(self.screen, 50, 50, 3, 2)
-        self.ghost_1 = Characters.Ghost(self.screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
-        self.ghost_2 = Characters.Ghost(self.screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
-        self.ghost_3 = Characters.Ghost(self.screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
-        self.ghosts_list = []
+        cls.player = Characters.Player(cls.screen, 200, 150, 5, 6, 13, 13, Constants.HERO_IMG_PATH)
+        cls.bomb = Bomb.Bomb(cls.screen, 50, 50, 3, 2)
+        cls.ghost_1 = Characters.Ghost(cls.screen, 650, 50, 1, 4, 2, 1, Constants.WHITE_GHOST_PATH, Constants.EASY)
+        cls.ghost_2 = Characters.Ghost(cls.screen, 50, 650, 1, 3, 2, 1, Constants.BLUE_GHOST_PATH, Constants.MEDIUM)
+        cls.ghost_3 = Characters.Ghost(cls.screen, 650, 650, 1, 1, 1, 1, Constants.RED_GHOST_PATH, Constants.HARD)
+        cls.ghosts_list = []
         init.generate_map(init.game_map)
 
     def test_is_intersection_true_4way(self):
